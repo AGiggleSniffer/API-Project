@@ -6,11 +6,7 @@ const csurf = require("csurf");
 const helmet = require("helmet");
 const cookieParser = require("cookie-parser");
 const { ValidationError } = require("sequelize");
-
-///
 /// Routes
-///
-
 const routes = require("./routes");
 
 // chech production or dev
