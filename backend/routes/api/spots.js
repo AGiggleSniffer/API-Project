@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { spots } = require("../../db/models");
+const { Spot } = require("../../db/models");
 
 // Add a spot with validation
 router.post("/", async (req, res, next) => {
@@ -11,8 +11,8 @@ router.post("/", async (req, res, next) => {
 		req.body;
 
 	try {
-		const newSpot = await spots.create({
-			user_id: user.id,
+		const newSpot = await Spot.create({
+			userId: user.id,
 			address: address,
 			city: city,
 			state: state,
@@ -28,7 +28,7 @@ router.post("/", async (req, res, next) => {
 
 		return res.json({
 			id: user.id,
-			...newSpot,
+			...newSpot.dataValues,
 		});
 	} catch (e) {
 		res.status(400);
@@ -39,17 +39,22 @@ router.post("/", async (req, res, next) => {
 
 router.delete("/:id", async (req, res) => {});
 
+// chech production or dev
+const { environment } = require("../../config");
+const isProduction = environment === "production";
 // spot generic error handler
 router.use((err, req, res, next) => {
-    const errors = {};
-    err.errors.forEach(element => {
+	if (!isProduction) return res.json({ err });
+
+	const errors = {};
+	err.errors.forEach((element) => {
 		const { path, message } = element;
 		errors[path] = message;
 	});
 
 	return res.json({
 		message: err.message,
-        errors: errors,
+		errors: errors,
 	});
 });
 
