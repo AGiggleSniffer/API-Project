@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const { Spot } = require("../../db/models");
 
-const { requireAuth } = require("../../utils");
+const { requireAuth } = require("../../utils/auth");
 
 // Add a spot with validation
 router.post("/", requireAuth, async (req, res, next) => {
