@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { Spot } = require("../../db/models");
+const { Spots } = require("../../db/models");
 
 // Add a spot with validation
 router.post("/", async (req, res, next) => {
@@ -32,37 +32,38 @@ router.post("/", async (req, res, next) => {
 			id: user.id,
 			...newSpot.dataValues,
 		});
-	} catch (e) {
+	} catch (err) {
 		res.status(400);
 		e.message = "Bad Request";
-		return next(e);
+		
+		const errors = {};
+		if (err.errors) {
+			err.errors.forEach((element) => {
+				const { path, message } = element;
+				errors[path] = message;
+			});
+		}
+
+		return res.json({
+			message: err.message,
+			errors: errors,
+			err,
+		});
 	}
 });
 
 router.delete("/:id", async (req, res) => {});
 
-// chech production or dev
-const { environment } = require("../../config");
-const isProduction = environment === "production";
-// spot generic error handler
-router.use((err, req, res, next) => {
-	if (!isProduction) return res.json({ err });
+// // chech production or dev
+// const { environment } = require("../../config");
+// const isProduction = environment === "production";
+// // spot generic error handler
+// router.use((err, req, res, next) => {
+// 	if (!isProduction) return res.json({ err });
 
-	err.environment = isProduction || "enviroment";
+// 	err.environment = isProduction || "enviroment";
 
-	const errors = {};
-	if (err.errors) {
-		err.errors.forEach((element) => {
-			const { path, message } = element;
-			errors[path] = message;
-		});
-	}
 
-	return res.json({
-		message: err.message,
-		errors: errors,
-		err,
-	});
-});
+// });
 
 module.exports = router;
