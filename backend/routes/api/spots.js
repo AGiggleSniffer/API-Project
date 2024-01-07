@@ -10,7 +10,7 @@ router.post("/", async (req, res, next) => {
 	const { address, city, state, country, lat, lng, name, description, price } =
 		req.body;
 
-	return res.json({ Spot });
+	return res.json({ test: req.body });
 
 	try {
 		const newSpot = await Spot.create({
