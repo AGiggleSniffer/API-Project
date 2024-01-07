@@ -13,20 +13,20 @@ router.post("/", async (req, res, next) => {
 	// return res.json({ test: req.body });
 
 	try {
-		const newSpot = await Spot.findAll();
+		// const newSpot = await Spot.findAll();
 
-		// const newSpot = await Spot.create({
-		// 	userId: user.id,
-		// 	address: address,
-		// 	city: city,
-		// 	state: state,
-		// 	country: country,
-		// 	lat: lat,
-		// 	lng: lng,
-		// 	name: name,
-		// 	description: description,
-		// 	price: price,
-		// });
+		const newSpot = await Spot.create({
+			userId: user.id,
+			address: address,
+			city: city,
+			state: state,
+			country: country,
+			lat: lat,
+			lng: lng,
+			name: name,
+			description: description,
+			price: price,
+		});
 
 		return res.status(201).json({
 			id: user.id,
