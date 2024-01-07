@@ -93,6 +93,11 @@ router.post("/", requireAuth, async (req, res, next) => {
 	}
 });
 
+// Edit a spot
+router.put("/:id", requireAuth, async (req, res, next) => {
+	res.json({ test: "test" });
+});
+
 // delete a spot with authentication and id
 router.delete("/:id", requireAuth, async (req, res, next) => {
 	const { user } = req;
