@@ -1,4 +1,7 @@
-"use strict";
+await sequelize.drop();
+console.log("All tables dropped!");
+
+("use strict");
 
 let options = {};
 if (process.env.NODE_ENV === "production") {
