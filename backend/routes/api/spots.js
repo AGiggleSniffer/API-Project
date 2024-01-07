@@ -40,12 +40,9 @@ router.delete("/:id", async (req, res) => {});
 
 // spot generic error handler
 router.use((err, req, res, next) => {
-	if (err instanceof ValidationError) return next(err);
-
-	console.log(err.errors)
 
 	const errors = {};
-	if (err.errors) {
+	if (err.errors instanceof Array) {
 		err.errors.forEach((element) => {
 			const { path, message } = element;
 			errors[path] = message;
