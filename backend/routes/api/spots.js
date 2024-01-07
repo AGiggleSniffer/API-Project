@@ -168,6 +168,7 @@ router.use((err, req, res, next) => {
 	}
 
 	if (err.message === "Bad Request") {
+		const errors = {};
 		err.errors.forEach((element) => {
 			const { path, message } = element;
 			errors[path] = message;
