@@ -19,7 +19,7 @@ module.exports = {
 				},
 				userId: {
 					type: Sequelize.INTEGER,
-					references: {model: "Users"},
+					references: { model: "Users" },
 					allowNull: false,
 				},
 				address: {
@@ -71,6 +71,7 @@ module.exports = {
 		);
 	},
 	async down(queryInterface, Sequelize) {
-		await queryInterface.dropTable("Spots");
+		options.tableName = "Spots";
+		await queryInterface.dropTable(options, "Spots");
 	},
 };

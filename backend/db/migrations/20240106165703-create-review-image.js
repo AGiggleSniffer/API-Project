@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 let options = {};
 if (process.env.NODE_ENV === "production") {
@@ -7,8 +7,8 @@ if (process.env.NODE_ENV === "production") {
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up(queryInterface, Sequelize) {
-    await queryInterface.createTable(
+	async up(queryInterface, Sequelize) {
+		await queryInterface.createTable(
 			"ReviewImages",
 			{
 				id: {
@@ -35,8 +35,9 @@ module.exports = {
 			},
 			options,
 		);
-  },
-  async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('ReviewImages');
-  }
+	},
+	async down(queryInterface, Sequelize) {
+		options.tableName = "ReviewImages";
+		await queryInterface.dropTable(options, "ReviewImages");
+	},
 };
