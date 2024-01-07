@@ -52,7 +52,7 @@ router.get("/:id", async (req, res, next) => {
 		const spotDetails = await Spot.findByPk(spotId);
 
 		if (!spotDetails) {
-			return res.status(404).json({ message: "Spot couldn't be found" });
+			throw new Error("Spot couldn't be found");
 		}
 
 		res.json({ spotDetails });
@@ -93,9 +93,47 @@ router.post("/", requireAuth, async (req, res, next) => {
 	}
 });
 
-// Edit a spot
+// Edit a spot with authentication
 router.put("/:id", requireAuth, async (req, res, next) => {
-	res.json({ test: "test" });
+	const { user } = req;
+	const { id: spotId } = req.params;
+	const { address, city, state, country, lat, lng, name, description, price } =
+		req.body;
+
+	try {
+		const updatedSpot = await Spot.update(
+			{
+				userId: user.id,
+				address: address,
+				city: city,
+				state: state,
+				country: country,
+				lat: lat,
+				lng: lng,
+				name: name,
+				description: description,
+				price: price,
+			},
+			{
+				where: { id: spotId },
+				/* ONLY supported for Postgres */
+				// will return the results without needing a second query
+				returning: true,
+				plain: true,
+			},
+		);
+
+		// check if we are in production or if we have to make a second DB query
+		if (!isProduction) {
+			updatedSpot.sqlite = await Spot.findByPk(spotId);
+		}
+
+		return res.json(updatedSpot.sqlite || updatedSpot[1].dataValues);
+	} catch (err) {
+		res.status(400);
+		err.message = "Bad Request";
+		return next(err);
+	}
 });
 
 // delete a spot with authentication and id
@@ -110,7 +148,7 @@ router.delete("/:id", requireAuth, async (req, res, next) => {
 		);
 
 		if (!deleted) {
-			return res.status(404).json({ message: "Spot couldn't be found" });
+			throw new Error("Spot couldn't be found");
 		}
 
 		return res.json({ message: "Successfully deleted" });
@@ -125,23 +163,24 @@ router.use((err, req, res, next) => {
 		return res.json({ message: err.message });
 	}
 
-	if (err.title === "Spot couldn't be found") {
+	if (err.message === "Spot couldn't be found") {
 		return res.status(404).json({ message: err.message });
 	}
 
-	const errors = {};
-	if (err.errors instanceof Array) {
+	if (err.message === "Bad Request") {
 		err.errors.forEach((element) => {
 			const { path, message } = element;
 			errors[path] = message;
 		});
+
+		return res.json({
+			message: err.message,
+			errors: errors,
+			stack: isProduction ? null : err.stack,
+		});
 	}
 
-	return res.json({
-		message: err.message,
-		errors: errors,
-		stack: isProduction ? null : err.stack,
-	});
+	return next(err);
 });
 
 module.exports = router;
