@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const { Spot } = require("../../db/models");
-
+const { ValidationError } = require("sequelize");
 const { requireAuth } = require("../../utils/auth");
 
 // Add a spot with validation
