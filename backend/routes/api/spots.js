@@ -5,6 +5,8 @@ const { requireAuth } = require("../../utils/auth");
 const { environment } = require("../../config");
 const isProduction = environment === "production";
 
+// Get all spots
+
 // Add a spot with validation
 router.post("/", requireAuth, async (req, res, next) => {
 	const { user } = req;
@@ -37,7 +39,28 @@ router.post("/", requireAuth, async (req, res, next) => {
 	}
 });
 
-router.delete("/:id", async (req, res) => {});
+// delete a spot with authentication and id
+router.delete("/:id", requireAuth, async (req, res, next) => {
+	const { user } = req;
+	const { id: spotId } = req.params;
+	const where = { firstName: spotId };
+
+	try {
+		const deleted = await Spot.scope({ method: ["owned", user.id] }).destroy(
+			where,
+		);
+		
+		if (!deleted) {
+			return res.status(404).json({ message: "Spot couldn't be found" });
+		}
+
+		return res.json({
+			message: "Successfully deleted",
+		});
+	} catch (err) {
+		return next(err);
+	}
+});
 
 // spot generic error handler
 router.use((err, req, res, next) => {

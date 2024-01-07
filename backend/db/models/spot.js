@@ -116,6 +116,15 @@ module.exports = (sequelize, DataTypes) => {
 		{
 			sequelize,
 			modelName: "Spot",
+			scopes: {
+				owned(userId) {
+					return {
+						where: {
+							userId: userId,
+						},
+					};
+				},
+			},
 		},
 	);
 	return Spot;
