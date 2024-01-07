@@ -48,8 +48,10 @@ router.use((err, req, res, next) => {
 	}
 
 	const errors = {};
-	for (let error of err.errors) {
-		errors[error.path] = error.message;
+	if (err.errors) {
+		for (let error of err.errors) {
+			errors[error.path] = error.message;
+		}
 	}
 
 	return res.json({
