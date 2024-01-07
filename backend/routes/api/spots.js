@@ -60,7 +60,8 @@ router.use((err, req, res, next) => {
 
 	return res.json({
 		message: err.message,
-		errors: errors || err,
+		errors: errors,
+		err,
 	});
 });
 
