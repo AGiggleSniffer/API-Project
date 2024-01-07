@@ -6,6 +6,9 @@ const { environment } = require("../../config");
 const isProduction = environment === "production";
 
 // Get all spots
+router.get("/", async (req, res, next) => {
+	res.json({ test });
+});
 
 // Add a spot with validation
 router.post("/", requireAuth, async (req, res, next) => {
@@ -49,7 +52,7 @@ router.delete("/:id", requireAuth, async (req, res, next) => {
 		const deleted = await Spot.scope({ method: ["owned", user.id] }).destroy(
 			where,
 		);
-		
+
 		if (!deleted) {
 			return res.status(404).json({ message: "Spot couldn't be found" });
 		}
