@@ -1,11 +1,11 @@
 const router = require("express").Router();
 const { Spot } = require("../../db/models");
 
-// Add a spot with validation
-router.post("/", async (req, res, next) => {
-	const { user } = req;
+const { requireAuth } = require("../../utils");
 
-	if (!user) return res.json({ user: null });
+// Add a spot with validation
+router.post("/", requireAuth, async (req, res, next) => {
+	const { user } = req;
 
 	const { address, city, state, country, lat, lng, name, description, price } =
 		req.body;
