@@ -44,18 +44,20 @@ const { environment } = require("../../config");
 const isProduction = environment === "production";
 // spot generic error handler
 router.use((err, req, res, next) => {
-	// if (!isProduction) return res.json({ err });
+	if (!isProduction) return res.json({ err });
 
 	const errors = {};
-	err.errors.forEach((element) => {
-		const { path, message } = element;
-		errors[path] = message;
-	});
+	if (err.errors) {
+		err.errors.forEach((element) => {
+			const { path, message } = element;
+			errors[path] = message;
+		});
+	}
 
 	return res.json({
 		message: err.message,
 		errors: errors,
-		err
+		err,
 	});
 });
 
