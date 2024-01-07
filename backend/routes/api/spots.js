@@ -10,11 +10,7 @@ router.post("/", requireAuth, async (req, res, next) => {
 	const { address, city, state, country, lat, lng, name, description, price } =
 		req.body;
 
-	// return res.json({ test: req.body });
-
 	try {
-		// const newSpot = await Spot.findAll();
-
 		const newSpot = await Spot.create({
 			userId: user.id,
 			address: address,
@@ -45,6 +41,8 @@ router.delete("/:id", async (req, res) => {});
 // spot generic error handler
 router.use((err, req, res, next) => {
 	if (err instanceof ValidationError) return next(err);
+
+	console.log(err.errors)
 
 	const errors = {};
 	if (err.errors) {
