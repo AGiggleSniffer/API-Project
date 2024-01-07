@@ -12,15 +12,12 @@ router.get("/", async (req, res, next) => {
 			include: [
 				{
 					model: Review,
-					required: true,
 				},
 				{
 					model: SpotImage,
-					required: true,
 				},
 				{
 					model: User,
-					required: true,
 				},
 			],
 		});
@@ -169,10 +166,12 @@ router.use((err, req, res, next) => {
 
 	if (err.message === "Bad Request") {
 		const errors = {};
-		err.errors.forEach((element) => {
-			const { path, message } = element;
-			errors[path] = message;
-		});
+		if (err.errors instanceof Array) {
+			err.errors.forEach((element) => {
+				const { path, message } = element;
+				errors[path] = message;
+			});
+		}
 
 		return res.json({
 			message: err.message,
