@@ -1,6 +1,5 @@
 const router = require("express").Router();
 const { Spot } = require("../../db/models");
-const { ValidationError } = require("sequelize");
 const { requireAuth } = require("../../utils/auth");
 // chech production or dev
 const { environment } = require("../../config");
@@ -33,7 +32,6 @@ router.post("/", requireAuth, async (req, res, next) => {
 		});
 	} catch (err) {
 		res.status(400);
-		console.log(err);
 		err.message = "Bad Request";
 		return next(err);
 	}
@@ -43,15 +41,16 @@ router.delete("/:id", async (req, res) => {});
 
 // spot generic error handler
 router.use((err, req, res, next) => {
-	if (err.message === "Authentication Required") {
+	if (err.title === "Authentication required") {
 		return res.json({ message: err.message });
 	}
 
 	const errors = {};
-	if (err.errors) {
-		for (let error of err.errors) {
-			errors[error.path] = error.message;
-		}
+	if (err.errors instanceof Array) {
+		err.errors.forEach((element) => {
+			const { path, message } = element;
+			errors[path] = message;
+		});
 	}
 
 	return res.json({
