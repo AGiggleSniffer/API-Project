@@ -44,17 +44,17 @@ router.delete("/:id", async (req, res) => {});
 
 // spot generic error handler
 router.use((err, req, res, next) => {
-	const errors = {};
-	if (err.errors) {
-		err.errors.forEach((element) => {
-			const { path, message } = element;
-			errors[path] = message;
-		});
-	}
+	// const errors = {};
+	// if (err.errors) {
+	// 	err.errors.forEach((element) => {
+	// 		const { path, message } = element;
+	// 		errors[path] = message;
+	// 	});
+	// }
 
 	return res.json({
-		message: err.message,
-		errors: errors,
+		// message: err.message,
+		// errors: errors,
 		err,
 	});
 });
