@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { Spot } = require("../../db/models");
+const { Spot, Review, SpotImage, User } = require("../../db/models");
 const { requireAuth } = require("../../utils/auth");
 // chech production or dev
 const { environment } = require("../../config");
@@ -7,7 +7,58 @@ const isProduction = environment === "production";
 
 // Get all spots
 router.get("/", async (req, res, next) => {
-	res.json({ test });
+	try {
+		const allSpots = await Spot.findAll({
+			include: [
+				{
+					model: Review,
+					required: true,
+				},
+				{
+					model: SpotImage,
+					required: true,
+				},
+				{
+					model: User,
+					required: true,
+				},
+			],
+		});
+
+		res.json({ Spots: allSpots });
+	} catch (err) {
+		next(err);
+	}
+});
+
+// Get spots by user
+router.get("/current", requireAuth, async (req, res, next) => {
+	const { user } = req;
+
+	try {
+		const mySpots = await Spot.scope({ method: ["owned", user.id] }).findAll();
+
+		res.json({ Spots: mySpots });
+	} catch (err) {
+		next(err);
+	}
+});
+
+// Get details of spot by id
+router.get("/:id", async (req, res, next) => {
+	const { id: spotId } = req.params;
+
+	try {
+		const spotDetails = await Spot.findByPk(spotId);
+
+		if (!spotDetails) {
+			return res.status(404).json({ message: "Spot couldn't be found" });
+		}
+
+		res.json({ spotDetails });
+	} catch (err) {
+		next(err);
+	}
 });
 
 // Add a spot with validation
@@ -57,9 +108,7 @@ router.delete("/:id", requireAuth, async (req, res, next) => {
 			return res.status(404).json({ message: "Spot couldn't be found" });
 		}
 
-		return res.json({
-			message: "Successfully deleted",
-		});
+		return res.json({ message: "Successfully deleted" });
 	} catch (err) {
 		return next(err);
 	}
@@ -69,6 +118,10 @@ router.delete("/:id", requireAuth, async (req, res, next) => {
 router.use((err, req, res, next) => {
 	if (err.title === "Authentication required") {
 		return res.json({ message: err.message });
+	}
+
+	if (err.title === "Spot couldn't be found") {
+		return res.status(404).json({ message: err.message });
 	}
 
 	const errors = {};
