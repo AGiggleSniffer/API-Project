@@ -5,6 +5,10 @@ const { requireAuth } = require("../../utils/auth");
 const { environment } = require("../../config");
 const isProduction = environment === "production";
 
+///
+/// GET
+///
+
 // Get all spots
 router.get("/", async (req, res, next) => {
 	try {
@@ -58,6 +62,10 @@ router.get("/:id", async (req, res, next) => {
 	}
 });
 
+///
+/// POST
+///
+
 // Add a spot with validation
 router.post("/", requireAuth, async (req, res, next) => {
 	const { user } = req;
@@ -89,6 +97,14 @@ router.post("/", requireAuth, async (req, res, next) => {
 		return next(err);
 	}
 });
+
+router.post("/spots/:id/images", requireAuth, async (req, res, next) => {
+	res.json({test: "test"})
+})
+
+///
+/// PUT
+///
 
 // Edit a spot with authentication
 router.put("/:id", requireAuth, async (req, res, next) => {
@@ -133,6 +149,10 @@ router.put("/:id", requireAuth, async (req, res, next) => {
 	}
 });
 
+///
+/// DELETE
+///
+
 // delete a spot with authentication and id
 router.delete("/:id", requireAuth, async (req, res, next) => {
 	const { user } = req;
@@ -153,6 +173,10 @@ router.delete("/:id", requireAuth, async (req, res, next) => {
 		return next(err);
 	}
 });
+
+/// 
+/// ERROR HANDLING
+///
 
 // spot generic error handler
 router.use((err, req, res, next) => {
