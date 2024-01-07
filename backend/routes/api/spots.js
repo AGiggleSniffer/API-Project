@@ -2,6 +2,9 @@ const router = require("express").Router();
 const { Spot } = require("../../db/models");
 const { ValidationError } = require("sequelize");
 const { requireAuth } = require("../../utils/auth");
+// chech production or dev
+const { environment } = require("../../config");
+const isProduction = environment === "production";
 
 // Add a spot with validation
 router.post("/", requireAuth, async (req, res, next) => {
@@ -39,17 +42,21 @@ router.post("/", requireAuth, async (req, res, next) => {
 router.delete("/:id", async (req, res) => {});
 
 // spot generic error handler
-// router.use((err, req, res, next) => {
+router.use((err, req, res, next) => {
+	if (err.message === "Authentication Required") {
+		return res.json({ message: err.message });
+	}
 
-// 	const errors = {};
-// 	for (let error of err.errors) {
-// 		errors[error.path] = error.message;
-// 	}
+	const errors = {};
+	for (let error of err.errors) {
+		errors[error.path] = error.message;
+	}
 
-// 	return res.json({
-// 		message: err.message,
-// 		errors: errors,
-// 	});
-// });
+	return res.json({
+		message: err.message,
+		errors: errors,
+		stack: isProduction ? null : err.stack,
+	});
+});
 
 module.exports = router;
