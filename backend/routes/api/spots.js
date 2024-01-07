@@ -10,6 +10,8 @@ router.post("/", async (req, res, next) => {
 	const { address, city, state, country, lat, lng, name, description, price } =
 		req.body;
 
+	return res.json({ Spot });
+
 	try {
 		const newSpot = await Spot.create({
 			userId: user.id,
@@ -46,6 +48,8 @@ const isProduction = environment === "production";
 router.use((err, req, res, next) => {
 	if (!isProduction) return res.json({ err });
 
+	err.environment = isProduction || "enviroment";
+
 	const errors = {};
 	if (err.errors) {
 		err.errors.forEach((element) => {
@@ -56,8 +60,7 @@ router.use((err, req, res, next) => {
 
 	return res.json({
 		message: err.message,
-		errors: errors,
-		err,
+		errors: errors || err,
 	});
 });
 
