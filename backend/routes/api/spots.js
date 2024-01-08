@@ -1,9 +1,25 @@
 const router = require("express").Router();
-const { Spot, Review, SpotImage, User } = require("../../db/models");
+const { sequelize, Spot, Review, SpotImage, User } = require("../../db/models");
 const { requireAuth } = require("../../utils/auth");
 // chech production or dev
 const { environment } = require("../../config");
 const isProduction = environment === "production";
+
+// Middleware helper for authorization
+const testAuthorization = async (req, res, next) => {
+	const { id: userId } = req.user;
+	const { id: spotId } = req.params;
+	try {
+		const { userId: ownerId } = await Spot.findByPk(spotId);
+
+		if (Number(userId) !== Number(ownerId)) throw new Error("Forbidden");
+
+		if (!ownerId) throw new Error("Spot couldn't be found");
+	} catch (err) {
+		return next(err);
+	}
+	return next();
+};
 
 ///
 /// GET
@@ -25,23 +41,22 @@ router.get("/", async (req, res, next) => {
 				},
 			],
 		});
-
-		res.json({ Spots: allSpots });
+		return res.json({ Spots: allSpots });
 	} catch (err) {
-		next(err);
+		return next(err);
 	}
 });
 
-// Get spots by user
+// Get spots by user with authorization
 router.get("/current", requireAuth, async (req, res, next) => {
-	const { user } = req;
+	const { id: userId } = req.user;
 
 	try {
-		const mySpots = await Spot.scope({ method: ["owned", user.id] }).findAll();
+		const mySpots = await Spot.findAll({ where: { id: userId } });
 
-		res.json({ Spots: mySpots });
+		return res.json({ Spots: mySpots });
 	} catch (err) {
-		next(err);
+		return next(err);
 	}
 });
 
@@ -50,15 +65,25 @@ router.get("/:id", async (req, res, next) => {
 	const { id: spotId } = req.params;
 
 	try {
-		const spotDetails = await Spot.findByPk(spotId);
-
+		const spotDetails = await Spot.findByPk(spotId, {
+			include: [
+				{
+					model: Review,
+				},
+				{
+					model: SpotImage,
+				},
+				{
+					model: User,
+				},
+			],
+		});
 		if (!spotDetails) {
 			throw new Error("Spot couldn't be found");
 		}
-
-		res.json({ spotDetails });
+		return res.json({ spotDetails });
 	} catch (err) {
-		next(err);
+		return next(err);
 	}
 });
 
@@ -66,16 +91,16 @@ router.get("/:id", async (req, res, next) => {
 /// POST
 ///
 
-// Add a spot with validation
+// Create a spot with authentication
 router.post("/", requireAuth, async (req, res, next) => {
-	const { user } = req;
+	const { id: userId } = req.user;
 
 	const { address, city, state, country, lat, lng, name, description, price } =
 		req.body;
 
 	try {
 		const newSpot = await Spot.create({
-			userId: user.id,
+			userId: userId,
 			address: address,
 			city: city,
 			state: state,
@@ -86,9 +111,8 @@ router.post("/", requireAuth, async (req, res, next) => {
 			description: description,
 			price: price,
 		});
-
 		return res.status(201).json({
-			id: user.id,
+			id: userId,
 			...newSpot.dataValues,
 		});
 	} catch (err) {
@@ -98,17 +122,23 @@ router.post("/", requireAuth, async (req, res, next) => {
 	}
 });
 
-router.post("/spots/:id/images", requireAuth, async (req, res, next) => {
-	res.json({test: "test"})
-})
+// Add image to a spot with authentication and authorization
+router.post(
+	"/spots/:id/images",
+	requireAuth,
+	testAuthorization,
+	async (req, res, next) => {
+		return res.json({ test: "test" });
+	},
+);
 
 ///
 /// PUT
 ///
 
-// Edit a spot with authentication
-router.put("/:id", requireAuth, async (req, res, next) => {
-	const { user } = req;
+// Edit a spot with authentication and authorization
+router.put("/:id", requireAuth, testAuthorization, async (req, res, next) => {
+	const { id: userId } = req.user;
 	const { id: spotId } = req.params;
 	const { address, city, state, country, lat, lng, name, description, price } =
 		req.body;
@@ -116,7 +146,7 @@ router.put("/:id", requireAuth, async (req, res, next) => {
 	try {
 		const updatedSpot = await Spot.update(
 			{
-				userId: user.id,
+				userId: userId,
 				address: address,
 				city: city,
 				state: state,
@@ -130,17 +160,15 @@ router.put("/:id", requireAuth, async (req, res, next) => {
 			{
 				where: { id: spotId },
 				/* ONLY supported for Postgres */
-				// will return the results without needing a second query
+				// will return the results without needing a THIRD query
 				returning: true,
 				plain: true,
 			},
 		);
-
-		// check if we are in production or if we have to make a second DB query
+		// check if we are in production or if we have to make a THIRD DB query
 		if (!isProduction) {
 			updatedSpot.sqlite = await Spot.findByPk(spotId);
 		}
-
 		return res.json(updatedSpot.sqlite || updatedSpot[1].dataValues);
 	} catch (err) {
 		res.status(400);
@@ -153,28 +181,25 @@ router.put("/:id", requireAuth, async (req, res, next) => {
 /// DELETE
 ///
 
-// delete a spot with authentication and id
-router.delete("/:id", requireAuth, async (req, res, next) => {
-	const { user } = req;
-	const { id: spotId } = req.params;
-	const where = { firstName: spotId };
+// delete a spot with authentication and authorization
+router.delete(
+	"/:id",
+	requireAuth,
+	testAuthorization,
+	async (req, res, next) => {
+		const { id: spotId } = req.params;
+		const where = { firstName: spotId };
+		try {
+			await Spot.destroy(where);
 
-	try {
-		const deleted = await Spot.scope({ method: ["owned", user.id] }).destroy(
-			where,
-		);
-
-		if (!deleted) {
-			throw new Error("Spot couldn't be found");
+			return res.json({ message: "Successfully deleted" });
+		} catch (err) {
+			return next(err);
 		}
+	},
+);
 
-		return res.json({ message: "Successfully deleted" });
-	} catch (err) {
-		return next(err);
-	}
-});
-
-/// 
+///
 /// ERROR HANDLING
 ///
 
@@ -182,6 +207,10 @@ router.delete("/:id", requireAuth, async (req, res, next) => {
 router.use((err, req, res, next) => {
 	if (err.title === "Authentication required") {
 		return res.json({ message: err.message });
+	}
+
+	if (err.message === "Forbidden") {
+		return res.status(403).json({ message: err.message });
 	}
 
 	if (err.message === "Spot couldn't be found") {
@@ -196,7 +225,6 @@ router.use((err, req, res, next) => {
 				errors[path] = message;
 			});
 		}
-
 		return res.json({
 			message: err.message,
 			errors: errors,
