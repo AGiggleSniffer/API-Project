@@ -126,7 +126,7 @@ router.post("/", requireAuth, async (req, res, next) => {
 
 // Add image to a spot with authentication and authorization
 router.post(
-	"/spots/:id/images",
+	"/:id/images",
 	requireAuth,
 	testAuthorization,
 	async (req, res, next) => {
@@ -134,13 +134,15 @@ router.post(
 		const { url, preview } = req.body;
 
 		try {
-			const newImage = await SpotImage.create({
+			await SpotImage.create({
 				spotId: spotId,
 				url: url,
 				preview: preview,
 			});
 			return res.json({
-				...newImage.dataValues,
+				id: spotId,
+				url: url,
+				preview: preview,
 			});
 		} catch (err) {
 			return next(err);
