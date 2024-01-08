@@ -10,9 +10,11 @@ const testAuthorization = async (req, res, next) => {
 	const { id: userId } = req.user;
 	const { id: spotId } = req.params;
 	try {
-		const { userId: ownerId } = await Spot.findByPk(spotId);
+		const mySpot = await Spot.findByPk(spotId);
 
-		if (!ownerId) throw new Error("Spot couldn't be found");
+		if (!mySpot) throw new Error("Spot couldn't be found");
+
+		const { userId: ownerId } = mySpot;
 
 		if (Number(userId) !== Number(ownerId)) throw new Error("Forbidden");
 	} catch (err) {
@@ -202,9 +204,9 @@ router.delete(
 	testAuthorization,
 	async (req, res, next) => {
 		const { id: spotId } = req.params;
-		const where = { firstName: spotId };
+		const where = { id: spotId };
 		try {
-			await Spot.destroy(where);
+			await Spot.destroy({ where });
 
 			return res.json({ message: "Successfully deleted" });
 		} catch (err) {
