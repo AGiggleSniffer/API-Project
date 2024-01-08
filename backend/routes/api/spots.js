@@ -5,16 +5,16 @@ const { requireAuth } = require("../../utils/auth");
 const { environment } = require("../../config");
 const isProduction = environment === "production";
 
-// Middleware helper for authorization
+// Middleware helper for Spots authorization
 const testAuthorization = async (req, res, next) => {
 	const { id: userId } = req.user;
 	const { id: spotId } = req.params;
 	try {
 		const { userId: ownerId } = await Spot.findByPk(spotId);
 
-		if (Number(userId) !== Number(ownerId)) throw new Error("Forbidden");
-
 		if (!ownerId) throw new Error("Spot couldn't be found");
+
+		if (Number(userId) !== Number(ownerId)) throw new Error("Forbidden");
 	} catch (err) {
 		return next(err);
 	}
@@ -128,7 +128,21 @@ router.post(
 	requireAuth,
 	testAuthorization,
 	async (req, res, next) => {
-		return res.json({ test: "test" });
+		const { id: spotId } = req.params;
+		const { url, preview } = req.body;
+
+		try {
+			const newImage = await SpotImage.create({
+				spotId: spotId,
+				url: url,
+				preview: preview,
+			});
+			return res.json({
+				...newImage.dataValues,
+			});
+		} catch (err) {
+			return next(err);
+		}
 	},
 );
 
