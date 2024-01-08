@@ -71,6 +71,19 @@ app.use((_req, _res, next) => {
 	next(err);
 });
 
+// Error Handlers for common known errors
+app.use((err, req, res, next) => {
+	if (err.title === "Authentication required") {
+		return res.json({ message: err.message });
+	}
+
+	if (err.message === "Forbidden") {
+		return res.status(403).json({ message: err.message });
+	}
+
+	return next(err);
+});
+
 // Process sequelize errors
 app.use((err, _req, _res, next) => {
 	// check if error is a Sequelize error:

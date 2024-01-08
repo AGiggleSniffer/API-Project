@@ -223,14 +223,6 @@ router.delete(
 
 // spot generic error handler
 router.use((err, req, res, next) => {
-	if (err.title === "Authentication required") {
-		return res.json({ message: err.message });
-	}
-
-	if (err.message === "Forbidden") {
-		return res.status(403).json({ message: err.message });
-	}
-
 	if (err.message === "Spot couldn't be found") {
 		return res.status(404).json({ message: err.message });
 	}
