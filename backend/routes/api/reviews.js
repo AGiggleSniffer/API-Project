@@ -116,6 +116,29 @@ router.put(
 );
 
 ///
+/// DELETE
+///
+
+// delete a review with authentication and authorization
+router.delete(
+	"/:reviewId",
+	requireAuth,
+	testAuthorization,
+	async (req, res, next) => {
+		const { reviewId } = req.params;
+		const where = { id: reviewId };
+
+		try {
+			await Review.destroy({ where });
+
+			return res.json({ message: "Successfully deleted" });
+		} catch (err) {
+			return next(err);
+		}
+	},
+);
+
+///
 /// ERROR HANDLING
 ///
 
