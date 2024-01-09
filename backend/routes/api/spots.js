@@ -89,6 +89,21 @@ router.get("/:id", async (req, res, next) => {
 	}
 });
 
+// get all reviews from spot id
+router.get("/:id/reviews", async (req, res, next) => {
+	const { id: spotId } = req.params;
+
+	try {
+		const myReviews = await Review.findAll({ where: { spotId: spotId } });
+
+		if (!myReviews) throw new Error("Spot couldn't be found");
+
+		return res.json({ myReviews });
+	} catch (err) {
+		return next(err);
+	}
+});
+
 ///
 /// POST
 ///
@@ -148,6 +163,26 @@ router.post(
 	},
 );
 
+// create a spot review requires authentication
+router.post("/:id/reviews", requireAuth, async (req, res, next) => {
+	const { id: userId } = req.user;
+	const { id: spotId } = req.params;
+	const { review, stars } = req.body;
+
+	try {
+		const newReview = await review.create({
+			userId: userId,
+			spotId: spotId,
+			review: review,
+			stars: stars,
+		});
+
+		return res.status(201).json({ newReview });
+	} catch (err) {
+		return next(err);
+	}
+});
+
 ///
 /// PUT
 ///
@@ -204,7 +239,7 @@ router.delete(
 		const { id: spotId } = req.params;
 		const where = { id: spotId };
 		try {
-			await Spot.destroy({where});
+			await Spot.destroy({ where });
 
 			return res.json({ message: "Successfully deleted" });
 		} catch (err) {

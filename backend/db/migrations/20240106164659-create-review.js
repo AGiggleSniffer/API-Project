@@ -20,13 +20,16 @@ module.exports = {
 				userId: {
 					type: Sequelize.INTEGER,
 					references: { model: "Users" },
+					allowNull: false,
 				},
 				spotId: {
 					type: Sequelize.INTEGER,
 					references: { model: "Spots" },
+					allowNull: false,
 				},
 				reviewMsg: {
 					type: Sequelize.STRING,
+					allowNull: false,
 				},
 				createdAt: {
 					allowNull: false,
