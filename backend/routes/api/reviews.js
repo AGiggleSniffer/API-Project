@@ -9,10 +9,9 @@ const isProduction = environment === "production";
 const testAuthorization = async (req, res, next) => {
 	const { id: userId } = req.user;
 	const { id: spotImageId } = req.params;
+	const include = { include: Spot };
 	try {
-		const mySpotImage = await Review.findByPk(spotImageId, {
-			include: Spot,
-		});
+		const mySpotImage = await Review.findByPk(spotImageId, include);
 
 		if (!mySpotImage) throw new Error("Review couldn't be found");
 
@@ -31,9 +30,10 @@ const testAuthorization = async (req, res, next) => {
 
 router.get("/current", requireAuth, async (req, res, next) => {
 	const { id: userId } = req.user;
+	const where = { userId: userId };
 
 	try {
-		const myReviews = await Review.findAll({ where: { userId: userId } });
+		const myReviews = await Review.findAll({ where });
 
 		res.json({ myReviews });
 	} catch (err) {
@@ -53,9 +53,14 @@ router.post(
 	async (req, res, next) => {
 		const { url } = req.body;
 		const { reviewId } = req.params;
+		const where = { reviewId: reviewId };
+		const payload = {
+			reviewId: reviewId,
+			url: url,
+		};
 
 		try {
-			const limit = await Review.count({ where: { reviewId: reviewId } });
+			const limit = await Review.count({ where });
 
 			if (limit >= 10) {
 				throw new Error(
@@ -63,10 +68,7 @@ router.post(
 				);
 			}
 
-			const newReviewImage = await Review.create({
-				reviewId: reviewId,
-				url: url,
-			});
+			const newReviewImage = await Review.create(payload);
 
 			return res.json({ newReviewImage });
 		} catch (err) {
@@ -87,21 +89,20 @@ router.put(
 	async (req, res, next) => {
 		const { review, stars } = req.body;
 		const { reviewId } = req.params;
+		const payload = {
+			reviweMsg: review,
+			stars: stars,
+		};
+		const options = {
+			where: { reviewId: reviewId },
+			/* ONLY supported for Postgres */
+			// will return the results without needing another db query
+			returning: true,
+			plain: true,
+		};
 
 		try {
-			const updatedReview = await Review.update(
-				{
-					reviewMsg: review,
-					stars: stars,
-				},
-				{
-					where: { reviewId: reviewId },
-					/* ONLY supported for Postgres */
-					// will return the results without needing another db query
-					returning: true,
-					plain: true,
-				},
-			);
+			const updatedReview = await Review.update(payload, options);
 
 			// check if we are in production or if we have to make another DB query
 			if (!isProduction) {
