@@ -185,7 +185,6 @@ router.put("/:id", requireAuth, testAuthorization, async (req, res, next) => {
 		);
 		// check if we are in production or if we have to make a THIRD DB query
 		if (!isProduction) {
-			console.log("Development")
 			updatedSpot.sqlite = await Spot.findByPk(spotId);
 		}
 		return res.json(updatedSpot.sqlite || updatedSpot[1].dataValues);
@@ -209,7 +208,7 @@ router.delete(
 		const { id: spotId } = req.params;
 		const where = { id: spotId };
 		try {
-			await Spot.destroy({ where });
+			await Spot.destroy({where});
 
 			return res.json({ message: "Successfully deleted" });
 		} catch (err) {
