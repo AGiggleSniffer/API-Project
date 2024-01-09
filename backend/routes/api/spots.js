@@ -179,6 +179,9 @@ router.post("/:id/reviews", requireAuth, async (req, res, next) => {
 
 		return res.status(201).json({ newReview });
 	} catch (err) {
+		if (err.message === "SQLITE_CONSTRAINT: FOREIGN KEY constraint failed") {
+			throw new Error("Spot couldn't be found");
+		}
 		return next(err);
 	}
 });
@@ -189,7 +192,6 @@ router.post("/:id/reviews", requireAuth, async (req, res, next) => {
 
 // Edit a spot with authentication and authorization
 router.put("/:id", requireAuth, testAuthorization, async (req, res, next) => {
-	const { id: userId } = req.user;
 	const { id: spotId } = req.params;
 	const { address, city, state, country, lat, lng, name, description, price } =
 		req.body;
@@ -197,7 +199,6 @@ router.put("/:id", requireAuth, testAuthorization, async (req, res, next) => {
 	try {
 		const updatedSpot = await Spot.update(
 			{
-				userId: userId,
 				address: address,
 				city: city,
 				state: state,
@@ -211,7 +212,7 @@ router.put("/:id", requireAuth, testAuthorization, async (req, res, next) => {
 			{
 				where: { id: spotId },
 				/* ONLY supported for Postgres */
-				// will return the results without needing a THIRD query
+				// will return the results without needing another db query
 				returning: true,
 				plain: true,
 			},
