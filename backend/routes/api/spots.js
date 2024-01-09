@@ -118,8 +118,6 @@ router.post("/", requireAuth, async (req, res, next) => {
 			...newSpot.dataValues,
 		});
 	} catch (err) {
-		res.status(400);
-		err.message = "Bad Request";
 		return next(err);
 	}
 });
@@ -189,8 +187,6 @@ router.put("/:id", requireAuth, testAuthorization, async (req, res, next) => {
 		}
 		return res.json(updatedSpot.sqlite || updatedSpot[1].dataValues);
 	} catch (err) {
-		res.status(400);
-		err.message = "Bad Request";
 		return next(err);
 	}
 });
@@ -225,21 +221,6 @@ router.delete(
 router.use((err, req, res, next) => {
 	if (err.message === "Spot couldn't be found") {
 		return res.status(404).json({ message: err.message });
-	}
-
-	if (err.message === "Bad Request") {
-		const errors = {};
-		if (err.errors instanceof Array) {
-			err.errors.forEach((element) => {
-				const { path, message } = element;
-				errors[path] = message;
-			});
-		}
-		return res.json({
-			message: err.message,
-			errors: errors,
-			stack: isProduction ? null : err.stack,
-		});
 	}
 
 	return next(err);

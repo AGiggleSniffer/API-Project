@@ -31,6 +31,7 @@ module.exports = (sequelize, DataTypes) => {
 			userId: {
 				type: DataTypes.INTEGER,
 				allowNull: false,
+				onDelete: "CASCADE",
 			},
 			address: {
 				type: DataTypes.STRING,
@@ -60,37 +61,23 @@ module.exports = (sequelize, DataTypes) => {
 					notNull: { msg: "Country is required" },
 				},
 			},
-			// -90 through 90
 			lat: {
 				type: DataTypes.DECIMAL,
 				allowNull: false,
 				validate: {
-					min: {
-						args: -90,
-						msg: "Latitude is not valid",
-					},
-					max: {
-						args: 90,
-						msg: "Latitude is not valid",
-					},
+					notNull: { msg: "Latitude is not valid" },
 				},
 			},
-			// -180 through 180
 			lng: {
 				type: DataTypes.DECIMAL,
+				allowNull: false,
 				validate: {
-					min: {
-						args: -180,
-						msg: "Longitude is not valid",
-					},
-					max: {
-						args: 180,
-						msg: "Longitude is not valid",
-					},
+					notNull: { msg: "Longitude is not valid" },
 				},
 			},
 			name: {
 				type: DataTypes.STRING,
+				allowNull: false,
 				validate: {
 					len: {
 						args: [0, 50],

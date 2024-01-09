@@ -73,7 +73,7 @@ app.use((_req, _res, next) => {
 
 // Error Handlers for common known errors
 app.use((err, req, res, next) => {
-	if (err.title === "Authentication required") {
+	if (err.message === "Authentication required") {
 		return res.json({ message: err.message });
 	}
 
@@ -98,15 +98,21 @@ app.use((err, _req, _res, next) => {
 	next(err);
 });
 
-// Unhandled Error Handler
+// Error Formatter
 app.use((err, _req, res, _next) => {
 	res.status(err.status || 500);
 	console.error(err);
+
+	const productionResponse = {};
+	if (!isProduction) {
+		productionResponse.title = err.title || "Server Error"; // not needed?
+		productionResponse.stack = err.stack;
+	}
+	
 	res.json({
-		title: err.title || "Server Error",
-		message: err.message,
+		message: err.title || err.message,
 		errors: err.errors,
-		stack: isProduction ? null : err.stack,
+		...productionResponse,
 	});
 });
 
