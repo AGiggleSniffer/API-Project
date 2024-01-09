@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { sequelize, Spot, Review, SpotImage, User } = require("../../db/models");
+const { Spot, Review, SpotImage, User } = require("../../db/models");
 const { requireAuth } = require("../../utils/auth");
 // chech production or dev
 const { environment } = require("../../config");
@@ -54,7 +54,7 @@ router.get("/current", requireAuth, async (req, res, next) => {
 	const { id: userId } = req.user;
 
 	try {
-		const mySpots = await Spot.findAll({ where: { id: userId } });
+		const mySpots = await Spot.findAll({ where: { userId: userId } });
 
 		return res.json({ Spots: mySpots });
 	} catch (err) {
@@ -185,6 +185,7 @@ router.put("/:id", requireAuth, testAuthorization, async (req, res, next) => {
 		);
 		// check if we are in production or if we have to make a THIRD DB query
 		if (!isProduction) {
+			console.log("Development")
 			updatedSpot.sqlite = await Spot.findByPk(spotId);
 		}
 		return res.json(updatedSpot.sqlite || updatedSpot[1].dataValues);

@@ -98,7 +98,7 @@ app.use((err, _req, _res, next) => {
 	next(err);
 });
 
-// Generic Error formatter
+// Unhandled Error Handler
 app.use((err, _req, res, _next) => {
 	res.status(err.status || 500);
 	console.error(err);

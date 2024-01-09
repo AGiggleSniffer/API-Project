@@ -42,7 +42,7 @@ router.delete(
 
 // Error handling
 router.use((err, req, res, next) => {
-	if (err.message === "Spot couldn't be found") {
+	if (err.message === "Spot Image couldn't be found") {
 		return res.status(404).json({ message: err.message });
 	}
 	return next(err);
