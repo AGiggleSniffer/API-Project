@@ -170,10 +170,10 @@ router.post("/:id/reviews", requireAuth, async (req, res, next) => {
 	const { review, stars } = req.body;
 
 	try {
-		const newReview = await review.create({
+		const newReview = await Review.create({
 			userId: userId,
-			spotId: spotId,
-			review: review,
+			spotId: +spotId,
+			reviewMsg: review,
 			stars: stars,
 		});
 

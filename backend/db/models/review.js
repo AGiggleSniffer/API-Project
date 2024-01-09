@@ -33,6 +33,13 @@ module.exports = (sequelize, DataTypes) => {
 				type: DataTypes.STRING,
 				allowNull: false,
 				validate: {
+					notNull: { msg: "Review text is required" },
+				},
+			},
+			stars: {
+				type: DataTypes.STRING,
+				allowNull: false,
+				validate: {
 					min: {
 						args: 1,
 						msg: "Stars must be an integer from 1 to 5",
@@ -41,12 +48,20 @@ module.exports = (sequelize, DataTypes) => {
 						args: 5,
 						msg: "Stars must be an integer from 1 to 5",
 					},
+					notNull: { msg: "Stars must be an integer from 1 to 5" },
 				},
 			},
 		},
 		{
 			sequelize,
 			modelName: "Review",
+			indexes: [
+				{
+					unique: true,
+					fields: ["userId", "spotId"],
+					msg: "User already has a review for this spot",
+				},
+			],
 		},
 	);
 	return Review;
