@@ -30,22 +30,20 @@ const testAuthorization = async (req, res, next) => {
 
 // Get all spots
 router.get("/", async (req, res, next) => {
-	const query = {
-		include: [
-			{
-				model: Review,
-			},
-			{
-				model: SpotImage,
-			},
-			{
-				model: User,
-			},
-		],
-	};
+	const include = [
+		{
+			model: Review,
+		},
+		{
+			model: SpotImage,
+		},
+		{
+			model: User,
+		},
+	];
 
 	try {
-		const allSpots = await Spot.findAll(query);
+		const allSpots = await Spot.findAll({ include });
 		return res.json({ Spots: allSpots });
 	} catch (err) {
 		return next(err);
