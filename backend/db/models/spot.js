@@ -38,6 +38,7 @@ module.exports = (sequelize, DataTypes) => {
 				allowNull: false,
 				validate: {
 					notNull: { msg: "Street address is required" },
+					notEmpty: { msg: "Street address is required" },
 				},
 			},
 			city: {
@@ -45,6 +46,7 @@ module.exports = (sequelize, DataTypes) => {
 				allowNull: false,
 				validate: {
 					notNull: { msg: "City is required" },
+					notEmpty: { msg: "City is required" },
 				},
 			},
 			state: {
@@ -52,6 +54,7 @@ module.exports = (sequelize, DataTypes) => {
 				allowNull: false,
 				validate: {
 					notNull: { msg: "State is required" },
+					notEmpty: { msg: "State is required" },
 				},
 			},
 			country: {
@@ -59,6 +62,7 @@ module.exports = (sequelize, DataTypes) => {
 				allowNull: false,
 				validate: {
 					notNull: { msg: "Country is required" },
+					notEmpty: { msg: "Country is required" },
 				},
 			},
 			lat: {
@@ -66,6 +70,16 @@ module.exports = (sequelize, DataTypes) => {
 				allowNull: false,
 				validate: {
 					notNull: { msg: "Latitude is not valid" },
+					notEmpty: { msg: "Latitude is not valid" },
+					// -180 through 180
+					min: {
+						args: -180,
+						msg: "Latitude is not valid",
+					},
+					max: {
+						args: 180,
+						msg: "Latitude is not valid",
+					},
 				},
 			},
 			lng: {
@@ -73,12 +87,24 @@ module.exports = (sequelize, DataTypes) => {
 				allowNull: false,
 				validate: {
 					notNull: { msg: "Longitude is not valid" },
+					notEmpty: { msg: "Longitude is not valid" },
+					// -90 through 90
+					min: {
+						args: -90,
+						msg: "Longitude is not valid",
+					},
+					max: {
+						args: 90,
+						msg: "Longitude is not valid",
+					},
 				},
 			},
 			name: {
 				type: DataTypes.STRING,
 				allowNull: false,
 				validate: {
+					notNull: { msg: "Name must be less than 50 characters" },
+					notEmpty: { msg: "Name must be less than 50 characters" },
 					len: {
 						args: [0, 50],
 						msg: "Name must be less than 50 characters",
@@ -90,6 +116,7 @@ module.exports = (sequelize, DataTypes) => {
 				allowNull: false,
 				validate: {
 					notNull: { msg: "Description is required" },
+					notEmpty: { msg: "Description is required" },
 				},
 			},
 			price: {
@@ -97,6 +124,11 @@ module.exports = (sequelize, DataTypes) => {
 				allowNull: false,
 				validate: {
 					notNull: { msg: "Price per day is required" },
+					notEmpty: { msg: "Price per day is required" },
+					min: {
+						args: 0,
+						msg: "Price per day is required",
+					},
 				},
 			},
 		},
