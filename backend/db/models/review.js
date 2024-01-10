@@ -22,12 +22,10 @@ module.exports = (sequelize, DataTypes) => {
 			userId: {
 				type: DataTypes.INTEGER,
 				allowNull: false,
-				onDelete: "CASCADE",
 			},
 			spotId: {
 				type: DataTypes.INTEGER,
 				allowNull: false,
-				onDelete: "CASCADE",
 			},
 			reviewMsg: {
 				type: DataTypes.STRING,
@@ -56,13 +54,6 @@ module.exports = (sequelize, DataTypes) => {
 		{
 			sequelize,
 			modelName: "Review",
-			indexes: [
-				{
-					unique: true,
-					fields: ["userId", "spotId"],
-					msg: "User already has a review for this spot",
-				},
-			],
 		},
 	);
 	return Review;

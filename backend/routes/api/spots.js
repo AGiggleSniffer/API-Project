@@ -170,12 +170,18 @@ router.post("/:id/reviews", requireAuth, async (req, res, next) => {
 	const { review, stars } = req.body;
 
 	try {
-		const newReview = await Review.create({
-			userId: userId,
-			spotId: +spotId,
-			reviewMsg: review,
-			stars: stars,
+		const [newReview, created] = await Review.findOrCreate({
+			where: {
+				userId: userId,
+				spotId: +spotId,
+			},
+			defaults: {
+				reviewMsg: review,
+				stars: stars,
+			},
 		});
+
+		if (!created) throw new Error("User already has a review for this spot");
 
 		return res.status(201).json({ newReview });
 	} catch (err) {
