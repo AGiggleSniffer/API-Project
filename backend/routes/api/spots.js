@@ -106,6 +106,19 @@ router.get("/:id/reviews", async (req, res, next) => {
 	}
 });
 
+// get all bookings based on spot ID require authentication
+router.get("/:id/bookings", testAuthorization, async (req, res, next) => {
+	const { id: userId } = req.user;
+	const { id: spotId } = req.query;
+	
+	try {
+		const myBooking = await 
+	} catch (err) {
+		return next(err)
+	}
+
+})
+
 ///
 /// POST
 ///

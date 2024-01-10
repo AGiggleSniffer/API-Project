@@ -29,6 +29,7 @@ const testAuthorization = async (req, res, next) => {
 /// GET
 ///
 
+// get all reviews for the current user requires authentication
 router.get("/current", requireAuth, async (req, res, next) => {
 	const { id: userId } = req.user;
 	const where = { userId: userId };
@@ -144,7 +145,6 @@ router.delete(
 /// ERROR HANDLING
 ///
 
-// Error handling
 router.use((err, req, res, next) => {
 	if (err.message === "Review couldn't be found") {
 		return res.status(404).json({ message: err.message });
