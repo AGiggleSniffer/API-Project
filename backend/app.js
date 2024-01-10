@@ -73,7 +73,10 @@ app.use((_req, _res, next) => {
 
 // Error Handlers for common known errors
 app.use((err, req, res, next) => {
-	if (err.message === "Authentication required") {
+	if (
+		err.message === "Authentication required" ||
+		err.message === "Invalid credentials"
+	) {
 		return res.json({ message: err.message });
 	}
 
