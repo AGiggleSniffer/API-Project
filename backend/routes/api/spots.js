@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { Spot, Review, SpotImage, User } = require("../../db/models");
+const { Spot, Review, SpotImage, User, Booking } = require("../../db/models");
 const { requireAuth } = require("../../utils/auth");
 // chech production or dev
 const { environment } = require("../../config");
@@ -110,14 +110,32 @@ router.get("/:id/reviews", async (req, res, next) => {
 router.get("/:id/bookings", testAuthorization, async (req, res, next) => {
 	const { id: userId } = req.user;
 	const { id: spotId } = req.query;
-	
-	try {
-		const myBooking = await 
-	} catch (err) {
-		return next(err)
-	}
+	const include = {
+		model: Booking,
+		include: {
+			model: User,
+		},
+	};
 
-})
+	try {
+		const mySpot = await Spot.findByPk(spotId, { include });
+
+		if (!mySpot) throw new Error("Spot couldn't be found");
+
+		const { userId: ownerId, Bookings } = mySpot;
+
+		if (ownerId !== userId) {
+			Bookings.forEach((ele, i) => {
+				const { startDate, endDate } = ele;
+				Bookings[i] = { spotId, startDate, endDate };
+			});
+		}
+
+		return res.json({ Bookings });
+	} catch (err) {
+		return next(err);
+	}
+});
 
 ///
 /// POST
