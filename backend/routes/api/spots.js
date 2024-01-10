@@ -181,7 +181,8 @@ router.post("/:id/reviews", requireAuth, async (req, res, next) => {
 	} catch (err) {
 		if (
 			err.message === "SQLITE_CONSTRAINT: FOREIGN KEY constraint failed" ||
-			'insert or update on table "Reviews" violates foreign key constraint "Reviews_spotId_fkey"'
+			err.message ===
+				'insert or update on table "Reviews" violates foreign key constraint "Reviews_spotId_fkey"'
 		) {
 			throw new Error("Spot couldn't be found");
 		}
