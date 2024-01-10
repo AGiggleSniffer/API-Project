@@ -1,0 +1,154 @@
+const router = require("express").Router();
+const { Review, User, Spot, ReviewImage } = require("../../db/models");
+const { requireAuth } = require("../../utils/auth");
+// chech production or dev
+const { environment } = require("../../config");
+const isProduction = environment === "production";
+
+// Middleware helper for Review authorization
+const testAuthorization = async (req, res, next) => {
+	const { id: userId } = req.user;
+	const { id: spotImageId } = req.params;
+	const include = { include: Spot };
+	try {
+		const mySpotImage = await Review.findByPk(spotImageId, include);
+
+		if (!mySpotImage) throw new Error("Review couldn't be found");
+
+		const { userId: ownerId } = mySpotImage.Spot;
+
+		if (Number(userId) !== Number(ownerId)) throw new Error("Forbidden");
+	} catch (err) {
+		return next(err);
+	}
+	return next();
+};
+
+///
+/// GET
+///
+
+router.get("/current", requireAuth, async (req, res, next) => {
+	const { id: userId } = req.user;
+	const where = { userId: userId };
+
+	try {
+		const myReviews = await Review.findAll({ where });
+
+		res.json({ myReviews });
+	} catch (err) {
+		return next(err);
+	}
+});
+
+///
+/// POST
+///
+
+// Add an image to a review with authentication and authorization
+router.post(
+	"/:reviewId/images",
+	requireAuth,
+	testAuthorization,
+	async (req, res, next) => {
+		const { url } = req.body;
+		const { reviewId } = req.params;
+		const where = { reviewId: reviewId };
+		const payload = {
+			reviewId: reviewId,
+			url: url,
+		};
+
+		try {
+			const limit = await Review.count({ where });
+
+			if (limit >= 10) {
+				throw new Error(
+					"Maximum number of images for this resource was reached",
+				);
+			}
+
+			const newReviewImage = await Review.create(payload);
+
+			return res.json({ newReviewImage });
+		} catch (err) {
+			return next(err);
+		}
+	},
+);
+
+///
+/// PUT
+///
+
+// edit a review with authentication and authorization
+router.put(
+	"/:reviewId",
+	requireAuth,
+	testAuthorization,
+	async (req, res, next) => {
+		const { review, stars } = req.body;
+		const { reviewId } = req.params;
+		const payload = {
+			reviweMsg: review,
+			stars: stars,
+		};
+		const options = {
+			where: { reviewId: reviewId },
+			/* ONLY supported for Postgres */
+			// will return the results without needing another db query
+			returning: true,
+			plain: true,
+		};
+
+		try {
+			const updatedReview = await Review.update(payload, options);
+
+			// check if we are in production or if we have to make another DB query
+			if (!isProduction) {
+				updatedReview.sqlite = await Review.findByPk(reviewId);
+			}
+
+			return res.json(updatedReview.sqlite || updatedReview[1].dataValues);
+		} catch (err) {
+			return next(err);
+		}
+	},
+);
+
+///
+/// DELETE
+///
+
+// delete a review with authentication and authorization
+router.delete(
+	"/:reviewId",
+	requireAuth,
+	testAuthorization,
+	async (req, res, next) => {
+		const { reviewId } = req.params;
+		const where = { id: reviewId };
+
+		try {
+			await Review.destroy({ where });
+
+			return res.json({ message: "Successfully deleted" });
+		} catch (err) {
+			return next(err);
+		}
+	},
+);
+
+///
+/// ERROR HANDLING
+///
+
+// Error handling
+router.use((err, req, res, next) => {
+	if (err.message === "Review couldn't be found") {
+		return res.status(404).json({ message: err.message });
+	}
+	return next(err);
+});
+
+module.exports = router;

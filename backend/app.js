@@ -77,7 +77,10 @@ app.use((err, req, res, next) => {
 		return res.json({ message: err.message });
 	}
 
-	if (err.message === "Forbidden") {
+	if (
+		err.message === "Forbidden" ||
+		err.message === "Maximum number of images for this resource was reached"
+	) {
 		return res.status(403).json({ message: err.message });
 	}
 
@@ -108,7 +111,7 @@ app.use((err, _req, res, _next) => {
 		productionResponse.title = err.title || "Server Error"; // not needed?
 		productionResponse.stack = err.stack;
 	}
-	
+
 	res.json({
 		message: err.title || err.message,
 		errors: err.errors,

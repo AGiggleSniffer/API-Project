@@ -89,6 +89,21 @@ router.get("/:id", async (req, res, next) => {
 	}
 });
 
+// get all reviews from spot id
+router.get("/:id/reviews", async (req, res, next) => {
+	const { id: spotId } = req.params;
+
+	try {
+		const myReviews = await Review.findAll({ where: { spotId: spotId } });
+
+		if (!myReviews) throw new Error("Spot couldn't be found");
+
+		return res.json({ myReviews });
+	} catch (err) {
+		return next(err);
+	}
+});
+
 ///
 /// POST
 ///
@@ -148,13 +163,35 @@ router.post(
 	},
 );
 
+// create a spot review requires authentication
+router.post("/:id/reviews", requireAuth, async (req, res, next) => {
+	const { id: userId } = req.user;
+	const { id: spotId } = req.params;
+	const { review, stars } = req.body;
+
+	try {
+		const newReview = await Review.create({
+			userId: userId,
+			spotId: +spotId,
+			reviewMsg: review,
+			stars: stars,
+		});
+
+		return res.status(201).json({ newReview });
+	} catch (err) {
+		if (err.message === "SQLITE_CONSTRAINT: FOREIGN KEY constraint failed") {
+			throw new Error("Spot couldn't be found");
+		}
+		return next(err);
+	}
+});
+
 ///
 /// PUT
 ///
 
 // Edit a spot with authentication and authorization
 router.put("/:id", requireAuth, testAuthorization, async (req, res, next) => {
-	const { id: userId } = req.user;
 	const { id: spotId } = req.params;
 	const { address, city, state, country, lat, lng, name, description, price } =
 		req.body;
@@ -162,7 +199,6 @@ router.put("/:id", requireAuth, testAuthorization, async (req, res, next) => {
 	try {
 		const updatedSpot = await Spot.update(
 			{
-				userId: userId,
 				address: address,
 				city: city,
 				state: state,
@@ -176,7 +212,7 @@ router.put("/:id", requireAuth, testAuthorization, async (req, res, next) => {
 			{
 				where: { id: spotId },
 				/* ONLY supported for Postgres */
-				// will return the results without needing a THIRD query
+				// will return the results without needing another db query
 				returning: true,
 				plain: true,
 			},
@@ -204,7 +240,7 @@ router.delete(
 		const { id: spotId } = req.params;
 		const where = { id: spotId };
 		try {
-			await Spot.destroy({where});
+			await Spot.destroy({ where });
 
 			return res.json({ message: "Successfully deleted" });
 		} catch (err) {
