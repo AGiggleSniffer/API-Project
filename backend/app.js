@@ -77,10 +77,7 @@ app.use((err, req, res, next) => {
 		return res.json({ message: err.message });
 	}
 
-	if (
-		err.message === "Forbidden" ||
-		err.message === "Maximum number of images for this resource was reached"
-	) {
+	if (err.message === "Forbidden" ) {
 		return res.status(403).json({ message: err.message });
 	}
 
