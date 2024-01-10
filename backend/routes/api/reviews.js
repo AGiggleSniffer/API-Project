@@ -61,7 +61,7 @@ router.post(
 		};
 
 		try {
-			const limit = await Review.count({ where });
+			const limit = await ReviewImage.count({ where });
 
 			if (limit >= 10) {
 				throw new Error(

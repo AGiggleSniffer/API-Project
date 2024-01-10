@@ -6,10 +6,10 @@ const { requireAuth } = require("../../utils/auth");
 const testAuthorization = async (req, res, next) => {
 	const { id: userId } = req.user;
 	const { id: spotImageId } = req.params;
+	const include = { include: Spot };
+
 	try {
-		const mySpotImage = await SpotImage.findByPk(spotImageId, {
-			include: Spot,
-		});
+		const mySpotImage = await SpotImage.findByPk(spotImageId, include);
 
 		if (!mySpotImage) throw new Error("Spot couldn't be found");
 
@@ -30,6 +30,7 @@ router.delete(
 	async (req, res, next) => {
 		const { id: spotImageId } = req.params;
 		const where = { id: spotImageId };
+		
 		try {
 			await SpotImage.destroy({ where });
 

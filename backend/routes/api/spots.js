@@ -9,6 +9,7 @@ const isProduction = environment === "production";
 const testAuthorization = async (req, res, next) => {
 	const { id: userId } = req.user;
 	const { id: spotId } = req.params;
+
 	try {
 		const mySpot = await Spot.findByPk(spotId);
 
@@ -29,20 +30,22 @@ const testAuthorization = async (req, res, next) => {
 
 // Get all spots
 router.get("/", async (req, res, next) => {
+	const query = {
+		include: [
+			{
+				model: Review,
+			},
+			{
+				model: SpotImage,
+			},
+			{
+				model: User,
+			},
+		],
+	};
+
 	try {
-		const allSpots = await Spot.findAll({
-			include: [
-				{
-					model: Review,
-				},
-				{
-					model: SpotImage,
-				},
-				{
-					model: User,
-				},
-			],
-		});
+		const allSpots = await Spot.findAll(query);
 		return res.json({ Spots: allSpots });
 	} catch (err) {
 		return next(err);
@@ -52,9 +55,10 @@ router.get("/", async (req, res, next) => {
 // Get spots by user with authorization
 router.get("/current", requireAuth, async (req, res, next) => {
 	const { id: userId } = req.user;
+	const where = { userId: userId };
 
 	try {
-		const mySpots = await Spot.findAll({ where: { userId: userId } });
+		const mySpots = await Spot.findAll({ where });
 
 		return res.json({ Spots: mySpots });
 	} catch (err) {
@@ -65,21 +69,20 @@ router.get("/current", requireAuth, async (req, res, next) => {
 // Get details of spot by id
 router.get("/:id", async (req, res, next) => {
 	const { id: spotId } = req.params;
+	const include = [
+		{
+			model: Review,
+		},
+		{
+			model: SpotImage,
+		},
+		{
+			model: User,
+		},
+	];
 
 	try {
-		const spotDetails = await Spot.findByPk(spotId, {
-			include: [
-				{
-					model: Review,
-				},
-				{
-					model: SpotImage,
-				},
-				{
-					model: User,
-				},
-			],
-		});
+		const spotDetails = await Spot.findByPk(spotId, { include });
 		if (!spotDetails) {
 			throw new Error("Spot couldn't be found");
 		}
@@ -92,9 +95,10 @@ router.get("/:id", async (req, res, next) => {
 // get all reviews from spot id
 router.get("/:id/reviews", async (req, res, next) => {
 	const { id: spotId } = req.params;
+	const where = { spotId: spotId };
 
 	try {
-		const myReviews = await Review.findAll({ where: { spotId: spotId } });
+		const myReviews = await Review.findAll({ where });
 
 		if (!myReviews) throw new Error("Spot couldn't be found");
 
@@ -115,22 +119,24 @@ router.post("/", requireAuth, async (req, res, next) => {
 	const { address, city, state, country, lat, lng, name, description, price } =
 		req.body;
 
+	const query = {
+		userId: userId,
+		address: address,
+		city: city,
+		state: state,
+		country: country,
+		lat: lat,
+		lng: lng,
+		name: name,
+		description: description,
+		price: price,
+	};
+
 	try {
-		const newSpot = await Spot.create({
-			userId: userId,
-			address: address,
-			city: city,
-			state: state,
-			country: country,
-			lat: lat,
-			lng: lng,
-			name: name,
-			description: description,
-			price: price,
-		});
+		const { dataValues } = await Spot.create(query);
 		return res.status(201).json({
 			id: userId,
-			...newSpot.dataValues,
+			...dataValues,
 		});
 	} catch (err) {
 		return next(err);
@@ -145,18 +151,15 @@ router.post(
 	async (req, res, next) => {
 		const { id: spotId } = req.params;
 		const { url, preview } = req.body;
+		const query = {
+			spotId: spotId,
+			url: url,
+			preview: preview,
+		};
 
 		try {
-			await SpotImage.create({
-				spotId: spotId,
-				url: url,
-				preview: preview,
-			});
-			return res.json({
-				id: spotId,
-				url: url,
-				preview: preview,
-			});
+			await SpotImage.create(query);
+			return res.json(query);
 		} catch (err) {
 			return next(err);
 		}
@@ -168,17 +171,19 @@ router.post("/:id/reviews", requireAuth, async (req, res, next) => {
 	const { id: userId } = req.user;
 	const { id: spotId } = req.params;
 	const { review, stars } = req.body;
+	const where = {
+		userId: userId,
+		spotId: +spotId,
+	};
+	const defaults = {
+		reviewMsg: review,
+		stars: stars,
+	};
 
 	try {
 		const [newReview, created] = await Review.findOrCreate({
-			where: {
-				userId: userId,
-				spotId: +spotId,
-			},
-			defaults: {
-				reviewMsg: review,
-				stars: stars,
-			},
+			where,
+			defaults,
 		});
 
 		if (!created) throw new Error("User already has a review for this spot");
@@ -205,29 +210,28 @@ router.put("/:id", requireAuth, testAuthorization, async (req, res, next) => {
 	const { id: spotId } = req.params;
 	const { address, city, state, country, lat, lng, name, description, price } =
 		req.body;
+	const query = {
+		address: address,
+		city: city,
+		state: state,
+		country: country,
+		lat: lat,
+		lng: lng,
+		name: name,
+		description: description,
+		price: price,
+	};
+	const options = {
+		where: { id: spotId },
+		/* ONLY supported for Postgres */
+		// will return the results without needing another db query
+		returning: true,
+		plain: true,
+	};
 
 	try {
-		const updatedSpot = await Spot.update(
-			{
-				address: address,
-				city: city,
-				state: state,
-				country: country,
-				lat: lat,
-				lng: lng,
-				name: name,
-				description: description,
-				price: price,
-			},
-			{
-				where: { id: spotId },
-				/* ONLY supported for Postgres */
-				// will return the results without needing another db query
-				returning: true,
-				plain: true,
-			},
-		);
-		// check if we are in production or if we have to make a THIRD DB query
+		const updatedSpot = await Spot.update(query, options);
+		// check if we are in production or if we have to make another DB query
 		if (!isProduction) {
 			updatedSpot.sqlite = await Spot.findByPk(spotId);
 		}
