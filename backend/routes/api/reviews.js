@@ -9,7 +9,8 @@ const isProduction = environment === "production";
 const testAuthorization = async (req, res, next) => {
 	const { id: userId } = req.user;
 	const { id: spotImageId } = req.params;
-	const include = { include: Spot };
+    const include = { include: Spot };
+    
 	try {
 		const mySpotImage = await Review.findByPk(spotImageId, include);
 
