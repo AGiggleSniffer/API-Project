@@ -214,16 +214,31 @@ router.post("/:id/bookings", requireAuth, async (req, res, next) => {
 	const { id: spotId } = req.params;
 	const { id: userId } = req.user;
 
-	// const date1 = new Date(startDate);
-	// const date2 = new Date(endDate);
-	// const difference = Math.abs(date2 - date1);
-
 	try {
-		// query to find if DB conflicts with starDate
+		const spotBookings = Booking.findAll({ where: { spotId: spotId } });
 
-		// another query to find if DB conflicts with endDate // & if not create it?
+		const errors = {};
+		spotBookings.forEach((ele) => {
+			const { startdate: newStart, endDate: newEnd } = ele;
+			if (newStart >= startDate && newStart <= endDate) {
+				errors.startDate = "Start date conflicts with an existing booking";
+			}
 
-		return res.json({ myBookings });
+			if (startDate >= newStart && startDate <= newEnd) {
+				errors.endDate = "End date conflicts with an existing booking";
+			}
+		});
+
+		if (errors) throw new Error(errors);
+
+		const newBooking = Booking.create({
+			spotId: spotId,
+			userId: userId,
+			startDate: startDate,
+			endDate: endDate,
+		});
+
+		return res.json({ newBooking });
 	} catch (err) {
 		if (err.message.toLowerCase().includes("foreign key constraint")) {
 			throw new Error("Spot couldn't be found");
