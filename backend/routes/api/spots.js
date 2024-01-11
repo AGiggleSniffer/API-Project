@@ -278,12 +278,12 @@ router.delete(
 ///
 
 // spot generic error handler
-router.use((err, req, res, next) => {
-	if (err.message === "Spot couldn't be found") {
-		return res.status(404).json({ message: err.message });
-	}
+// router.use((err, req, res, next) => {
+// 	if (err.message === "Spot couldn't be found") {
+// 		return res.status(404).json({ message: err.message });
+// 	}
 
-	return next(err);
-});
+// 	return next(err);
+// });
 
 module.exports = router;

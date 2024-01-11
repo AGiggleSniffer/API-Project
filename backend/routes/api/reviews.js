@@ -145,11 +145,11 @@ router.delete(
 /// ERROR HANDLING
 ///
 
-router.use((err, req, res, next) => {
-	if (err.message === "Review couldn't be found") {
-		return res.status(404).json({ message: err.message });
-	}
-	return next(err);
-});
+// router.use((err, req, res, next) => {
+// 	if (err.message === "Review couldn't be found") {
+// 		return res.status(404).json({ message: err.message });
+// 	}
+// 	return next(err);
+// });
 
 module.exports = router;
