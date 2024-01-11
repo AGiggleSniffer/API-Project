@@ -214,6 +214,8 @@ router.post("/:id/bookings", requireAuth, async (req, res, next) => {
 	const { id: spotId } = req.params;
 	const { id: userId } = req.user;
 
+	// reverse authorize here still
+
 	try {
 		const spotBookings = Booking.findAll({ where: { spotId: spotId } });
 
