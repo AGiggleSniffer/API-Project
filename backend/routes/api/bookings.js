@@ -27,7 +27,7 @@ const testAuthorization = async (req, res, next) => {
 ///
 
 // get all bookings for the current user requires authentication
-router.get("/bookings/current", requireAuth, async (req, res, next) => {
+router.get("/current", requireAuth, async (req, res, next) => {
 	const { id: userId } = req.user;
 	const where = { userId: userId };
 	const include = { model: Spot };
@@ -40,9 +40,5 @@ router.get("/bookings/current", requireAuth, async (req, res, next) => {
 		return next(err);
 	}
 });
-
-///
-/// ERROR HANDLING
-///
 
 module.exports = router;

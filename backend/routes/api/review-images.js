@@ -2,7 +2,7 @@ const router = require("express").Router();
 const { Review, ReviewImage } = require("../../db/models");
 const { requireAuth } = require("../../utils/auth");
 
-// Middleware helper for SpotImage authorization
+// Middleware helper for ReviewImage authorization
 const testAuthorization = async (req, res, next) => {
 	const { id: userId } = req.user;
 	const { id: reviewImageId } = req.params;
