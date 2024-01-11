@@ -123,11 +123,12 @@ module.exports = (sequelize, DataTypes) => {
 				type: DataTypes.INTEGER,
 				allowNull: false,
 				validate: {
-					notNull: { msg: "Price per day is required" },
+					notNull: { msg: "Price per day is required - null" },
 					min: {
-						args: 0,
-						msg: "Price per day is required",
+						args: -1, //???????????????????
+						msg: "Price per day is required - min",
 					},
+					// min: 0,
 				},
 			},
 		},
