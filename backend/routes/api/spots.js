@@ -30,17 +30,7 @@ const testAuthorization = async (req, res, next) => {
 
 // Get all spots
 router.get("/", async (req, res, next) => {
-	const include = [
-		{
-			model: Review,
-		},
-		{
-			model: SpotImage,
-		},
-		{
-			model: User,
-		},
-	];
+	const include = { all: true };
 
 	try {
 		const allSpots = await Spot.findAll({ include });
@@ -67,17 +57,7 @@ router.get("/current", requireAuth, async (req, res, next) => {
 // Get details of spot by id
 router.get("/:id", async (req, res, next) => {
 	const { id: spotId } = req.params;
-	const include = [
-		{
-			model: Review,
-		},
-		{
-			model: SpotImage,
-		},
-		{
-			model: User,
-		},
-	];
+	const include = { all: true };
 
 	try {
 		const spotDetails = await Spot.findByPk(spotId, { include });
@@ -219,15 +199,16 @@ router.post("/:id/reviews", requireAuth, async (req, res, next) => {
 
 		return res.status(201).json({ newReview });
 	} catch (err) {
-		if (
-			err.message === "SQLITE_CONSTRAINT: FOREIGN KEY constraint failed" ||
-			err.message ===
-				'insert or update on table "Reviews" violates foreign key constraint "Reviews_spotId_fkey"'
-		) {
+		if (err.message.toLowerCase().includes("foreign key constraint")) {
 			throw new Error("Spot couldn't be found");
 		}
 		return next(err);
 	}
+});
+
+// Create a booking on spotId require authentication and reverse authorization
+router.post("/:id/bookings", requireAuth, async (req, res, next) => {
+	const { startDate, endDate } = req.body;
 });
 
 ///
