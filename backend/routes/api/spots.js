@@ -1,8 +1,10 @@
 const router = require("express").Router();
+const { Op } = require("sequelize");
 const { Spot, Review, SpotImage, User, Booking } = require("../../db/models");
 const { requireAuth } = require("../../utils/auth");
 // chech production or dev
 const { environment } = require("../../config");
+const spot = require("../../db/models/spot");
 const isProduction = environment === "production";
 
 // Middleware helper for Spots authorization
@@ -209,6 +211,25 @@ router.post("/:id/reviews", requireAuth, async (req, res, next) => {
 // Create a booking on spotId require authentication and reverse authorization
 router.post("/:id/bookings", requireAuth, async (req, res, next) => {
 	const { startDate, endDate } = req.body;
+	const { id: spotId } = req.params;
+	const { id: userId } = req.user;
+
+	// const date1 = new Date(startDate);
+	// const date2 = new Date(endDate);
+	// const difference = Math.abs(date2 - date1);
+
+	try {
+		// query to find if DB conflicts with starDate
+
+		// another query to find if DB conflicts with endDate // & if not create it?
+
+		return res.json({ myBookings });
+	} catch (err) {
+		if (err.message.toLowerCase().includes("foreign key constraint")) {
+			throw new Error("Spot couldn't be found");
+		}
+		return next(err);
+	}
 });
 
 ///
