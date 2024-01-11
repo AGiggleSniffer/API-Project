@@ -71,13 +71,13 @@ module.exports = (sequelize, DataTypes) => {
 				validate: {
 					notNull: { msg: "Latitude is not valid" },
 					notEmpty: { msg: "Latitude is not valid" },
-					// -180 through 180
+					// -90 through 90
 					min: {
-						args: -180,
+						args: -90,
 						msg: "Latitude is not valid",
 					},
 					max: {
-						args: 180,
+						args: 90,
 						msg: "Latitude is not valid",
 					},
 				},
@@ -88,13 +88,13 @@ module.exports = (sequelize, DataTypes) => {
 				validate: {
 					notNull: { msg: "Longitude is not valid" },
 					notEmpty: { msg: "Longitude is not valid" },
-					// -90 through 90
+					// -180 through 180
 					min: {
-						args: -90,
+						args: -180,
 						msg: "Longitude is not valid",
 					},
 					max: {
-						args: 90,
+						args: 180,
 						msg: "Longitude is not valid",
 					},
 				},
@@ -124,7 +124,6 @@ module.exports = (sequelize, DataTypes) => {
 				allowNull: false,
 				validate: {
 					notNull: { msg: "Price per day is required" },
-					notEmpty: { msg: "Price per day is required" },
 					min: {
 						args: 0,
 						msg: "Price per day is required",
