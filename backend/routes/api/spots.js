@@ -81,7 +81,7 @@ router.get("/:id", async (req, res, next) => {
 			throw new Error("Spot couldn't be found");
 		}
 
-		// Add avgRating and oneImage is TRUE
+		// Add avgRating and oneImage is FALSE
 		formatSpots(spotDetails);
 
 		return res.json({ spotDetails });
