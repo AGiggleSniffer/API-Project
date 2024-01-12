@@ -1,7 +1,8 @@
 function formatSpots(spotsArray, oneImage) {
 	// find avgStarRating
 	spotsArray.forEach((ele, i) => {
-		const { Reviews, SpotImages } = ele.dataValues;
+        const { Reviews, SpotImages } = ele.dataValues;
+        console.log(ele)
 		if (Reviews) {
 			var sum = Reviews.reduce((acc, ele) => {
 				const { stars } = ele.dataValues;

@@ -57,9 +57,17 @@ router.get("/", async (req, res, next) => {
 router.get("/current", requireAuth, async (req, res, next) => {
 	const { id: userId } = req.user;
 	const where = { userId: userId };
+	const include = [
+		{
+			model: Review,
+		},
+		{
+			model: SpotImage,
+		},
+	];
 
 	try {
-		const mySpots = await Spot.findAll({ where });
+		const mySpots = await Spot.findAll({ where, include });
 
 		// Add avgRating and oneImage is TRUE
 		formatSpots(mySpots, true);
