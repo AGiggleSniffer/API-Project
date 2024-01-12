@@ -9,14 +9,13 @@ const isProduction = environment === "production";
 const testAuthorization = async (req, res, next) => {
 	const { id: userId } = req.user;
 	const { reviewId } = req.params;
-	const include = { include: Spot };
 
 	try {
-		const mySpotImage = await Review.findByPk(reviewId, include);
+		const myReview = await Review.findByPk(reviewId);
 
-		if (!mySpotImage) throw new Error("Review couldn't be found");
+		if (!myReview) throw new Error("Review couldn't be found");
 
-		const { userId: ownerId } = mySpotImage.Spot;
+		const { userId: ownerId } = myReview;
 
 		if (Number(userId) !== Number(ownerId)) throw new Error("Forbidden");
 	} catch (err) {
@@ -81,9 +80,9 @@ router.post(
 				);
 			}
 
-			const newReviewImage = await Review.create(payload);
+			const { id } = await ReviewImage.create(payload);
 
-			return res.json({ newReviewImage });
+			return res.json({ id, url });
 		} catch (err) {
 			return next(err);
 		}
