@@ -2,7 +2,6 @@ function formatSpots(spotsArray, oneImage) {
 	// find avgStarRating
 	spotsArray.forEach((ele, i) => {
         const { Reviews, SpotImages } = ele.dataValues;
-        console.log(ele)
 		if (Reviews) {
 			var sum = Reviews.reduce((acc, ele) => {
 				const { stars } = ele.dataValues;
@@ -10,17 +9,17 @@ function formatSpots(spotsArray, oneImage) {
 			}, 0);
 		}
         
+        const mySpot = spotsArray[i].dataValues;
+		mySpot.avgStarRating = sum / Reviews.length || 0;
+        delete mySpot.Reviews;
+        
         // Only need one Image?
 		if (oneImage && SpotImages[0]) {
             const [firstImage] = SpotImages;
 			var { url } = firstImage.dataValues;
+            delete mySpot.SpotImages;
         }
-        
-        const mySpot = spotsArray[i].dataValues;
         mySpot.previewImage = url || "No Images";
-		mySpot.avgStarRating = sum / Reviews.length || 0;
-		delete mySpot.Reviews;
-        delete mySpot.SpotImages;
 	});
 }
 

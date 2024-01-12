@@ -81,18 +81,35 @@ router.get("/current", requireAuth, async (req, res, next) => {
 // Get details of spot by id
 router.get("/:id", async (req, res, next) => {
 	const { id: spotId } = req.params;
-	const include = { all: true };
+	const include = [
+		{
+			model: Review,
+		},
+		{
+			model: SpotImage,
+		},
+		{
+			model: User,
+		},
+	];
 
 	try {
 		const spotDetails = await Spot.findByPk(spotId, { include });
 		if (!spotDetails) {
 			throw new Error("Spot couldn't be found");
 		}
+		
+		// find num of reviews
+		spotDetails.dataValues.numReviews = spotDetails.dataValues.Reviews.length;
 
 		// Add avgRating and oneImage is FALSE
-		formatSpots(spotDetails);
+		formatSpots([spotDetails]);
 
-		return res.json({ spotDetails });
+		// change user to owner
+		spotDetails.dataValues.Owner = spotDetails.dataValues.User.dataValues;
+		delete spotDetails.dataValues.User;
+
+		return res.json(spotDetails);
 	} catch (err) {
 		return next(err);
 	}
