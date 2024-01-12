@@ -220,8 +220,8 @@ router.post(
 		};
 
 		try {
-			await SpotImage.create(query);
-			return res.json(query);
+			const { id } = await SpotImage.create(query);
+			return res.json({ id, url, preview });
 		} catch (err) {
 			return next(err);
 		}
