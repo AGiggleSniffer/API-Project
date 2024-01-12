@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const { Op } = require("sequelize");
-const { Spot, Review, SpotImage, User, Booking } = require("../../db/models");
+const { Spot, Review, SpotImage, User, Booking, ReviewImage } = require("../../db/models");
 const { requireAuth } = require("../../utils/auth");
 const { formatSpots } = require("../../utils/utils");
 // chech production or dev
@@ -98,7 +98,7 @@ router.get("/:id", async (req, res, next) => {
 		if (!spotDetails) {
 			throw new Error("Spot couldn't be found");
 		}
-		
+
 		// find num of reviews
 		spotDetails.dataValues.numReviews = spotDetails.dataValues.Reviews.length;
 
