@@ -9,8 +9,8 @@ const isProduction = environment === "production";
 const testAuthorization = async (req, res, next) => {
 	const { id: userId } = req.user;
 	const { id: spotImageId } = req.params;
-    const include = { include: Spot };
-    
+	const include = { include: Spot };
+
 	try {
 		const mySpotImage = await Review.findByPk(spotImageId, include);
 
@@ -33,9 +33,20 @@ const testAuthorization = async (req, res, next) => {
 router.get("/current", requireAuth, async (req, res, next) => {
 	const { id: userId } = req.user;
 	const where = { userId: userId };
+	const include = [
+		{
+			model: User,
+		},
+		{
+			model: Spot,
+		},
+		{
+			model: ReviewImage,
+		},
+	];
 
 	try {
-		const myReviews = await Review.findAll({ where });
+		const myReviews = await Review.findAll({ where, include });
 
 		res.json({ myReviews });
 	} catch (err) {

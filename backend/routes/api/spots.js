@@ -2,6 +2,7 @@ const router = require("express").Router();
 const { Op } = require("sequelize");
 const { Spot, Review, SpotImage, User, Booking } = require("../../db/models");
 const { requireAuth } = require("../../utils/auth");
+const { formatSpots } = require("../../utils/utils");
 // chech production or dev
 const { environment } = require("../../config");
 const spot = require("../../db/models/spot");
@@ -32,11 +33,21 @@ const testAuthorization = async (req, res, next) => {
 
 // Get all spots
 router.get("/", async (req, res, next) => {
-	const include = { all: true };
-
+	const include = [
+		{
+			model: Review,
+		},
+		{
+			model: SpotImage,
+		},
+	];
 	try {
-		const allSpots = await Spot.findAll({ include });
-		return res.json({ Spots: allSpots });
+		const Spots = await Spot.findAll({ include });
+
+		// Add avgRating and oneImage is TRUE
+		formatSpots(Spots, true);
+
+		return res.json({ Spots });
 	} catch (err) {
 		return next(err);
 	}
@@ -49,6 +60,9 @@ router.get("/current", requireAuth, async (req, res, next) => {
 
 	try {
 		const mySpots = await Spot.findAll({ where });
+
+		// Add avgRating and oneImage is TRUE
+		formatSpots(mySpots, true);
 
 		return res.json({ Spots: mySpots });
 	} catch (err) {
@@ -66,6 +80,10 @@ router.get("/:id", async (req, res, next) => {
 		if (!spotDetails) {
 			throw new Error("Spot couldn't be found");
 		}
+
+		// Add avgRating and oneImage is TRUE
+		formatSpots(spotDetails);
+
 		return res.json({ spotDetails });
 	} catch (err) {
 		return next(err);
@@ -76,9 +94,17 @@ router.get("/:id", async (req, res, next) => {
 router.get("/:id/reviews", async (req, res, next) => {
 	const { id: spotId } = req.params;
 	const where = { spotId: spotId };
+	const include = [
+		{
+			model: User,
+		},
+		{
+			model: ReviewImage,
+		},
+	];
 
 	try {
-		const myReviews = await Review.findAll({ where });
+		const myReviews = await Review.findAll({ where, include });
 
 		if (!myReviews) throw new Error("Spot couldn't be found");
 
