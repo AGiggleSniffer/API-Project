@@ -8,11 +8,11 @@ const isProduction = environment === "production";
 // Middleware helper for Review authorization
 const testAuthorization = async (req, res, next) => {
 	const { id: userId } = req.user;
-	const { id: spotImageId } = req.params;
+	const { reviewId } = req.params;
 	const include = { include: Spot };
 
 	try {
-		const mySpotImage = await Review.findByPk(spotImageId, include);
+		const mySpotImage = await Review.findByPk(reviewId, include);
 
 		if (!mySpotImage) throw new Error("Review couldn't be found");
 

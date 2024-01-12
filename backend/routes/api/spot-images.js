@@ -29,8 +29,8 @@ router.delete(
 	testAuthorization,
 	async (req, res, next) => {
 		const { id: spotImageId } = req.params;
-		const where = { id: spotImageId };
-		
+		const where = { id: +spotImageId };
+
 		try {
 			await SpotImage.destroy({ where });
 
