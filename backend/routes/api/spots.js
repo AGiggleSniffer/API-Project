@@ -250,7 +250,7 @@ router.post("/:id/reviews", requireAuth, async (req, res, next) => {
 
 		if (!created) throw new Error("User already has a review for this spot");
 
-		return res.status(201).json({ newReview });
+		return res.status(201).json(newReview);
 	} catch (err) {
 		if (err.message.toLowerCase().includes("foreign key constraint")) {
 			throw new Error("Spot couldn't be found");
