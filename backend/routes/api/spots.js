@@ -1,6 +1,13 @@
 const router = require("express").Router();
 const { Op } = require("sequelize");
-const { Spot, Review, SpotImage, User, Booking, ReviewImage } = require("../../db/models");
+const {
+	Spot,
+	Review,
+	SpotImage,
+	User,
+	Booking,
+	ReviewImage,
+} = require("../../db/models");
 const { requireAuth } = require("../../utils/auth");
 const { formatSpots } = require("../../utils/utils");
 // chech production or dev
@@ -271,23 +278,41 @@ router.post("/:id/bookings", requireAuth, async (req, res, next) => {
 	// reverse authorize here still
 
 	try {
-		const spotBookings = Booking.findAll({ where: { spotId: spotId } });
+		const { userId: ownerId } = await Spot.findByPk(spotId);
+
+		if (Number(userId) === Number(ownerId)) throw new Error("Forbidden");
+
+		const spotBookings = await Booking.findAll({ where: { spotId: spotId } });
 
 		const errors = {};
 		spotBookings.forEach((ele) => {
-			const { startdate: newStart, endDate: newEnd } = ele;
-			if (newStart >= startDate && newStart <= endDate) {
+			const { startDate: oldStart, endDate: oldEnd } = ele;
+
+			if (
+				Date(oldStart) >= Date(startDate) &&
+				Date(oldStart) <= Date(endDate)
+			) {
 				errors.startDate = "Start date conflicts with an existing booking";
 			}
 
-			if (startDate >= newStart && startDate <= newEnd) {
+			if (
+				Date(startDate) >= Date(oldStart) &&
+				Date(startDate) <= Date(oldEnd)
+			) {
 				errors.endDate = "End date conflicts with an existing booking";
 			}
 		});
 
-		if (errors) throw new Error(errors);
+		if (errors.startDate || errors.endDate) {
+			const err = new Error(
+				"Sorry, this spot is already booked for the specified dates",
+			);
+			err.errors = errors;
+			res.status(403);
+			return next(err);
+		}
 
-		const newBooking = Booking.create({
+		const newBooking = await Booking.create({
 			spotId: spotId,
 			userId: userId,
 			startDate: startDate,
