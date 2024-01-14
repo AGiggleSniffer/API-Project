@@ -97,6 +97,7 @@ router.get("/:id", async (req, res, next) => {
 		},
 		{
 			model: User,
+			as: "Owner",
 		},
 	];
 
@@ -113,8 +114,8 @@ router.get("/:id", async (req, res, next) => {
 		formatSpots([spotDetails]);
 
 		// change user to owner
-		spotDetails.dataValues.Owner = spotDetails.dataValues.User.dataValues;
-		delete spotDetails.dataValues.User;
+		// spotDetails.dataValues.Owner = spotDetails.dataValues.User.dataValues;
+		// delete spotDetails.dataValues.User;
 
 		return res.json(spotDetails);
 	} catch (err) {
@@ -129,7 +130,7 @@ router.get("/:id/reviews", async (req, res, next) => {
 	const include = [
 		{
 			model: User,
-			// remove username
+			as: "Owner",
 		},
 		{
 			model: ReviewImage,
@@ -157,6 +158,7 @@ router.get("/:id/bookings", requireAuth, async (req, res, next) => {
 		model: Booking,
 		include: {
 			model: User,
+			as: "Owner",
 		},
 	};
 
@@ -274,8 +276,6 @@ router.post("/:id/bookings", requireAuth, async (req, res, next) => {
 	const { startDate, endDate } = req.body;
 	const { id: spotId } = req.params;
 	const { id: userId } = req.user;
-
-	// reverse authorize here still
 
 	try {
 		const { userId: ownerId } = await Spot.findByPk(spotId);

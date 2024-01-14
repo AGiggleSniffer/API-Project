@@ -35,7 +35,6 @@ router.get("/current", requireAuth, async (req, res, next) => {
 	const include = [
 		{
 			model: User,
-			// remove username
 		},
 		{
 			model: Spot,

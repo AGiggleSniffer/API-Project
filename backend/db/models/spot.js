@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
 				onDelete: "CASCADE",
 				hooks: true,
 			});
-			Spot.belongsTo(models.User, { foreignKey: "userId" });
+			Spot.belongsTo(models.User, {as: "Owner", foreignKey: "userId" });
 		}
 	}
 	Spot.init(
