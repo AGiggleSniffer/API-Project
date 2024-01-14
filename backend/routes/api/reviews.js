@@ -35,9 +35,12 @@ router.get("/current", requireAuth, async (req, res, next) => {
 	const include = [
 		{
 			model: User,
+			// remove username
 		},
 		{
 			model: Spot,
+			// remove [description, updated, created]
+			// add previewImage
 		},
 		{
 			model: ReviewImage,
@@ -45,9 +48,9 @@ router.get("/current", requireAuth, async (req, res, next) => {
 	];
 
 	try {
-		const myReviews = await Review.findAll({ where, include });
+		const Reviews = await Review.findAll({ where, include });
 
-		res.json({ myReviews });
+		res.json({ Reviews });
 	} catch (err) {
 		return next(err);
 	}
@@ -106,7 +109,7 @@ router.put(
 			stars: stars,
 		};
 		const options = {
-			where: { reviewId: reviewId },
+			where: { id: reviewId },
 			/* ONLY supported for Postgres */
 			// will return the results without needing another db query
 			returning: true,

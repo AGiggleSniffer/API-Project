@@ -13,14 +13,18 @@ function formatSpots(spotsArray, oneImage) {
 		mySpot.avgStarRating = sum / Reviews.length || 0;
 		delete mySpot.Reviews;
 
-		// Only need one Image?
-		if (oneImage && SpotImages[0]) {
-			const [firstImage] = SpotImages;
-			const { url } = firstImage.dataValues;
-			mySpot.previewImage = url;
-			delete mySpot.SpotImages;
-		}
+		// Only need one Image? aka previewImage
+		if (oneImage) previewImage(SpotImages, mySpot);
 	});
+}
+
+function previewImage(SpotImages, mySpot) {
+	if (SpotImages[0]) {
+		const [firstImage] = SpotImages;
+		var { url } = firstImage.dataValues;
+	}
+	delete mySpot.SpotImages;
+	mySpot.previewImage = url || "no images";
 }
 
 module.exports = { formatSpots };

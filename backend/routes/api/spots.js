@@ -122,6 +122,7 @@ router.get("/:id/reviews", async (req, res, next) => {
 	const include = [
 		{
 			model: User,
+			// remove username
 		},
 		{
 			model: ReviewImage,
@@ -129,11 +130,13 @@ router.get("/:id/reviews", async (req, res, next) => {
 	];
 
 	try {
-		const myReviews = await Review.findAll({ where, include });
+		const mySpot = await Spot.findByPk(spotId);
 
-		if (!myReviews) throw new Error("Spot couldn't be found");
+		if (!mySpot) throw new Error("Spot couldn't be found");
 
-		return res.json({ myReviews });
+		const Reviews = await Review.findAll({ where, include });
+
+		return res.json({ Reviews });
 	} catch (err) {
 		return next(err);
 	}
