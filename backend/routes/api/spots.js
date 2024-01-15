@@ -9,7 +9,7 @@ const {
 	ReviewImage,
 } = require("../../db/models");
 const { requireAuth } = require("../../utils/auth");
-const { formatSpots } = require("../../utils/utils");
+const { formatSpots, checkConflicts } = require("../../utils/utils");
 // chech production or dev
 const { environment } = require("../../config");
 const spot = require("../../db/models/spot");
@@ -273,40 +273,26 @@ router.post("/:id/bookings", requireAuth, async (req, res, next) => {
 	const { id: userId } = req.user;
 
 	try {
-		const { userId: ownerId } = await Spot.findByPk(spotId);
-
+		// Check if spot Exists
+		const mySpot = await Spot.findByPk(spotId);
+		if (!mySpot) throw new Error("Spot couldn't be found");
+		// & Who owns it
+		const { userId: ownerId } = mySpot;
 		if (Number(userId) === Number(ownerId)) throw new Error("Forbidden");
 
+		// Grab all Bookings
 		const spotBookings = await Booking.findAll({ where: { spotId: spotId } });
 
-		const errors = {};
-		spotBookings.forEach((ele) => {
-			const { startDate: oldStart, endDate: oldEnd } = ele;
+		// Validate Dates dont conflict with any others
+		const dates = { startDate, endDate };
+		checkConflicts(spotBookings, dates);
 
-			if (
-				new Date(oldStart) >= new Date(startDate) &&
-				new Date(oldStart) <= new Date(endDate)
-			) {
-				errors.startDate = "Start date conflicts with an existing booking";
-			}
-
-			if (
-				new Date(startDate) >= new Date(oldStart) &&
-				new Date(startDate) <= new Date(oldEnd)
-			) {
-				errors.endDate = "End date conflicts with an existing booking";
-			}
-		});
-
-		if (errors.startDate || errors.endDate) {
-			const err = new Error(
-				"Sorry, this spot is already booked for the specified dates",
-			);
-			err.errors = errors;
-			res.status(403);
-			return next(err);
+		// test if booking is for the future
+		if (new Date(startDate) <= Date()) {
+			throw new Error("Past bookings can't be modified");
 		}
 
+		// Create
 		const newBooking = await Booking.create({
 			spotId: spotId,
 			userId: userId,
@@ -314,7 +300,7 @@ router.post("/:id/bookings", requireAuth, async (req, res, next) => {
 			endDate: endDate,
 		});
 
-		return res.json({ newBooking });
+		return res.json(newBooking);
 	} catch (err) {
 		if (err.message.toLowerCase().includes("foreign key constraint")) {
 			throw new Error("Spot couldn't be found");

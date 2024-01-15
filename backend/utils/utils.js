@@ -1,3 +1,7 @@
+///
+/// Spot Utils
+///
+
 function formatSpots(spotsArray, oneImage = false, rateSpot = true) {
 	// loop through array
 	spotsArray.forEach((ele, i) => {
@@ -7,14 +11,14 @@ function formatSpots(spotsArray, oneImage = false, rateSpot = true) {
 		console.log(ele);
 
 		// need avgStarRating?
-		if (rateSpot) avgStarRating(Reviews, mySpot);
+		if (rateSpot) _avgStarRating(Reviews, mySpot);
 
 		// Only need one Image? aka previewImage
-		if (oneImage) previewImage(SpotImages, mySpot);
+		if (oneImage) _previewImage(SpotImages, mySpot);
 	});
 }
 
-function avgStarRating(Reviews, mySpot) {
+function _avgStarRating(Reviews, mySpot) {
 	if (Reviews) {
 		var sum = Reviews.reduce((acc, ele) => {
 			const { stars } = ele.dataValues;
@@ -25,7 +29,7 @@ function avgStarRating(Reviews, mySpot) {
 	delete mySpot.Reviews;
 }
 
-function previewImage(SpotImages, mySpot) {
+function _previewImage(SpotImages, mySpot) {
 	if (SpotImages[0]) {
 		const [firstImage] = SpotImages;
 		var { url } = firstImage.dataValues;
@@ -34,4 +38,40 @@ function previewImage(SpotImages, mySpot) {
 	delete mySpot.SpotImages;
 }
 
-module.exports = { formatSpots };
+///
+/// Booking Utils
+///
+
+function checkConflicts(spotArray, datesObj) {
+	const { startDate, endDate } = datesObj;
+
+	const errors = {};
+	spotArray.forEach((ele) => {
+		const { startDate: oldStart, endDate: oldEnd } = ele;
+
+		if (
+			new Date(oldStart) >= new Date(startDate) &&
+			new Date(oldStart) <= new Date(endDate)
+		) {
+			errors.endDate = "End date conflicts with an existing booking";
+		}
+
+		if (
+			new Date(startDate) >= new Date(oldStart) &&
+			new Date(startDate) <= new Date(oldEnd)
+		) {
+			errors.startDate = "Start date conflicts with an existing booking";
+		}
+	});
+
+	if (errors.startDate || errors.endDate) {
+		const err = new Error(
+			"Sorry, this spot is already booked for the specified dates",
+		);
+		err.errors = errors;
+		res.status(403);
+		throw err;
+	}
+}
+
+module.exports = { formatSpots, checkConflicts };
