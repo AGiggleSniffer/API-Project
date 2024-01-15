@@ -49,14 +49,28 @@ const validateQueryFilters = [
 		.default(20)
 		.isInt({ min: 1, max: 20 })
 		.withMessage("Size must be greater than or equal to 1"),
-	check("minLat").isFloat().withMessage("Maximum latitude is invalid"),
-	check("maxLat").isFloat().withMessage("Minimum latitude is invalid"),
-	check("minLng").isFloat().withMessage("Minimum longitude is invalid"),
-	check("maxLng").isFloat().withMessage("Maximum longitude is invalid"),
+	check("minLat")
+		.optional()
+		.isFloat()
+		.withMessage("Maximum latitude is invalid"),
+	check("maxLat")
+		.optional()
+		.isFloat()
+		.withMessage("Minimum latitude is invalid"),
+	check("minLng")
+		.optional()
+		.isFloat()
+		.withMessage("Minimum longitude is invalid"),
+	check("maxLng")
+		.optional()
+		.isFloat()
+		.withMessage("Maximum longitude is invalid"),
 	check("minPrice")
+		.optional()
 		.isFloat({ min: 0 })
 		.withMessage("Minimum price must be greater than or equal to 0"),
 	check("maxPrice")
+		.optional()
 		.isFloat({ min: 0 })
 		.withMessage("Maximum price must be greater than or equal to 0"),
 	handleValidationErrors,
