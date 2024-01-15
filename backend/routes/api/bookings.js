@@ -35,7 +35,7 @@ router.get("/current", requireAuth, async (req, res, next) => {
 	try {
 		const myBookings = await Booking.findAll({ where, include });
 
-		return res.json({ myBookings });
+		return res.json(myBookings);
 	} catch (err) {
 		return next(err);
 	}

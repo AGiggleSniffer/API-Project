@@ -113,10 +113,6 @@ router.get("/:id", async (req, res, next) => {
 		// Add avgRating and oneImage is FALSE
 		formatSpots([spotDetails]);
 
-		// change user to owner
-		// spotDetails.dataValues.Owner = spotDetails.dataValues.User.dataValues;
-		// delete spotDetails.dataValues.User;
-
 		return res.json(spotDetails);
 	} catch (err) {
 		return next(err);
