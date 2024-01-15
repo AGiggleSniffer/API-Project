@@ -153,7 +153,6 @@ router.get("/:id/bookings", requireAuth, async (req, res, next) => {
 		model: Booking,
 		include: {
 			model: User,
-			as: "Owner",
 		},
 	};
 

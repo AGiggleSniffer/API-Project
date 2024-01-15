@@ -121,7 +121,7 @@ router.put(
 		const { review, stars } = req.body;
 		const { reviewId } = req.params;
 		const payload = {
-			reviweMsg: review,
+			reviewMsg: review,
 			stars: stars,
 		};
 		const options = {

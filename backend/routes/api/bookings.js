@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const { Review, Spot, Booking, SpotImage } = require("../../db/models");
 const { requireAuth } = require("../../utils/auth");
+const { formatSpots } = require("../../utils/utils");
 
 // Middleware helper for Review authorization
 const testAuthorization = async (req, res, next) => {
