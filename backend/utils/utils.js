@@ -69,7 +69,6 @@ function checkConflicts(spotArray, datesObj) {
 			"Sorry, this spot is already booked for the specified dates",
 		);
 		err.errors = errors;
-		res.status(403);
 		throw err;
 	}
 }
