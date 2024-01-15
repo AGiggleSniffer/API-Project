@@ -7,9 +7,9 @@ const {
 	SpotImage,
 } = require("../../db/models");
 const { requireAuth } = require("../../utils/auth");
+const { formatSpots } = require("../../utils/utils");
 // chech production or dev
 const { environment } = require("../../config");
-const { formatSpots } = require("../../utils/utils");
 const isProduction = environment === "production";
 
 // Middleware helper for Review authorization

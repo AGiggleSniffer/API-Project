@@ -82,7 +82,8 @@ app.use((err, req, res, next) => {
 
 	if (
 		err.message === "Forbidden" ||
-		err.message === "Maximum number of images for this resource was reached"
+		err.message === "Maximum number of images for this resource was reached" ||
+		err.message === "Bookings that have been started can't be deleted"
 	) {
 		return res.status(403).json({ message: err.message });
 	}
