@@ -33,6 +33,10 @@ module.exports = (sequelize, DataTypes) => {
 				validate: {
 					notNull: { msg: "Review text is required" },
 					notEmpty: { msg: "Review text is required" },
+					min: {
+						args: 0,
+						msg: "Review text is required",
+					},
 				},
 			},
 			stars: {

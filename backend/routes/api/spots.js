@@ -148,7 +148,7 @@ router.get("/:id/reviews", async (req, res, next) => {
 // get all bookings based on spot ID require authentication
 router.get("/:id/bookings", requireAuth, async (req, res, next) => {
 	const { id: userId } = req.user;
-	const { id: spotId } = req.query;
+	const { id: spotId } = req.params;
 	const include = {
 		model: Booking,
 		include: {
@@ -288,8 +288,8 @@ router.post("/:id/bookings", requireAuth, async (req, res, next) => {
 		checkConflicts(spotBookings, dates);
 
 		// test if booking is for the future
-		if (new Date(startDate) <= Date()) {
-			throw new Error("Past bookings can't be modified");
+		if (new Date(startDate) <= new Date()) {
+			throw new Error("Past bookings can't be made");
 		}
 
 		// Create

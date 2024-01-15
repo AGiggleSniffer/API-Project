@@ -8,8 +8,6 @@ function formatSpots(spotsArray, oneImage = false, rateSpot = true) {
 		const { Reviews, SpotImages } = ele.dataValues;
 		const mySpot = spotsArray[i].dataValues;
 
-		console.log(ele);
-
 		// need avgStarRating?
 		if (rateSpot) _avgStarRating(Reviews, mySpot);
 
