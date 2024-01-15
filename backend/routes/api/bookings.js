@@ -41,4 +41,17 @@ router.get("/current", requireAuth, async (req, res, next) => {
 	}
 });
 
+///
+/// PUT
+///
+
+router.put(
+	"/:bookingsId",
+	requireAuth,
+	testAuthorization,
+	async (req, res, next) => {
+		
+	},
+);
+
 module.exports = router;
