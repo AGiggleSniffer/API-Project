@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const { check } = require("express-validator");
+const { handleValidationErrors } = require("../../utils/validation");
 const { Op } = require("sequelize");
 const {
 	Spot,
@@ -58,6 +59,7 @@ const validateQueryFilters = [
 	check("maxPrice")
 		.isFloat({ min: 0 })
 		.withMessage("Maximum price must be greater than or equal to 0"),
+	handleValidationErrors,
 ];
 
 // Get all spots
