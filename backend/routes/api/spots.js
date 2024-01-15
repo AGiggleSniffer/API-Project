@@ -1,4 +1,5 @@
 const router = require("express").Router();
+const { check } = require("express-validator");
 const { Op } = require("sequelize");
 const {
 	Spot,
@@ -38,8 +39,31 @@ const testAuthorization = async (req, res, next) => {
 /// GET
 ///
 
+const validateQueryFilters = [
+	check("page")
+		.default(1)
+		.isInt({ min: 1, max: 10 })
+		.withMessage("Page must be greater than or equal to 1"),
+	check("size")
+		.default(20)
+		.isInt({ min: 1, max: 20 })
+		.withMessage("Size must be greater than or equal to 1"),
+	check("minLat").isFloat().withMessage("Maximum latitude is invalid"),
+	check("maxLat").isFloat().withMessage("Minimum latitude is invalid"),
+	check("minLng").isFloat().withMessage("Minimum longitude is invalid"),
+	check("maxLng").isFloat().withMessage("Maximum longitude is invalid"),
+	check("minPrice")
+		.isFloat({ min: 0 })
+		.withMessage("Minimum price must be greater than or equal to 0"),
+	check("maxPrice")
+		.isFloat({ min: 0 })
+		.withMessage("Maximum price must be greater than or equal to 0"),
+];
+
 // Get all spots
-router.get("/", async (req, res, next) => {
+router.get("/", validateQueryFilters, async (req, res, next) => {
+	const { page, size, minLat, maxLat, minLng, maxLng, minPrice, maxPrice } =
+		req.query;
 	const include = [
 		{
 			model: Review,
@@ -48,8 +72,31 @@ router.get("/", async (req, res, next) => {
 			model: SpotImage,
 		},
 	];
+	const where = {
+		lat: {
+			[Op.and]: {
+				[Op.gt]: minLat,
+				[Op.lt]: maxLat,
+			},
+		},
+		lng: {
+			[Op.and]: {
+				[Op.gt]: minLng,
+				[Op.lt]: maxLng,
+			},
+		},
+		price: {
+			[Op.and]: {
+				[Op.gt]: minPrice,
+				[Op.lt]: maxPrice,
+			},
+		},
+	};
+
+	const pagination = _paginationBuilder(page, size);
+
 	try {
-		const Spots = await Spot.findAll({ include });
+		const Spots = await Spot.findAll({ include, where, ...pagination });
 
 		// Add avgRating and oneImage is TRUE
 		formatSpots(Spots, true);
@@ -59,6 +106,19 @@ router.get("/", async (req, res, next) => {
 		return next(err);
 	}
 });
+
+function _paginationBuilder(page, size) {
+	page = Number(page);
+	size = Number(size);
+
+	const pagination = {};
+	if (page > 0 && size > 0) {
+		pagination.limit = size;
+		pagination.offset = size * (page - 1);
+	}
+
+	return pagination;
+}
 
 // Get spots by user with authorization
 router.get("/current", requireAuth, async (req, res, next) => {
