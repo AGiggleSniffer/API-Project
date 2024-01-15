@@ -90,7 +90,13 @@ app.use((err, req, res, next) => {
 	if (err.message.includes("couldn't be found")) {
 		return res.status(404).json({ message: err.message });
 	}
-		
+
+	if (
+		err.message === "Sorry, this spot is already booked for the specified dates"
+	) {
+		res.status(403);
+	}
+
 	return next(err);
 });
 

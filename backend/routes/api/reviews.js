@@ -1,8 +1,15 @@
 const router = require("express").Router();
-const { Review, User, Spot, ReviewImage } = require("../../db/models");
+const {
+	Review,
+	User,
+	Spot,
+	ReviewImage,
+	SpotImage,
+} = require("../../db/models");
 const { requireAuth } = require("../../utils/auth");
 // chech production or dev
 const { environment } = require("../../config");
+const { formatSpots } = require("../../utils/utils");
 const isProduction = environment === "production";
 
 // Middleware helper for Review authorization
@@ -35,12 +42,15 @@ router.get("/current", requireAuth, async (req, res, next) => {
 	const include = [
 		{
 			model: User,
-			// remove username
 		},
 		{
 			model: Spot,
 			// remove [description, updated, created]
 			// add previewImage
+			attributes: {
+				exclude: ["description", "updatedAt", "createdAt"],
+			},
+			include: SpotImage,
 		},
 		{
 			model: ReviewImage,
@@ -49,6 +59,12 @@ router.get("/current", requireAuth, async (req, res, next) => {
 
 	try {
 		const Reviews = await Review.findAll({ where, include });
+
+		Reviews.forEach((ele) => {
+			const { Spot } = ele;
+
+			formatSpots([Spot], true, false);
+		});
 
 		res.json({ Reviews });
 	} catch (err) {
@@ -105,7 +121,7 @@ router.put(
 		const { review, stars } = req.body;
 		const { reviewId } = req.params;
 		const payload = {
-			reviweMsg: review,
+			reviewMsg: review,
 			stars: stars,
 		};
 		const options = {

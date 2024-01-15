@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
 				onDelete: "CASCADE",
 				hooks: true,
 			});
-			Spot.belongsTo(models.User, { foreignKey: "userId" });
+			Spot.belongsTo(models.User, {as: "Owner", foreignKey: "userId" });
 		}
 	}
 	Spot.init(
@@ -66,7 +66,7 @@ module.exports = (sequelize, DataTypes) => {
 				},
 			},
 			lat: {
-				type: DataTypes.DECIMAL,
+				type: DataTypes.FLOAT,
 				allowNull: false,
 				validate: {
 					notNull: { msg: "Latitude is not valid" },
@@ -83,7 +83,7 @@ module.exports = (sequelize, DataTypes) => {
 				},
 			},
 			lng: {
-				type: DataTypes.DECIMAL,
+				type: DataTypes.FLOAT,
 				allowNull: false,
 				validate: {
 					notNull: { msg: "Longitude is not valid" },
@@ -125,10 +125,9 @@ module.exports = (sequelize, DataTypes) => {
 				validate: {
 					notNull: { msg: "Price per day is required - null" },
 					min: {
-						args: -1, //???????????????????
+						args: -1,
 						msg: "Price per day is required - min",
 					},
-					// min: 0,
 				},
 			},
 		},

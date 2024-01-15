@@ -9,7 +9,7 @@ const {
 	ReviewImage,
 } = require("../../db/models");
 const { requireAuth } = require("../../utils/auth");
-const { formatSpots } = require("../../utils/utils");
+const { formatSpots, checkConflicts } = require("../../utils/utils");
 // chech production or dev
 const { environment } = require("../../config");
 const spot = require("../../db/models/spot");
@@ -97,6 +97,7 @@ router.get("/:id", async (req, res, next) => {
 		},
 		{
 			model: User,
+			as: "Owner",
 		},
 	];
 
@@ -112,10 +113,6 @@ router.get("/:id", async (req, res, next) => {
 		// Add avgRating and oneImage is FALSE
 		formatSpots([spotDetails]);
 
-		// change user to owner
-		spotDetails.dataValues.Owner = spotDetails.dataValues.User.dataValues;
-		delete spotDetails.dataValues.User;
-
 		return res.json(spotDetails);
 	} catch (err) {
 		return next(err);
@@ -129,7 +126,6 @@ router.get("/:id/reviews", async (req, res, next) => {
 	const include = [
 		{
 			model: User,
-			// remove username
 		},
 		{
 			model: ReviewImage,
@@ -152,7 +148,7 @@ router.get("/:id/reviews", async (req, res, next) => {
 // get all bookings based on spot ID require authentication
 router.get("/:id/bookings", requireAuth, async (req, res, next) => {
 	const { id: userId } = req.user;
-	const { id: spotId } = req.query;
+	const { id: spotId } = req.params;
 	const include = {
 		model: Booking,
 		include: {
@@ -275,43 +271,27 @@ router.post("/:id/bookings", requireAuth, async (req, res, next) => {
 	const { id: spotId } = req.params;
 	const { id: userId } = req.user;
 
-	// reverse authorize here still
-
 	try {
-		const { userId: ownerId } = await Spot.findByPk(spotId);
-
+		// Check if spot Exists
+		const mySpot = await Spot.findByPk(spotId);
+		if (!mySpot) throw new Error("Spot couldn't be found");
+		// & Who owns it
+		const { userId: ownerId } = mySpot;
 		if (Number(userId) === Number(ownerId)) throw new Error("Forbidden");
 
+		// Grab all Bookings
 		const spotBookings = await Booking.findAll({ where: { spotId: spotId } });
 
-		const errors = {};
-		spotBookings.forEach((ele) => {
-			const { startDate: oldStart, endDate: oldEnd } = ele;
+		// Validate Dates dont conflict with any others
+		const dates = { startDate, endDate };
+		checkConflicts(spotBookings, dates);
 
-			if (
-				Date(oldStart) >= Date(startDate) &&
-				Date(oldStart) <= Date(endDate)
-			) {
-				errors.startDate = "Start date conflicts with an existing booking";
-			}
-
-			if (
-				Date(startDate) >= Date(oldStart) &&
-				Date(startDate) <= Date(oldEnd)
-			) {
-				errors.endDate = "End date conflicts with an existing booking";
-			}
-		});
-
-		if (errors.startDate || errors.endDate) {
-			const err = new Error(
-				"Sorry, this spot is already booked for the specified dates",
-			);
-			err.errors = errors;
-			res.status(403);
-			return next(err);
+		// test if booking is for the future
+		if (new Date(startDate) <= new Date()) {
+			throw new Error("Past bookings can't be made");
 		}
 
+		// Create
 		const newBooking = await Booking.create({
 			spotId: spotId,
 			userId: userId,
@@ -319,7 +299,7 @@ router.post("/:id/bookings", requireAuth, async (req, res, next) => {
 			endDate: endDate,
 		});
 
-		return res.json({ newBooking });
+		return res.json(newBooking);
 	} catch (err) {
 		if (err.message.toLowerCase().includes("foreign key constraint")) {
 			throw new Error("Spot couldn't be found");

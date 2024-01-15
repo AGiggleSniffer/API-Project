@@ -1,6 +1,7 @@
 const router = require("express").Router();
-const { Review, Spot, Booking } = require("../../db/models");
+const { Review, Spot, Booking, SpotImage } = require("../../db/models");
 const { requireAuth } = require("../../utils/auth");
+const { formatSpots } = require("../../utils/utils");
 
 // Middleware helper for Review authorization
 const testAuthorization = async (req, res, next) => {
@@ -30,12 +31,24 @@ const testAuthorization = async (req, res, next) => {
 router.get("/current", requireAuth, async (req, res, next) => {
 	const { id: userId } = req.user;
 	const where = { userId: userId };
-	const include = { model: Spot };
+	const include = {
+		model: Spot,
+		attributes: {
+			exclude: ["description", "updatedAt", "createdAt"],
+		},
+		include: SpotImage,
+	};
 
 	try {
 		const myBookings = await Booking.findAll({ where, include });
 
-		return res.json({ myBookings });
+		myBookings.forEach((ele) => {
+			const { Spot } = ele;
+
+			formatSpots([Spot], true, false);
+		});
+
+		return res.json(myBookings);
 	} catch (err) {
 		return next(err);
 	}

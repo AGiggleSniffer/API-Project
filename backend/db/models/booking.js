@@ -29,18 +29,18 @@ module.exports = (sequelize, DataTypes) => {
 			endDate: {
 				type: DataTypes.DATE,
 				allowNull: false,
+				validate: {
+					endBeforeStart(value) {
+						if (value <= this.startDate) {
+							throw new Error("endDate cannot be on or before startDate");
+						}
+					},
+				},
 			},
 		},
 		{
 			sequelize,
 			modelName: "Booking",
-			validate: {
-				endBeforeStart() {
-					if (this.endDate < this.startDate) {
-						throw new Error("endDate cannot be on or before startDate");
-					}
-				},
-			},
 		},
 	);
 	return Booking;
