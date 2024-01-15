@@ -36,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
 			modelName: "Booking",
 			validate: {
 				endBeforeStart() {
-					if (this.endDate < this.startDate) {
+					if (this.endDate <= this.startDate) {
 						throw new Error("endDate cannot be on or before startDate");
 					}
 				},
