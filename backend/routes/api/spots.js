@@ -130,7 +130,6 @@ router.get("/:id/reviews", async (req, res, next) => {
 	const include = [
 		{
 			model: User,
-			as: "Owner",
 		},
 		{
 			model: ReviewImage,
@@ -289,15 +288,15 @@ router.post("/:id/bookings", requireAuth, async (req, res, next) => {
 			const { startDate: oldStart, endDate: oldEnd } = ele;
 
 			if (
-				Date(oldStart) >= Date(startDate) &&
-				Date(oldStart) <= Date(endDate)
+				new Date(oldStart) >= new Date(startDate) &&
+				new Date(oldStart) <= new Date(endDate)
 			) {
 				errors.startDate = "Start date conflicts with an existing booking";
 			}
 
 			if (
-				Date(startDate) >= Date(oldStart) &&
-				Date(startDate) <= Date(oldEnd)
+				new Date(startDate) >= new Date(oldStart) &&
+				new Date(startDate) <= new Date(oldEnd)
 			) {
 				errors.endDate = "End date conflicts with an existing booking";
 			}
