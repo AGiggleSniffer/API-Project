@@ -448,6 +448,7 @@ router.delete(
 	async (req, res, next) => {
 		const { id: spotId } = req.params;
 		const where = { id: spotId };
+		
 		try {
 			await Spot.destroy({ where });
 
