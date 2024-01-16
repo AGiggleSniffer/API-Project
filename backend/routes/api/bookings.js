@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const { Spot, Booking, SpotImage } = require("../../db/models");
 const { requireAuth } = require("../../utils/auth");
-const { formatSpots } = require("../../utils/utils");
+const { formatSpots, checkConflicts } = require("../../utils/utils");
 // chech production or dev
 const { environment } = require("../../config");
 const isProduction = environment === "production";
@@ -10,24 +10,28 @@ const isProduction = environment === "production";
 const testAuthorization = async (req, res, next) => {
 	const { id: userId } = req.user;
 	const { bookingsId } = req.params;
+	const include = { model: Spot };
 
 	try {
-		const myBooking = await Booking.findByPk(bookingsId);
-
+		const myBooking = await Booking.findByPk(bookingsId, { include });
+		
 		if (!myBooking) throw new Error("Booking couldn't be found");
+		
+		const { userId: ownerId } = myBooking;
+
+		console.log(ownerId, userId)
 
 		if (req.method === "DELETE") {
-			const { spotId, startDate } = myBooking;
-			const { ownerId } = await Spot.findByPk(spotId);
+			const { startDate } = myBooking;
+			const { ownerId: spotOwner } = myBooking.Spot;
 
 			if (new Date(startDate) < new Date()) {
 				throw new Error("Bookings that have been started can't be deleted");
 			}
 
-			if (Number(userId) === Number(ownerId)) return next();
+			// no need to check if we own the booking
+			if (Number(userId) === Number(spotOwner)) return next();
 		}
-
-		const { ownerId } = myBooking.Spot;
 
 		if (Number(userId) !== Number(ownerId)) throw new Error("Forbidden");
 	} catch (err) {
@@ -96,7 +100,9 @@ router.put(
 
 		try {
 			// find Booking with associated spot and all its bookings
-			const { Bookings } = await Booking.findByPk(bookingsId, { include }).Spot;
+			const myBooking = await Booking.findByPk(bookingsId, { include });
+
+			const { Bookings } = myBooking.Spot;
 
 			// Validate Dates dont conflict with any others
 			const dates = { startDate, endDate };

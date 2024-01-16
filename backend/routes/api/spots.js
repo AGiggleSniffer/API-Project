@@ -88,26 +88,37 @@ router.get("/", validateQueryFilters, async (req, res, next) => {
 			model: SpotImage,
 		},
 	];
-	const where = {
-		lat: {
+	const where = {};
+
+	if (minLat && maxLat) {
+		where.lat = {
 			[Op.and]: {
 				[Op.gt]: minLat,
 				[Op.lt]: maxLat,
 			},
-		},
-		lng: {
+		};
+	} else if (minLat) where.lat = { [Op.gt]: minLat };
+	else if (maxLat) where.lat = { [Op.lt]: maxLat };
+
+	if (minLng && maxLng) {
+		where.lng = {
 			[Op.and]: {
 				[Op.gt]: minLng,
 				[Op.lt]: maxLng,
 			},
-		},
-		price: {
+		};
+	} else if (minLng) where.lng = { [Op.gt]: minLng };
+	else if (maxLng) where.lng = { [Op.lt]: maxLng };
+
+	if (minPrice && maxPrice) {
+		where.price = {
 			[Op.and]: {
 				[Op.gt]: minPrice,
 				[Op.lt]: maxPrice,
 			},
-		},
-	};
+		};
+	} else if (minPrice) where.price = { [Op.gt]: minPrice };
+	else if (maxPrice) where.price = { [Op.lt]: maxPrice };
 
 	const pagination = _paginationBuilder(page, size);
 
@@ -346,7 +357,7 @@ router.post("/:id/bookings", requireAuth, async (req, res, next) => {
 	const { startDate, endDate } = req.body;
 	const { id: spotId } = req.params;
 	const { id: userId } = req.user;
-	const where = { spotId: spotId }
+	const where = { spotId: spotId };
 
 	try {
 		// Check if spot Exists
