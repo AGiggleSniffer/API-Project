@@ -73,17 +73,15 @@ app.use((_req, _res, next) => {
 
 // Error Handlers for common known errors
 app.use((err, req, res, next) => {
-	if (
-		err.message === "Authentication required" ||
-		err.message === "Invalid credentials"
-	) {
-		return res.json({ message: err.message });
+	if (err.message === "Invalid credentials") {
+		return res.status(401).json({ message: err.message });
 	}
 
 	if (
 		err.message === "Forbidden" ||
 		err.message === "Maximum number of images for this resource was reached" ||
-		err.message === "Bookings that have been started can't be deleted"
+		err.message === "Bookings that have been started can't be deleted" ||
+		err.message === "Past bookings can't be modified"
 	) {
 		return res.status(403).json({ message: err.message });
 	}
@@ -96,6 +94,10 @@ app.use((err, req, res, next) => {
 		err.message === "Sorry, this spot is already booked for the specified dates"
 	) {
 		res.status(403);
+	}
+
+	if (err.messaage === "Validation error") {
+		res.status(400);
 	}
 
 	return next(err);

@@ -18,7 +18,7 @@ const testAuthorization = async (req, res, next) => {
 
 		if (req.method === "DELETE") {
 			const { spotId, startDate } = myBooking;
-			const { userId: ownerId } = await Spot.findByPk(spotId);
+			const { ownerId } = await Spot.findByPk(spotId);
 
 			if (new Date(startDate) < new Date()) {
 				throw new Error("Bookings that have been started can't be deleted");
@@ -27,7 +27,7 @@ const testAuthorization = async (req, res, next) => {
 			if (Number(userId) === Number(ownerId)) return next();
 		}
 
-		const { userId: ownerId } = myBooking.Spot;
+		const { ownerId } = myBooking.Spot;
 
 		if (Number(userId) !== Number(ownerId)) throw new Error("Forbidden");
 	} catch (err) {
@@ -53,15 +53,15 @@ router.get("/current", requireAuth, async (req, res, next) => {
 	};
 
 	try {
-		const myBookings = await Booking.findAll({ where, include });
+		const Bookings = await Booking.findAll({ where, include });
 
-		myBookings.forEach((ele) => {
+		Bookings.forEach((ele) => {
 			const { Spot } = ele;
 
 			formatSpots([Spot], true, false);
 		});
 
-		return res.json(myBookings);
+		return res.json({ Bookings });
 	} catch (err) {
 		return next(err);
 	}

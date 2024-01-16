@@ -121,7 +121,7 @@ router.put(
 		const { review, stars } = req.body;
 		const { reviewId } = req.params;
 		const payload = {
-			reviewMsg: review,
+			review: review,
 			stars: stars,
 		};
 		const options = {
@@ -158,7 +158,7 @@ router.delete(
 	testAuthorization,
 	async (req, res, next) => {
 		const { reviewId } = req.params;
-		const where = { id: reviewId };
+		const where = { id: +reviewId };
 
 		try {
 			await Review.destroy({ where });

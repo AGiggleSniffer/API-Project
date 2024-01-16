@@ -29,7 +29,7 @@ module.exports = {
 					references: { model: "Spots" },
 					allowNull: false,
 				},
-				reviewMsg: {
+				review: {
 					type: Sequelize.STRING,
 					allowNull: false,
 				},
@@ -40,10 +40,12 @@ module.exports = {
 				createdAt: {
 					allowNull: false,
 					type: Sequelize.DATE,
+					defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
 				},
 				updatedAt: {
 					allowNull: false,
 					type: Sequelize.DATE,
+					defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
 				},
 			},
 			options,

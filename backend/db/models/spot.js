@@ -23,12 +23,12 @@ module.exports = (sequelize, DataTypes) => {
 				onDelete: "CASCADE",
 				hooks: true,
 			});
-			Spot.belongsTo(models.User, {as: "Owner", foreignKey: "userId" });
+			Spot.belongsTo(models.User, {as: "Owner", foreignKey: "ownerId" });
 		}
 	}
 	Spot.init(
 		{
-			userId: {
+			ownerId: {
 				type: DataTypes.INTEGER,
 				allowNull: false,
 				onDelete: "CASCADE",
@@ -126,7 +126,7 @@ module.exports = (sequelize, DataTypes) => {
 					notNull: { msg: "Price per day is required - null" },
 					min: {
 						args: -1,
-						msg: "Price per day is required - min",
+						msg: "Price per day is required",
 					},
 				},
 			},

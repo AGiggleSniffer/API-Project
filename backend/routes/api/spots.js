@@ -27,7 +27,7 @@ const testAuthorization = async (req, res, next) => {
 
 		if (!mySpot) throw new Error("Spot couldn't be found");
 
-		const { userId: ownerId } = mySpot;
+		const { ownerId } = mySpot;
 
 		if (Number(userId) !== Number(ownerId)) throw new Error("Forbidden");
 	} catch (err) {
@@ -139,7 +139,7 @@ function _paginationBuilder(page, size) {
 // Get spots by user with authorization
 router.get("/current", requireAuth, async (req, res, next) => {
 	const { id: userId } = req.user;
-	const where = { userId: userId };
+	const where = { ownerId: userId };
 	const include = [
 		{
 			model: Review,
@@ -237,7 +237,7 @@ router.get("/:id/bookings", requireAuth, async (req, res, next) => {
 
 		if (!mySpot) throw new Error("Spot couldn't be found");
 
-		const { userId: ownerId, Bookings } = mySpot;
+		const { ownerId, Bookings } = mySpot;
 
 		if (ownerId !== userId) {
 			Bookings.forEach((ele, i) => {
@@ -264,7 +264,7 @@ router.post("/", requireAuth, async (req, res, next) => {
 		req.body;
 
 	const query = {
-		userId: userId,
+		ownerId: userId,
 		address: address,
 		city: city,
 		state: state,
@@ -320,7 +320,7 @@ router.post("/:id/reviews", requireAuth, async (req, res, next) => {
 		spotId: +spotId,
 	};
 	const defaults = {
-		reviewMsg: review,
+		review: review,
 		stars: stars,
 	};
 
@@ -346,17 +346,18 @@ router.post("/:id/bookings", requireAuth, async (req, res, next) => {
 	const { startDate, endDate } = req.body;
 	const { id: spotId } = req.params;
 	const { id: userId } = req.user;
+	const where = { spotId: spotId }
 
 	try {
 		// Check if spot Exists
 		const mySpot = await Spot.findByPk(spotId);
 		if (!mySpot) throw new Error("Spot couldn't be found");
 		// & Who owns it
-		const { userId: ownerId } = mySpot;
+		const { ownerId } = mySpot;
 		if (Number(userId) === Number(ownerId)) throw new Error("Forbidden");
 
 		// Grab all Bookings
-		const spotBookings = await Booking.findAll({ where: { spotId: spotId } });
+		const spotBookings = await Booking.findAll({ where });
 
 		// Validate Dates dont conflict with any others
 		const dates = { startDate, endDate };
@@ -364,7 +365,7 @@ router.post("/:id/bookings", requireAuth, async (req, res, next) => {
 
 		// test if booking is for the future
 		if (new Date(startDate) <= new Date()) {
-			throw new Error("Past bookings can't be made");
+			throw new Error("Past bookings can't be modified");
 		}
 
 		// Create

@@ -13,7 +13,7 @@ const testAuthorization = async (req, res, next) => {
 
 		if (!mySpotImage) throw new Error("Spot couldn't be found");
 
-		const { userId: ownerId } = mySpotImage.Spot;
+		const { ownerId } = mySpotImage.Spot;
 
 		if (Number(userId) !== Number(ownerId)) throw new Error("Forbidden");
 	} catch (err) {
