@@ -96,7 +96,7 @@ app.use((err, req, res, next) => {
 		res.status(403);
 	}
 
-	if (err.messaage === "Validation error") {
+	if (err.message === "Validation error") {
 		res.status(400);
 	}
 
