@@ -128,7 +128,7 @@ router.get("/", validateQueryFilters, async (req, res, next) => {
 		// Add avgRating and oneImage is TRUE
 		formatSpots(Spots, true);
 
-		return res.json({ Spots });
+		return res.json({ Spots, page, size });
 	} catch (err) {
 		return next(err);
 	}
@@ -448,7 +448,7 @@ router.delete(
 	async (req, res, next) => {
 		const { id: spotId } = req.params;
 		const where = { id: spotId };
-		
+
 		try {
 			await Spot.destroy({ where });
 
