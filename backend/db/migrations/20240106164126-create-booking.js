@@ -26,6 +26,7 @@ module.exports = {
 					type: Sequelize.INTEGER,
 					references: { model: "Spots" },
 					allowNull: false,
+					onDelete: "CASCADE",
 				},
 				startDate: {
 					type: Sequelize.DATEONLY,

@@ -97,6 +97,7 @@ app.use((err, req, res, next) => {
 	}
 
 	if (err.message === "Validation error") {
+		console.log("Working")
 		res.status(400);
 	}
 
