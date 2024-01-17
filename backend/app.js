@@ -96,11 +96,6 @@ app.use((err, req, res, next) => {
 		res.status(403);
 	}
 
-	if (err.message === "Validation error") {
-		console.log("Working")
-		res.status(400);
-	}
-
 	return next(err);
 });
 
@@ -113,6 +108,7 @@ app.use((err, _req, _res, next) => {
 			errors[error.path] = error.message;
 		}
 		err.title = "Validation error";
+		err.status = 400;
 		err.errors = errors;
 	}
 	next(err);
