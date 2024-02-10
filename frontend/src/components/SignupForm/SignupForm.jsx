@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
+import { FaCircleXmark } from "react-icons/fa6";
 import { useModal } from "../../context/Modal";
 import * as sessionActions from "../../store/session";
 import "./SignupForm.css";
@@ -62,7 +63,12 @@ function SignupFormModal() {
 					onChange={(e) => setEmail(e.target.value)}
 					required
 				/>
-				{errors.email && <p>{errors.email}</p>}
+				{errors.email && (
+					<p>
+						<FaCircleXmark />
+						{errors.email}
+					</p>
+				)}
 				<input
 					placeholder="Username"
 					type="text"
@@ -70,7 +76,12 @@ function SignupFormModal() {
 					onChange={(e) => setUsername(e.target.value)}
 					required
 				/>
-				{errors.username && <p>{errors.username}</p>}
+				{errors.username && (
+					<p>
+						<FaCircleXmark />
+						{errors.username}
+					</p>
+				)}
 				<input
 					placeholder="First Name"
 					type="text"
@@ -78,7 +89,12 @@ function SignupFormModal() {
 					onChange={(e) => setFirstName(e.target.value)}
 					required
 				/>
-				{errors.firstName && <p>{errors.firstName}</p>}
+				{errors.firstName && (
+					<p>
+						<FaCircleXmark />
+						{errors.firstName}
+					</p>
+				)}
 				<input
 					placeholder="Last Name"
 					type="text"
@@ -86,7 +102,12 @@ function SignupFormModal() {
 					onChange={(e) => setLastName(e.target.value)}
 					required
 				/>
-				{errors.lastName && <p>{errors.lastName}</p>}
+				{errors.lastName && (
+					<p>
+						<FaCircleXmark />
+						{errors.lastName}
+					</p>
+				)}
 				<input
 					placeholder="Password"
 					type="password"
@@ -94,7 +115,12 @@ function SignupFormModal() {
 					onChange={(e) => setPassword(e.target.value)}
 					required
 				/>
-				{errors.password && <p>{errors.password}</p>}
+				{errors.password && (
+					<p>
+						<FaCircleXmark />
+						{errors.password}
+					</p>
+				)}
 				<input
 					placeholder="Confirm Password"
 					type="password"
@@ -102,7 +128,12 @@ function SignupFormModal() {
 					onChange={(e) => setConfirmPassword(e.target.value)}
 					required
 				/>
-				{errors.confirmPassword && <p>{errors.confirmPassword}</p>}
+				{errors.confirmPassword && (
+					<p>
+						<FaCircleXmark />
+						{errors.confirmPassword}
+					</p>
+				)}
 				<button
 					type="submit"
 					style={{

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { FaCircleXmark } from "react-icons/fa6";
 import * as sessionActions from "../../store/session";
 import { useDispatch } from "react-redux";
 import { useModal } from "../../context/Modal";
@@ -19,8 +20,8 @@ export default function LoginForm() {
 			.then(closeModal)
 			.catch(async (res) => {
 				const data = await res.json();
-				if (data && data.errors) {
-					setErrors(data.errors);
+				if (data && data.message) {
+					setErrors({credential: data.message});
 				}
 			});
 	};
@@ -30,7 +31,7 @@ export default function LoginForm() {
 			setMousePosition({ x: e.offsetX, y: e.offsetY });
 		window.addEventListener("mousemove", updateMousePos);
 		return () => window.removeEventListener("mousemove", updateMousePos);
-	}, []);
+	}, [errors]);
 
 	return (
 		<>
@@ -51,7 +52,7 @@ export default function LoginForm() {
 					onChange={(e) => setPassword(e.target.value)}
 					required
 				/>
-				{errors.credential && <p>{errors.credential}</p>}
+				{errors.credential && <p><FaCircleXmark />{errors.credential}</p>}
 				<button
 					type="submit"
 					style={{
