@@ -1,0 +1,46 @@
+menu {
+	position: absolute;
+	right: 20px;
+	top: 60px;
+	width: 150px;
+	box-shadow: 0px 0px 10px var(--Light-Grey);
+	border-radius: 8px;
+	list-style: none;
+	margin: 0;
+	padding: 8px 0;
+	background-color: var(--White);
+}
+
+menu > :hover {
+	background-color: var(--Light-Grey);
+	cursor: pointer;
+}
+menu > :active {
+	transition: box-shadow 200ms;
+	box-shadow: inset 0px 0px 15px var(--Dark-Grey);
+}
+
+menu > li {
+	padding: 10px;
+}
+
+button.profile-button {
+	display: flex;
+	justify-content: space-evenly;
+	align-items: center;
+	width: 65px;
+	height: 35px;
+	background-color: var(--White);
+	border: solid var(--Light-Grey) 1px;
+	border-radius: 20px;
+}
+
+button:hover.profile-button,
+button.menu-open {
+	box-shadow: 0px 2px 5px var(--Light-Grey);
+	transition: box-shadow 200ms;
+}
+
+button.profile-button:active {
+	box-shadow: inset 0px 0px 3px var(--Light-Grey);
+}

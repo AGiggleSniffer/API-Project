@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useModal } from "../../context/Modal";
 import * as sessionActions from "../../store/session";
@@ -13,6 +13,7 @@ function SignupFormModal() {
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [errors, setErrors] = useState({});
+	const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 	const { closeModal } = useModal();
 
 	const handleSubmit = (e) => {
@@ -42,71 +43,74 @@ function SignupFormModal() {
 		});
 	};
 
+	useEffect(() => {
+		const updateMousePos = (e) =>
+			setMousePosition({ x: e.offsetX, y: e.offsetY });
+		window.addEventListener("mousemove", updateMousePos);
+		return () => window.removeEventListener("mousemove", updateMousePos);
+	}, []);
+
 	return (
 		<>
-			<h1>Sign Up</h1>
+			<h1 className="form-header">Sign Up</h1>
 			<form onSubmit={handleSubmit}>
-				<label>
-					Email
-					<input
-						type="text"
-						value={email}
-						onChange={(e) => setEmail(e.target.value)}
-						required
-					/>
-				</label>
+				<strong>Welcome to AirBnB</strong>
+				<input
+					placeholder="Email"
+					type="text"
+					value={email}
+					onChange={(e) => setEmail(e.target.value)}
+					required
+				/>
 				{errors.email && <p>{errors.email}</p>}
-				<label>
-					Username
-					<input
-						type="text"
-						value={username}
-						onChange={(e) => setUsername(e.target.value)}
-						required
-					/>
-				</label>
+				<input
+					placeholder="Username"
+					type="text"
+					value={username}
+					onChange={(e) => setUsername(e.target.value)}
+					required
+				/>
 				{errors.username && <p>{errors.username}</p>}
-				<label>
-					First Name
-					<input
-						type="text"
-						value={firstName}
-						onChange={(e) => setFirstName(e.target.value)}
-						required
-					/>
-				</label>
+				<input
+					placeholder="First Name"
+					type="text"
+					value={firstName}
+					onChange={(e) => setFirstName(e.target.value)}
+					required
+				/>
 				{errors.firstName && <p>{errors.firstName}</p>}
-				<label>
-					Last Name
-					<input
-						type="text"
-						value={lastName}
-						onChange={(e) => setLastName(e.target.value)}
-						required
-					/>
-				</label>
+				<input
+					placeholder="Last Name"
+					type="text"
+					value={lastName}
+					onChange={(e) => setLastName(e.target.value)}
+					required
+				/>
 				{errors.lastName && <p>{errors.lastName}</p>}
-				<label>
-					Password
-					<input
-						type="password"
-						value={password}
-						onChange={(e) => setPassword(e.target.value)}
-						required
-					/>
-				</label>
+				<input
+					placeholder="Password"
+					type="password"
+					value={password}
+					onChange={(e) => setPassword(e.target.value)}
+					required
+				/>
 				{errors.password && <p>{errors.password}</p>}
-				<label>
-					Confirm Password
-					<input
-						type="password"
-						value={confirmPassword}
-						onChange={(e) => setConfirmPassword(e.target.value)}
-						required
-					/>
-				</label>
+				<input
+					placeholder="Confirm Password"
+					type="password"
+					value={confirmPassword}
+					onChange={(e) => setConfirmPassword(e.target.value)}
+					required
+				/>
 				{errors.confirmPassword && <p>{errors.confirmPassword}</p>}
-				<button type="submit">Sign Up</button>
+				<button
+					type="submit"
+					style={{
+						backgroundImage: `radial-gradient( circle at ${mousePosition.x}px ${mousePosition.y}px, var(--Light-Red), var(--Red) 60% )`,
+					}}
+				>
+					Sign Up
+				</button>
 			</form>
 		</>
 	);

@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
-import { FaUserCircle } from "react-icons/fa";
+import { FaUserCircle, FaBars } from "react-icons/fa";
 import * as sessionActions from "../../store/session";
 import OpenModalMenuItem from "../OpenModalMenuItem";
-// import OpenModalButton from "../OpenModalButton";
 import LoginForm from "../LoginForm";
 import SignupForm from "../SignupForm";
+import "./ProfileButton.css"
 
 export default function ProfileButton({ user }) {
   const dispatch = useDispatch();
@@ -40,13 +40,15 @@ export default function ProfileButton({ user }) {
 	};
 
 	const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden");
+	const buttonClassName = "profile-button" + (showMenu ? " menu-open" : "");
 
 	return (
 		<>
-			<button onClick={toggleMenu}>
+			<button className={buttonClassName} onClick={toggleMenu}>
+				<FaBars />
 				<FaUserCircle />
 			</button>
-			<ul className={ulClassName} ref={ulRef}>
+			<menu className={ulClassName} ref={ulRef}>
 				{user ? (
 					<>
 						<li>{user.username}</li>
@@ -72,7 +74,7 @@ export default function ProfileButton({ user }) {
 						/>
 					</>
 				)}
-			</ul>
+			</menu>
 		</>
 	);
 }
