@@ -10,6 +10,7 @@ export default function LoginForm() {
 	const [credential, setCredential] = useState("");
 	const [password, setPassword] = useState("");
 	const [errors, setErrors] = useState({});
+	const [disabled, setDisabled] = useState(true);
 	const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 	const { closeModal } = useModal();
 
@@ -21,14 +22,25 @@ export default function LoginForm() {
 			.catch(async (res) => {
 				const data = await res.json();
 				if (data && data.message) {
-					setErrors({credential: data.message});
+					setErrors({ credential: data.message });
 				}
 			});
 	};
 
+	const loginDemo = () => {
+		setCredential("Demo-lition");
+		setPassword("password");
+	};
+
 	useEffect(() => {
-		const updateMousePos = (e) =>
+		if (credential.length < 4 || password.length < 6) setDisabled(true);
+		else setDisabled(false);
+	}, [credential, password]);
+
+	useEffect(() => {
+		const updateMousePos = (e) => {
 			setMousePosition({ x: e.offsetX, y: e.offsetY });
+		};
 		window.addEventListener("mousemove", updateMousePos);
 		return () => window.removeEventListener("mousemove", updateMousePos);
 	}, [errors]);
@@ -38,6 +50,12 @@ export default function LoginForm() {
 			<h1 className="form-header">Log In</h1>
 			<form onSubmit={handleSubmit}>
 				<strong>Welcome Back</strong>
+				{errors.credential && (
+					<div>
+						<FaCircleXmark />
+						<p>{errors.credential}</p>
+					</div>
+				)}
 				<input
 					placeholder="Username or Email"
 					type="text"
@@ -52,14 +70,17 @@ export default function LoginForm() {
 					onChange={(e) => setPassword(e.target.value)}
 					required
 				/>
-				{errors.credential && <p><FaCircleXmark />{errors.credential}</p>}
 				<button
 					type="submit"
+					disabled={disabled}
 					style={{
 						backgroundImage: `radial-gradient( circle at ${mousePosition.x}px ${mousePosition.y}px, var(--Light-Red), var(--Red) 60% )`,
 					}}
 				>
 					Log In
+				</button>
+				<button type="submit" onClick={loginDemo} className="demo">
+					Demo User
 				</button>
 			</form>
 		</>

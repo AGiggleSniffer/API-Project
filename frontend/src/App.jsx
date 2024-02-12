@@ -1,5 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Layout from "./components/Layout";
+import SpotsList from "./components/SpotsList";
 
 const router = createBrowserRouter([
 	{
@@ -7,7 +8,7 @@ const router = createBrowserRouter([
 		children: [
 			{
 				path: "/",
-				element: <h1>Welcome!</h1>,
+				element: <SpotsList />,
 			},
 		],
 	},

@@ -11,12 +11,12 @@ nav {
 	border-bottom: var(--Light-Grey) solid 2px;
 }
 
-span {
+nav > span {
 	display: flex;
 	flex-basis: max-content;
 	justify-content: right;
 	align-items: center;
-	padding: 20px;
+	margin: 20px;
 }
 
 .logo > * {

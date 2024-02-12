@@ -1,0 +1,7 @@
+.spot-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 200px);
+    padding: 10px;
+    justify-content: center;
+}
+

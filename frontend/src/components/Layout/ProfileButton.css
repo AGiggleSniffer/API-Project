@@ -35,10 +35,8 @@ button.profile-button {
 	border-radius: 20px;
 }
 
-button:hover.profile-button,
 button.menu-open {
 	box-shadow: 0px 2px 5px var(--Light-Grey);
-	transition: box-shadow 200ms;
 }
 
 button.profile-button:active {

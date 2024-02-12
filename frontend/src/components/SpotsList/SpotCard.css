@@ -1,0 +1,58 @@
+.spot-card {
+	display: grid;
+	grid-template-rows: 150px 1.5fr 1fr;
+	grid-template-columns: 2fr 1fr;
+	margin: 10px;
+	cursor: pointer;
+}
+
+.image-container {
+	display: flex;
+	grid-column-start: 1;
+	grid-column-end: 3;
+    border-radius: 10px;
+	justify-content: center;
+	align-items: center;
+    opacity: 100%;
+    box-shadow: inset 0px 0px 5px var(--Light-Grey);
+    overflow: hidden;
+    transition: transform 200ms ease;
+}
+
+.spot-image {
+    z-index: -1;
+	height: 100%;
+    transition: transform 300ms ease-in-out;
+}
+
+.image-container:hover, .spot-image:hover {
+    transform: scale(1.2);
+    box-shadow: 0px 0px 5px var(--Light-Grey);
+}
+
+.rating {
+	display: flex;
+	justify-content: right;
+	color: var(--Red);
+}
+
+.price {
+	grid-column-start: 1;
+	grid-column-end: 3;
+
+	font-size: 12px;
+	color: var(--Dark-Grey);
+}
+
+.details {
+	font-size: 14px;
+	color: var(--Dark-Grey);
+}
+
+.spot-card > span {
+	padding-top: 5px;
+}
+
+.spot-card strong {
+	color: var(--Black);
+}

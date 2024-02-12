@@ -13,6 +13,7 @@ function SignupFormModal() {
 	const [lastName, setLastName] = useState("");
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
+	const [disabled, setDisabled] = useState(true);
 	const [errors, setErrors] = useState({});
 	const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 	const { closeModal } = useModal();
@@ -39,10 +40,24 @@ function SignupFormModal() {
 				});
 		}
 		return setErrors({
-			confirmPassword:
-				"Confirm Password field must be the same as the Password field",
+			confirmPassword: "Passwords must match",
 		});
 	};
+
+	useEffect(() => {
+		if (
+			username.length < 4 ||
+			password.length < 6 ||
+			!firstName.length ||
+			!lastName.length ||
+			!password.length ||
+			!confirmPassword.length
+		) {
+			setDisabled(true);
+		} else {
+			setDisabled(false);
+		}
+	}, [username, password, firstName, lastName, confirmPassword]);
 
 	useEffect(() => {
 		const updateMousePos = (e) =>
@@ -56,6 +71,12 @@ function SignupFormModal() {
 			<h1 className="form-header">Sign Up</h1>
 			<form onSubmit={handleSubmit}>
 				<strong>Welcome to AirBnB</strong>
+				{errors.email && (
+					<div>
+						<FaCircleXmark />
+						<p>{errors.email}</p>
+					</div>
+				)}
 				<input
 					placeholder="Email"
 					type="text"
@@ -63,11 +84,11 @@ function SignupFormModal() {
 					onChange={(e) => setEmail(e.target.value)}
 					required
 				/>
-				{errors.email && (
-					<p>
+				{errors.username && (
+					<div>
 						<FaCircleXmark />
-						{errors.email}
-					</p>
+						<p>{errors.username}</p>
+					</div>
 				)}
 				<input
 					placeholder="Username"
@@ -76,11 +97,11 @@ function SignupFormModal() {
 					onChange={(e) => setUsername(e.target.value)}
 					required
 				/>
-				{errors.username && (
-					<p>
+				{errors.firstName && (
+					<div>
 						<FaCircleXmark />
-						{errors.username}
-					</p>
+						<p>{errors.firstName}</p>
+					</div>
 				)}
 				<input
 					placeholder="First Name"
@@ -89,11 +110,11 @@ function SignupFormModal() {
 					onChange={(e) => setFirstName(e.target.value)}
 					required
 				/>
-				{errors.firstName && (
-					<p>
+				{errors.lastName && (
+					<div>
 						<FaCircleXmark />
-						{errors.firstName}
-					</p>
+						<p>{errors.lastName}</p>
+					</div>
 				)}
 				<input
 					placeholder="Last Name"
@@ -102,11 +123,11 @@ function SignupFormModal() {
 					onChange={(e) => setLastName(e.target.value)}
 					required
 				/>
-				{errors.lastName && (
-					<p>
+				{errors.password && (
+					<div>
 						<FaCircleXmark />
-						{errors.lastName}
-					</p>
+						<p>{errors.password}</p>
+					</div>
 				)}
 				<input
 					placeholder="Password"
@@ -115,11 +136,11 @@ function SignupFormModal() {
 					onChange={(e) => setPassword(e.target.value)}
 					required
 				/>
-				{errors.password && (
-					<p>
+				{errors.confirmPassword && (
+					<div>
 						<FaCircleXmark />
-						{errors.password}
-					</p>
+						<p>{errors.confirmPassword}</p>
+					</div>
 				)}
 				<input
 					placeholder="Confirm Password"
@@ -128,14 +149,9 @@ function SignupFormModal() {
 					onChange={(e) => setConfirmPassword(e.target.value)}
 					required
 				/>
-				{errors.confirmPassword && (
-					<p>
-						<FaCircleXmark />
-						{errors.confirmPassword}
-					</p>
-				)}
 				<button
 					type="submit"
+					disabled={disabled}
 					style={{
 						backgroundImage: `radial-gradient( circle at ${mousePosition.x}px ${mousePosition.y}px, var(--Light-Red), var(--Red) 60% )`,
 					}}
