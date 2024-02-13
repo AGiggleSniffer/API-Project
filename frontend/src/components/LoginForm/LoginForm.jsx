@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { FaCircleXmark } from "react-icons/fa6";
 import * as sessionActions from "../../store/session";
 import { useDispatch } from "react-redux";
@@ -13,6 +13,7 @@ export default function LoginForm() {
 	const [disabled, setDisabled] = useState(true);
 	const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 	const { closeModal } = useModal();
+	const ref = useRef();
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -41,8 +42,9 @@ export default function LoginForm() {
 		const updateMousePos = (e) => {
 			setMousePosition({ x: e.offsetX, y: e.offsetY });
 		};
-		window.addEventListener("mousemove", updateMousePos);
-		return () => window.removeEventListener("mousemove", updateMousePos);
+		const buttonRef = ref.current;
+		buttonRef.addEventListener("mousemove", updateMousePos);
+		return () => buttonRef.removeEventListener("mousemove", updateMousePos);
 	}, []);
 
 	return (
@@ -73,6 +75,7 @@ export default function LoginForm() {
 				<button
 					type="submit"
 					disabled={disabled}
+					ref={ref}
 					style={{
 						backgroundImage: `radial-gradient( circle at ${mousePosition.x}px ${mousePosition.y}px, var(--Light-Red), var(--Red) 60% )`,
 					}}

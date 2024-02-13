@@ -6,40 +6,48 @@ export default function SpotCard({ spot }) {
 	const { city, state, avgStarRating, price, previewImage, description, name } =
 		spot;
 
-	const ref = useRef();
 	const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-	const [tooltipDisabled, setTooltipDisabled] = useState(false);
+	const [tooltipBool, setTooltip] = useState(false);
+	const ref = useRef();
 
 	useEffect(() => {
 		const updateMousePos = (e) => {
-			const cache = { x: e.clientX, y: e.clientY };
 			setMousePosition({ x: e.clientX, y: e.clientY });
-
-			console.log(cache === mousePosition, cache, mousePosition);
 		};
-		ref.current.addEventListener("mousemove", updateMousePos);
-		return () => window.removeEventListener("mousemove", updateMousePos);
+
+		const imageContainer = ref.current;
+		imageContainer.addEventListener("mousemove", updateMousePos);
+		return () =>
+			imageContainer.removeEventListener("mousemove", updateMousePos);
 	}, [mousePosition]);
 
 	useEffect(() => {
-		const time = 1000;
-
-		const setTooltip = (e) => {
-			const myTimeout = setTimeout(() => {
-				setTooltipDisabled(true);
-			}, time);
+		const delay = 1000;
+		let timeoutID;
+		const enableTooltip = () => {
+			timeoutID = setTimeout(() => {
+				setTooltip(true);
+			}, delay);
 		};
 
-		ref.current.addEventListener("mouseover", setTooltip);
+		const disableTooltip = () => {
+			clearTimeout(timeoutID);
+			setTooltip(false);
+		};
+
+		const imageContainer = ref.current;
+		imageContainer.addEventListener("mouseenter", enableTooltip);
+		imageContainer.addEventListener("mouseleave", disableTooltip);
 		return () => {
-			window.removeEventListener("mouseover", setTooltip);
+			imageContainer.removeEventListener("mouseenter", enableTooltip);
+			imageContainer.removeEventListener("mouseleave", disableTooltip);
 		};
-	}, [price]);
+	}, []);
 
 	return (
 		<>
-			<div className="spot-card" ref={ref}>
-				<div className="image-container">
+			<div className="spot-card">
+				<div className="image-container" ref={ref}>
 					<img src={previewImage} alt={description} className="spot-image" />
 				</div>
 				<span className="details">
@@ -48,18 +56,18 @@ export default function SpotCard({ spot }) {
 				</span>
 				<span className="rating">
 					<FaRegStar />
-					{avgStarRating.toFixed(1)}
+					{(typeof avgStarRating === "number") ? avgStarRating.toFixed(1) : avgStarRating}
 				</span>
 				<span className="price">
 					<strong>${price}</strong> night
 				</span>
 			</div>
-			{tooltipDisabled && (
+			{tooltipBool && (
 				<div
 					className="tooltip"
-					style={{ top: mousePosition.y + 10, left: mousePosition.x + 10 }}
+					style={{ top: mousePosition.y + 20, left: mousePosition.x + 10 }}
 				>
-					{city}
+					<strong>{name}</strong>, {city}
 				</div>
 			)}
 		</>

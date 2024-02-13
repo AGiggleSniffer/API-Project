@@ -13,7 +13,7 @@ export default function Navigation({ isLoaded }) {
 		<nav>
 			<span className="logo" onClick={handleClick}>
 				<FaAirbnb />
-				AirBnB
+				Book&Stay
 			</span>
 			{isLoaded && (
 				<span>

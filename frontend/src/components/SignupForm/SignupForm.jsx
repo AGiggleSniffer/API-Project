@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { FaCircleXmark } from "react-icons/fa6";
 import { useModal } from "../../context/Modal";
@@ -17,6 +17,7 @@ function SignupFormModal() {
 	const [errors, setErrors] = useState({});
 	const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 	const { closeModal } = useModal();
+	const ref = useRef();
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -62,8 +63,10 @@ function SignupFormModal() {
 	useEffect(() => {
 		const updateMousePos = (e) =>
 			setMousePosition({ x: e.offsetX, y: e.offsetY });
-		window.addEventListener("mousemove", updateMousePos);
-		return () => window.removeEventListener("mousemove", updateMousePos);
+
+		const buttonRef = ref.current;
+		buttonRef.addEventListener("mousemove", updateMousePos);
+		return () => buttonRef.removeEventListener("mousemove", updateMousePos);
 	}, []);
 
 	return (
@@ -152,6 +155,7 @@ function SignupFormModal() {
 				<button
 					type="submit"
 					disabled={disabled}
+					ref={ref}
 					style={{
 						backgroundImage: `radial-gradient( circle at ${mousePosition.x}px ${mousePosition.y}px, var(--Light-Red), var(--Red) 60% )`,
 					}}

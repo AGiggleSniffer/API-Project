@@ -23,7 +23,7 @@ function _avgStarRating(Reviews, mySpot) {
 			return acc + stars;
 		}, 0);
 	}
-	mySpot.avgStarRating = sum / Reviews.length || 0;
+	mySpot.avgStarRating = sum / Reviews.length || "New!";
 	delete mySpot.Reviews;
 }
 
