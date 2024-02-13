@@ -43,7 +43,7 @@ export default function LoginForm() {
 		};
 		window.addEventListener("mousemove", updateMousePos);
 		return () => window.removeEventListener("mousemove", updateMousePos);
-	}, [errors]);
+	}, []);
 
 	return (
 		<>

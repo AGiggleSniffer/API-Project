@@ -14,18 +14,19 @@ module.exports = {
 		 *   isBetaMember: false
 		 * }], {});
 		 */
-		const randomNum = (max) => Math.ceil((max - 1) * Math.random());
+		const randomNum = (max, min) =>
+			Math.floor(min + (max - min) * Math.random());
 
-		const generateImages = (numOfSpots = 20) =>
+		const generateImages = (numOfSpots = 100) =>
 			Array(numOfSpots)
 				.fill(null)
-				.map((spot, i) => {
-					const num = randomNum(300000);
+				.map((_, i) => {
+					const num = randomNum(300000, 100000);
 					const url = `https://images.pexels.com/photos/${num}/pexels-photo-${num}.jpeg`;
 
-					return spot = { spotId: i + 1, url: url, preview: true };
+					return { spotId: i + 1, url: url, preview: true };
 				});
-		
+
 		const imageArr = generateImages();
 
 		await SpotImage.bulkCreate(imageArr);
