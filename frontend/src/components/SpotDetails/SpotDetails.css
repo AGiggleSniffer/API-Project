@@ -1,0 +1,23 @@
+#image-board {
+    background-color: blue;
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+    padding: 20px;
+    align-items: center;
+    
+}
+
+#image-board > img {
+    background-color: brown;
+    height: 150px;
+    width: 150px;
+}
+
+#image-board > #main-image {
+    grid-row-start: 1;
+    grid-row-end: 3;
+    height: 320px;
+    width: 320px;
+}

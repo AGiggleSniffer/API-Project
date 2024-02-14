@@ -1,13 +1,15 @@
 import { useState, useEffect, useRef } from "react";
+import {useNavigate} from "react-router-dom"
 import { FaRegStar } from "react-icons/fa";
 import "./SpotCard.css";
 
 export default function SpotCard({ spot }) {
-	const { city, state, avgStarRating, price, previewImage, description, name } =
+	const { id, city, state, avgStarRating, price, previewImage, description, name } =
 		spot;
 
 	const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 	const [tooltipBool, setTooltip] = useState(false);
+	const navigate = useNavigate();
 	const ref = useRef();
 
 	useEffect(() => {
@@ -44,9 +46,13 @@ export default function SpotCard({ spot }) {
 		};
 	}, []);
 
+	const handleClick = () => {
+		navigate(`spot/${id}`);
+	}
+
 	return (
 		<>
-			<div className="spot-card">
+			<div className="spot-card" onClick={handleClick}>
 				<div className="image-container" ref={ref}>
 					<img src={previewImage} alt={description} className="spot-image" />
 				</div>
