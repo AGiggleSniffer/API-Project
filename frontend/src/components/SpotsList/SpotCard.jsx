@@ -15,6 +15,8 @@ export default function SpotCard({ spot }) {
 		name,
 	} = spot;
 
+	console.log(spot)
+
 	const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 	const [tooltipBool, setTooltip] = useState(false);
 	const navigate = useNavigate();

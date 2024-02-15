@@ -24,6 +24,7 @@
 	overflow: hidden;
 	border: 2px black solid;
 	box-shadow: 0 0 15px var(--Light-Grey);
+	border-radius: 3px;
 }
 
 #image-board img {
@@ -39,9 +40,6 @@
 
 #spot-location {
 	color: var(--Dark-Grey);
-}
-
-#host {
 }
 
 #reserve {
@@ -83,6 +81,16 @@
 
 #reserve-details {
 	display: flex;
+}
+
+#alert {
+	position: absolute;
+	background-color: var(--White);
+	box-shadow: 0px 0px 3px var(--Light-Grey);
+	border-radius: 5px;
+	bottom: 100px;
+	padding: 10px;
+	opacity: 80%;
 }
 
 #review-container {

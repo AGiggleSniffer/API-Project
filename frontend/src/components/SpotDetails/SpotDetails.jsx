@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { FaRegStar } from "react-icons/fa";
@@ -7,6 +7,7 @@ import "./SpotDetails.css";
 
 export default function SpotDetails() {
 	const { id } = useParams();
+	const [alertActive, setAlertActive] = useState(false);
 	const dispatch = useDispatch();
 	const spot = useSelector(selectSpot(id));
 
@@ -14,7 +15,16 @@ export default function SpotDetails() {
 		dispatch(findASpotById(id));
 	}, [dispatch, id]);
 
+	const handleClick = () => {
+		setAlertActive(true);
+		const delay = 3000;
+		setTimeout(() => {
+			setAlertActive(false);
+		}, delay);
+	};
+
 	if (!spot) return <h2>No Spot Exists for ID: {id}</h2>;
+	if (spot.avgStarRating === "New!") spot.avgStarRating = 0;
 	return (
 		<div id="details">
 			<div id="detail-header">
@@ -26,30 +36,35 @@ export default function SpotDetails() {
 					<img src={spot.SpotImages[0]?.url} />
 				</span>
 				<span>
-					<img src={spot.SpotImages[0]?.url} />
+					<img src={spot.SpotImages[1]?.url} />
 				</span>
 				<span>
-					<img src={spot.SpotImages[0]?.url} />
+					<img src={spot.SpotImages[2]?.url} />
 				</span>
 				<span>
-					<img src={spot.SpotImages[0]?.url} />
+					<img src={spot.SpotImages[3]?.url} />
 				</span>
 				<span>
-					<img src={spot.SpotImages[0]?.url} />
+					<img src={spot.SpotImages[4]?.url} />
 				</span>
 			</div>
 			<div id="reserve">
 				<span id="host">
-					<h3 >{`Hosted by ${spot.Owner.firstName} ${spot.Owner.lastName}`}</h3>
-					<p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eos, excepturi, architecto ad incidunt enim reiciendis eius quibusdam quisquam corrupti, aperiam vitae suscipit. Quam animi asperiores sunt nemo quisquam commodi velit. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Possimus distinctio est deleniti cupiditate libero? Ipsum, atque ullam temporibus, vel voluptatibus impedit hic sapiente quasi numquam nobis quisquam, distinctio quam maxime. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quas officia voluptate expedita recusandae architecto error mollitia reiciendis velit? Veritatis ullam placeat similique aspernatur laudantium optio nobis modi porro mollitia ducimus?</p>
+					<h3>
+						Hosted By {spot.Owner.firstName} {spot.Owner.lastName}
+					</h3>
+					<p>{spot.description}</p>
 				</span>
 				<span id="reserve-button-container">
 					<span>${spot.price} night</span>
 					<span id="reserve-details">
 						<FaRegStar />
-						{spot.avgStarRating} - {spot.numReviews} reviews
+						{spot.avgStarRating.toFixed(1)} - {spot.numReviews} reviews
 					</span>
-					<button id="reserve-button">Reserve</button>
+					<button onClick={handleClick} id="reserve-button">
+						Reserve
+					</button>
+					{alertActive && <div id="alert">Feature Coming Soon...</div>}
 				</span>
 			</div>
 			<div id="review-container">
