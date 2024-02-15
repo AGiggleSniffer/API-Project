@@ -18,8 +18,8 @@ export default function SpotDetails() {
 	return (
 		<div id="details">
 			<div id="detail-header">
-				<h2 id="spot-name">{spot.name}</h2>
-				<h3 id="spot-location">{`${spot.city}, ${spot.state}, ${spot.country}`}</h3>
+				<h3 id="spot-name">{spot.name}</h3>
+				<h4 id="spot-location">{`${spot.city}, ${spot.state}, ${spot.country}`}</h4>
 			</div>
 			<div id="image-board">
 				<span id="main-image">
@@ -39,8 +39,9 @@ export default function SpotDetails() {
 				</span>
 			</div>
 			<div id="reserve">
-				<span>
-					<h2 id="host">{`Hosted by ${spot.Owner.firstName} ${spot.Owner.lastName}`}</h2>
+				<span id="host">
+					<h3 >{`Hosted by ${spot.Owner.firstName} ${spot.Owner.lastName}`}</h3>
+					<p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eos, excepturi, architecto ad incidunt enim reiciendis eius quibusdam quisquam corrupti, aperiam vitae suscipit. Quam animi asperiores sunt nemo quisquam commodi velit. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Possimus distinctio est deleniti cupiditate libero? Ipsum, atque ullam temporibus, vel voluptatibus impedit hic sapiente quasi numquam nobis quisquam, distinctio quam maxime. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quas officia voluptate expedita recusandae architecto error mollitia reiciendis velit? Veritatis ullam placeat similique aspernatur laudantium optio nobis modi porro mollitia ducimus?</p>
 				</span>
 				<span id="reserve-button-container">
 					<span>${spot.price} night</span>

@@ -17,12 +17,13 @@
 
 #image-board span {
 	height: 100%;
-    max-width: 175px;
+	max-width: 175px;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	overflow: hidden;
-    border: 2px black solid;
+	border: 2px black solid;
+	box-shadow: 0 0 15px var(--Light-Grey);
 }
 
 #image-board img {
@@ -33,7 +34,7 @@
 #image-board #main-image {
 	grid-row-start: 1;
 	grid-row-end: 3;
-    max-width: 350px;
+	max-width: 350px;
 }
 
 #spot-location {
@@ -41,13 +42,17 @@
 }
 
 #host {
-	color: var(--Dark-Grey);
 }
 
 #reserve {
 	display: flex;
 	justify-content: space-between;
-	align-items: center;
+	align-items: baseline;
+}
+
+#reserve p {
+	max-width: 400px;
+	color: var(--Dark-Grey);
 }
 
 #reserve-button-container {
@@ -55,12 +60,12 @@
 	grid-template-rows: 1fr 1fr;
 	grid-template-columns: 1fr 1.5fr;
 	justify-content: center;
-    gap: 5px;
-    border: solid 2px var(--Black);
-    border-radius: 10px;
-    padding: 10px;
-    margin-top: 20px;
-    box-shadow: 0 2px 5px var(--Light-Grey);
+	gap: 5px;
+	border: solid 2px var(--Black);
+	border-radius: 10px;
+	padding: 10px;
+	margin-top: 20px;
+	box-shadow: 0 2px 5px var(--Light-Grey);
 }
 
 #reserve-button {
@@ -69,7 +74,7 @@
 	background-color: var(--Red);
 	border: none;
 	border-radius: 5px;
-    height: 30px;
+	height: 30px;
 }
 
 #reserve-button:active {
@@ -77,5 +82,10 @@
 }
 
 #reserve-details {
-    display: flex;
+	display: flex;
+}
+
+#review-container {
+	border-top: 2px solid var(--Dark-Grey);
+	margin-top: 20px;
 }
