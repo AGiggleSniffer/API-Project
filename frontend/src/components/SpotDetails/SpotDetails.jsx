@@ -1,8 +1,9 @@
-import { useParams } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
+import { FaRegStar } from "react-icons/fa";
 import { findASpotById, selectSpot } from "../../store/spot";
-import "./SpotDetails.css"
+import "./SpotDetails.css";
 
 export default function SpotDetails() {
 	const { id } = useParams();
@@ -13,27 +14,46 @@ export default function SpotDetails() {
 		dispatch(findASpotById(id));
 	}, [dispatch, id]);
 
+	if (!spot) return <h2>No Spot Exists for ID: {id}</h2>;
 	return (
-		<>
-			<h2 id="spot-name">{spot?.name}</h2>
-			<h3 id="spot-location">{`${spot?.city}, ${spot.state}, ${spot.country}`}</h3>
+		<div id="details">
+			<div id="detail-header">
+				<h2 id="spot-name">{spot.name}</h2>
+				<h3 id="spot-location">{`${spot.city}, ${spot.state}, ${spot.country}`}</h3>
+			</div>
 			<div id="image-board">
-				<img id="main-image"></img>
-				<img></img>
-				<img></img>
-				<img></img>
-				<img></img>
+				<span id="main-image">
+					<img src={spot.SpotImages[0]?.url} />
+				</span>
+				<span>
+					<img src={spot.SpotImages[0]?.url} />
+				</span>
+				<span>
+					<img src={spot.SpotImages[0]?.url} />
+				</span>
+				<span>
+					<img src={spot.SpotImages[0]?.url} />
+				</span>
+				<span>
+					<img src={spot.SpotImages[0]?.url} />
+				</span>
 			</div>
-			<h2 id="host">{`Hosted by ${spot?.Owner.firstName} ${spot?.Owner.lastName}`}</h2>
 			<div id="reserve">
-				<span>{spot?.price}</span>
-				<span>reviews</span>
-				<button>Reserve</button>
+				<span>
+					<h2 id="host">{`Hosted by ${spot.Owner.firstName} ${spot.Owner.lastName}`}</h2>
+				</span>
+				<span id="reserve-button-container">
+					<span>${spot.price} night</span>
+					<span id="reserve-details">
+						<FaRegStar />
+						{spot.avgStarRating} - {spot.numReviews} reviews
+					</span>
+					<button id="reserve-button">Reserve</button>
+				</span>
 			</div>
-			<br></br>
 			<div id="review-container">
 				<span>reviews</span>
 			</div>
-		</>
+		</div>
 	);
 }

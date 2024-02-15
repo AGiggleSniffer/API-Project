@@ -39,7 +39,7 @@ export const selectAllSpots = (state) => {
 };
 
 export const selectSpot = (id) => (state) => {
-	return state.spots.detailedSpots[id]
+	return state.spots.detailedSpots[id] || undefined;
 }
 
 export const selectSpotsArray = createSelector(selectAllSpots, (spots) => {

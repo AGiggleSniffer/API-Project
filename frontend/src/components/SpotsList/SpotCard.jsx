@@ -1,11 +1,19 @@
 import { useState, useEffect, useRef } from "react";
-import {useNavigate} from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 import { FaRegStar } from "react-icons/fa";
 import "./SpotCard.css";
 
 export default function SpotCard({ spot }) {
-	const { id, city, state, avgStarRating, price, previewImage, description, name } =
-		spot;
+	const {
+		id,
+		city,
+		state,
+		avgStarRating,
+		price,
+		previewImage,
+		description,
+		name,
+	} = spot;
 
 	const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 	const [tooltipBool, setTooltip] = useState(false);
@@ -48,7 +56,7 @@ export default function SpotCard({ spot }) {
 
 	const handleClick = () => {
 		navigate(`spot/${id}`);
-	}
+	};
 
 	return (
 		<>
@@ -62,7 +70,9 @@ export default function SpotCard({ spot }) {
 				</span>
 				<span className="rating">
 					<FaRegStar />
-					{(typeof avgStarRating === "number") ? avgStarRating.toFixed(1) : avgStarRating}
+					{typeof avgStarRating === "number"
+						? avgStarRating.toFixed(1)
+						: avgStarRating}
 				</span>
 				<span className="price">
 					<strong>${price}</strong> night
