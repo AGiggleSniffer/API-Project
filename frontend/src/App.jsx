@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Layout from "./components/Layout";
 import SpotsList from "./components/SpotsList";
 import SpotDetails from "./components/SpotDetails";
+import CreateSpotForm from "./components/CreateSpotForm";
 
 const router = createBrowserRouter([
 	{
@@ -12,8 +13,12 @@ const router = createBrowserRouter([
 				element: <SpotsList />,
 			},
 			{
-				path: "spot/:id",
+				path: "spots/:id",
 				element: <SpotDetails />
+			},
+			{
+				path: "spots/new",
+				element: <CreateSpotForm />
 			}
 		],
 	},

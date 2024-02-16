@@ -14,6 +14,7 @@ export default function LoginForm() {
 	const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 	const { closeModal } = useModal();
 	const ref = useRef();
+	const demoref = useRef();
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -43,14 +44,19 @@ export default function LoginForm() {
 			setMousePosition({ x: e.offsetX, y: e.offsetY });
 		};
 		const buttonRef = ref.current;
+		const demoButton = demoref.current;
 		buttonRef.addEventListener("mousemove", updateMousePos);
-		return () => buttonRef.removeEventListener("mousemove", updateMousePos);
+		demoButton.addEventListener("mousemove", updateMousePos);
+		return () => {
+			buttonRef.removeEventListener("mousemove", updateMousePos);
+			demoButton.removeEventListener("mousemove", updateMousePos);
+		};
 	}, []);
 
 	return (
 		<>
 			<h1 className="form-header">Log In</h1>
-			<form onSubmit={handleSubmit}>
+			<form className="modal-form" onSubmit={handleSubmit}>
 				<strong>Welcome Back</strong>
 				{errors.credential && (
 					<div>
@@ -82,7 +88,15 @@ export default function LoginForm() {
 				>
 					Log In
 				</button>
-				<button type="submit" onClick={loginDemo} className="demo">
+				<button
+					type="submit"
+					onClick={loginDemo}
+					className="demo"
+					ref={demoref}
+					style={{
+						backgroundImage: `radial-gradient( circle at ${mousePosition.x}px ${mousePosition.y}px, var(--Lighter-Grey), var(--Light-Grey) 60% )`,
+					}}
+				>
 					Demo User
 				</button>
 			</form>

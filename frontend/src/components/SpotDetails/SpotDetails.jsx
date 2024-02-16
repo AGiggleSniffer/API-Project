@@ -24,7 +24,6 @@ export default function SpotDetails() {
 	};
 
 	if (!spot) return <h2>No Spot Exists for ID: {id}</h2>;
-	if (spot.avgStarRating === "New!") spot.avgStarRating = 0;
 	return (
 		<div id="details">
 			<div id="detail-header">
@@ -59,7 +58,8 @@ export default function SpotDetails() {
 					<span>${spot.price} night</span>
 					<span id="reserve-details">
 						<FaRegStar />
-						{spot.avgStarRating.toFixed(1)} - {spot.numReviews} reviews
+						{isNaN(spot.avgStarRating) ? spot.avgStarRating : spot.avgStarRating.toFixed(1)} - {" "}
+						{spot.numReviews} reviews
 					</span>
 					<button onClick={handleClick} id="reserve-button">
 						Reserve

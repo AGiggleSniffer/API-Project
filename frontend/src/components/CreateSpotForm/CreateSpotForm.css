@@ -1,0 +1,22 @@
+#create-spot-form {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+#create-spot-form span {
+	border-bottom: 2px solid var(--Dark-Grey);
+	padding-bottom: 20px;
+}
+
+#create-spot-form h4 {
+	color: var(--Light-Teal);
+}
+
+#create-spot-form h3 {
+	margin-top: 5px;
+}
+
+#create-spot-form h2 {
+	margin-bottom: 0;
+}

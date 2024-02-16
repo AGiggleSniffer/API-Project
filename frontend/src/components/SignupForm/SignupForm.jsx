@@ -72,7 +72,7 @@ function SignupFormModal() {
 	return (
 		<>
 			<h1 className="form-header">Sign Up</h1>
-			<form onSubmit={handleSubmit}>
+			<form className="modal-form" onSubmit={handleSubmit}>
 				<strong>Welcome to AirBnB</strong>
 				{errors.email && (
 					<div>

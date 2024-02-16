@@ -1,4 +1,4 @@
-form {
+.modal-form {
 	box-sizing: border-box;
 	display: inherit;
 	flex-direction: inherit;
@@ -6,36 +6,69 @@ form {
 	justify-content: inherit;
 	padding: 20px;
 	width: 100%;
+	max-width: 525px;
 }
 
-form > strong {
+.modal-form strong {
 	align-self: baseline;
 	margin-bottom: 20px;
 }
 
-form > input {
+.modal-form input,
+textarea {
 	box-sizing: border-box;
-	border: solid var(--Light-Grey) 1px;
+	border-left: solid var(--Light-Grey) 1.5px;
+	border-right: solid var(--Light-Grey) 1.5px;
 	height: 30px;
 	padding-left: 15px;
 	width: 100%;
 	outline: none;
+	border-top: solid var(--Light-Grey) 1px;
+	border-bottom: solid var(--Light-Grey) 1px;
+	transition: box-shadow 500ms ease;
 }
 
-input:focus {
+.modal-form textarea {
+	border: solid var(--Light-Grey) 2px;
+	border-radius: 5px;
+	padding: 10px;
+	height: 100%;
+}
+
+.modal-form input:focus,
+.modal-form textarea:focus {
 	border-color: var(--Red);
 	box-shadow: 0px 0px 5px var(--Light-Grey);
+	transition: border-color 500ms ease;
+}
+
+.modal-form input:focus + input {
+	border-top-color: var(--Red);
+}
+
+.modal-form input:has(+ input:focus) {
+	border-bottom-color: var(--Red);
+}
+
+.modal-form input:first-of-type:focus + input {
+	border-top-color: var(--Red);
+}
+
+.modal-form input:has(+ input:last-of-type:focus) {
+	border-bottom-color: var(--Red);
 }
 
 input:first-of-type {
 	border-radius: 5px 5px 0px 0px;
+	border-top: solid var(--Light-Grey) 1.5px;
 }
 
 input:last-of-type {
 	border-radius: 0px 0px 5px 5px;
+	border-bottom: solid var(--Light-Grey) 1.5px;
 }
 
-form > div {
+.modal-form div {
 	display: flex;
 	align-items: center;
 	color: var(--Red);
@@ -44,27 +77,32 @@ form > div {
 	padding: 0;
 }
 
-form p {
+.modal-form p {
 	margin: 0;
 	padding-left: 5px;
 }
 
-form > button {
+.modal-form button {
 	width: 100%;
 	border: none;
 	border-radius: 5px;
 	height: 30px;
 	margin-top: 20px;
+	color: var(--White);
 }
 
-form > button:active {
+.modal-form button:active {
 	box-shadow: inset 0px 0px 3px var(--Dark-Red);
 }
 
-form > button:disabled {
+.modal-form button:disabled {
 	box-shadow: 0px 0px 0px;
 }
 
-form > button.demo:active {
+.modal-form button.demo:active {
 	box-shadow: inset 0px 0px 3px var(--Dark-Grey);
+}
+
+.modal-form button.demo {
+	color: var(--Black);
 }

@@ -1,14 +1,16 @@
 import { useState, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { FaUserCircle, FaBars } from "react-icons/fa";
 import * as sessionActions from "../../store/session";
 import OpenModalMenuItem from "../OpenModalMenuItem";
 import LoginForm from "../LoginForm";
 import SignupForm from "../SignupForm";
-import "./ProfileButton.css"
+import "./ProfileButton.css";
 
 export default function ProfileButton({ user }) {
-  const dispatch = useDispatch();
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
 	const [showMenu, setShowMenu] = useState(false);
 	const ulRef = useRef();
 
@@ -44,6 +46,7 @@ export default function ProfileButton({ user }) {
 
 	return (
 		<>
+			{user && <span onClick={() => navigate("spots/new")} id="create-spot">Create A New Spot</span>}
 			<button className={buttonClassName} onClick={toggleMenu}>
 				<FaBars />
 				<FaUserCircle />
@@ -78,4 +81,3 @@ export default function ProfileButton({ user }) {
 		</>
 	);
 }
-

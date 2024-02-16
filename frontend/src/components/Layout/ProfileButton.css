@@ -42,3 +42,16 @@ button.menu-open {
 button.profile-button:active {
 	box-shadow: inset 0px 0px 3px var(--Light-Grey);
 }
+
+#create-spot {
+	margin-right: 20px;
+	color: var(--Teal);
+	cursor: pointer;
+	box-shadow: 0 0 0;
+	transition: color 500ms ease;
+}
+
+#create-spot:hover {
+	text-decoration: underline;
+	color: var(--Red);
+}
