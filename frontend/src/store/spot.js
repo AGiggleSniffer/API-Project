@@ -34,13 +34,33 @@ export const findASpotById = (id) => async (dispatch) => {
 	}
 };
 
+export const addANewSpot = (spot, images) => async () => {
+	const response = await csrfFetch(`/api/spots`, {
+		method: "POST",
+		body: JSON.stringify(spot),
+	});
+
+	if (response.ok) {
+		const { id } = await response.json();
+
+		for (let img in images) {
+			await csrfFetch(`/api/spots/${id}/images`, {
+				method: "POST",
+				body: JSON.stringify({ url: images[img], preview: true }),
+			});
+		}
+
+		return id;
+	}
+};
+
 export const selectAllSpots = (state) => {
 	return state.spots.allSpots;
 };
 
 export const selectSpot = (id) => (state) => {
 	return state.spots.detailedSpots[id] || undefined;
-}
+};
 
 export const selectSpotsArray = createSelector(selectAllSpots, (spots) => {
 	return Object.values(spots);
@@ -53,10 +73,16 @@ export default function spotsReducer(state = initialState, action) {
 		case ADD_SPOT_ID:
 			return {
 				...state,
-				detailedSpots: { ...state.detailedSpots, [action.payload.id]: action.payload },
+				detailedSpots: {
+					...state.detailedSpots,
+					[action.payload.id]: action.payload,
+				},
 			};
 		case LOAD_SPOTS:
-			return { ...state, allSpots: { ...state.allSpots, ...action.payload.Spots } };
+			return {
+				...state,
+				allSpots: { ...state.allSpots, ...action.payload.Spots },
+			};
 		default:
 			return state;
 	}

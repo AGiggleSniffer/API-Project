@@ -75,6 +75,8 @@ input:last-of-type {
 	margin-top: 15px;
 	margin-bottom: 5px;
 	padding: 0;
+	padding-left: 15px;
+	padding-bottom: 10px;
 }
 
 .modal-form p {

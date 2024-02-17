@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from "react";
-import { FaCircleXmark } from "react-icons/fa6";
 import * as sessionActions from "../../store/session";
 import { useDispatch } from "react-redux";
 import { useModal } from "../../context/Modal";
+import ErrorDisplay from "../ErrorDisplay";
 import "./LoginForm.css";
 
 export default function LoginForm() {
@@ -58,25 +58,18 @@ export default function LoginForm() {
 			<h1 className="form-header">Log In</h1>
 			<form className="modal-form" onSubmit={handleSubmit}>
 				<strong>Welcome Back</strong>
-				{errors.credential && (
-					<div>
-						<FaCircleXmark />
-						<p>{errors.credential}</p>
-					</div>
-				)}
+				{errors.credential && <ErrorDisplay msg={errors.credential} />}
 				<input
 					placeholder="Username or Email"
 					type="text"
 					value={credential}
 					onChange={(e) => setCredential(e.target.value)}
-					required
 				/>
 				<input
 					placeholder="Password"
 					type="password"
 					value={password}
 					onChange={(e) => setPassword(e.target.value)}
-					required
 				/>
 				<button
 					type="submit"

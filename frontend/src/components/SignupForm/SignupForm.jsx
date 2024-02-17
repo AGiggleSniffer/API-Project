@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
-import { FaCircleXmark } from "react-icons/fa6";
 import { useModal } from "../../context/Modal";
 import * as sessionActions from "../../store/session";
+import ErrorDisplay from "../ErrorDisplay";
 import "./SignupForm.css";
 
 function SignupFormModal() {
@@ -74,83 +74,49 @@ function SignupFormModal() {
 			<h1 className="form-header">Sign Up</h1>
 			<form className="modal-form" onSubmit={handleSubmit}>
 				<strong>Welcome to AirBnB</strong>
-				{errors.email && (
-					<div>
-						<FaCircleXmark />
-						<p>{errors.email}</p>
-					</div>
-				)}
+				{errors.email && <ErrorDisplay msg={errors.email} />}
 				<input
 					placeholder="Email"
 					type="text"
 					value={email}
 					onChange={(e) => setEmail(e.target.value)}
-					required
 				/>
-				{errors.username && (
-					<div>
-						<FaCircleXmark />
-						<p>{errors.username}</p>
-					</div>
-				)}
+				{errors.username && <ErrorDisplay msg={errors.username} />}
 				<input
 					placeholder="Username"
 					type="text"
 					value={username}
 					onChange={(e) => setUsername(e.target.value)}
-					required
 				/>
-				{errors.firstName && (
-					<div>
-						<FaCircleXmark />
-						<p>{errors.firstName}</p>
-					</div>
-				)}
+				{errors.firstName && <ErrorDisplay msg={errors.firstName} />}
 				<input
 					placeholder="First Name"
 					type="text"
 					value={firstName}
 					onChange={(e) => setFirstName(e.target.value)}
-					required
 				/>
-				{errors.lastName && (
-					<div>
-						<FaCircleXmark />
-						<p>{errors.lastName}</p>
-					</div>
-				)}
+				{errors.lastName && <ErrorDisplay msg={errors.lastName} />}
 				<input
 					placeholder="Last Name"
 					type="text"
 					value={lastName}
 					onChange={(e) => setLastName(e.target.value)}
-					required
 				/>
-				{errors.password && (
-					<div>
-						<FaCircleXmark />
-						<p>{errors.password}</p>
-					</div>
-				)}
+				{errors.password && <ErrorDisplay msg={errors.lastName} />}
 				<input
 					placeholder="Password"
 					type="password"
 					value={password}
 					onChange={(e) => setPassword(e.target.value)}
-					required
 				/>
 				{errors.confirmPassword && (
-					<div>
-						<FaCircleXmark />
-						<p>{errors.confirmPassword}</p>
-					</div>
+					<ErrorDisplay msg={errors.confirmPassword} />
 				)}
 				<input
 					placeholder="Confirm Password"
 					type="password"
 					value={confirmPassword}
 					onChange={(e) => setConfirmPassword(e.target.value)}
-					required
 				/>
 				<button
 					type="submit"
