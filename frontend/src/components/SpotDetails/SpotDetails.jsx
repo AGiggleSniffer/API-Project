@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { FaRegStar } from "react-icons/fa";
 import { findASpotById, selectSpot } from "../../store/spot";
+import ReviewList from "../ReviewList";
 import "./SpotDetails.css";
 
 export default function SpotDetails() {
@@ -58,8 +59,10 @@ export default function SpotDetails() {
 					<span>${spot.price} night</span>
 					<span id="reserve-details">
 						<FaRegStar />
-						{isNaN(spot.avgStarRating) ? spot.avgStarRating : spot.avgStarRating.toFixed(1)} - {" "}
-						{spot.numReviews} reviews
+						{isNaN(spot.avgStarRating)
+							? spot.avgStarRating
+							: spot.avgStarRating.toFixed(1)}{" "}
+						- {spot.numReviews} reviews
 					</span>
 					<button onClick={handleClick} id="reserve-button">
 						Reserve
@@ -68,7 +71,14 @@ export default function SpotDetails() {
 				</span>
 			</div>
 			<div id="review-container">
-				<span>reviews</span>
+				{isNaN(spot.avgStarRating) ? (
+					<h3>
+						<FaRegStar />
+						{spot.avgStarRating}
+					</h3>
+				) : (
+					<ReviewList rating={spot.avgStarRating} spotId={spot.id} />
+				)}
 			</div>
 		</div>
 	);

@@ -26,6 +26,7 @@ textarea {
 	border-top: solid var(--Light-Grey) 1px;
 	border-bottom: solid var(--Light-Grey) 1px;
 	transition: box-shadow 500ms ease;
+	z-index: 0;
 }
 
 .modal-form textarea {
@@ -38,8 +39,9 @@ textarea {
 .modal-form input:focus,
 .modal-form textarea:focus {
 	border-color: var(--Red);
-	box-shadow: 0px 0px 5px var(--Light-Grey);
+	box-shadow: 2px 2px 1px var(--Light-Grey);
 	transition: border-color 500ms ease;
+	z-index: 10;
 }
 
 .modal-form input:focus + input {

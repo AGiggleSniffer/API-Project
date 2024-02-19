@@ -5,16 +5,20 @@
 }
 
 #create-spot-form span {
+	display: flex;
+	flex-direction: column;
 	border-bottom: 2px solid var(--Dark-Grey);
 	padding-bottom: 20px;
+	width: 100%;
 }
 
 #create-spot-form h4 {
 	color: var(--Light-Teal);
+	margin-top: 10px;
 }
 
 #create-spot-form h3 {
-	margin-top: 5px;
+	margin-bottom: 10px;
 }
 
 #create-spot-form h2 {
