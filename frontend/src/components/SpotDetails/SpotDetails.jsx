@@ -4,6 +4,9 @@ import { useParams } from "react-router-dom";
 import { FaRegStar } from "react-icons/fa";
 import { findASpotById, selectSpot } from "../../store/spot";
 import ReviewList from "../ReviewList";
+import ReviewForm from "../ReviewForm";
+import OpenModalButton from "../OpenModalButton";
+import ReserveDetails from "./ReserveDetails";
 import "./SpotDetails.css";
 
 export default function SpotDetails() {
@@ -11,10 +14,13 @@ export default function SpotDetails() {
 	const [alertActive, setAlertActive] = useState(false);
 	const dispatch = useDispatch();
 	const spot = useSelector(selectSpot(id));
+	const sessionUser = useSelector((state) => state.session.user);
+	const spotReviews = useSelector((state) => state.reviews);
 
 	useEffect(() => {
 		dispatch(findASpotById(id));
-	}, [dispatch, id]);
+		console.log("USE EFFECT");
+	}, [dispatch, id, spotReviews]);
 
 	const handleClick = () => {
 		setAlertActive(true);
@@ -25,6 +31,7 @@ export default function SpotDetails() {
 	};
 
 	if (!spot) return <h2>No Spot Exists for ID: {id}</h2>;
+	const allowSpotReview = sessionUser && spot.Owner.id !== sessionUser.id;
 	return (
 		<div id="details">
 			<div id="detail-header">
@@ -57,13 +64,7 @@ export default function SpotDetails() {
 				</span>
 				<span id="reserve-button-container">
 					<span>${spot.price} night</span>
-					<span id="reserve-details">
-						<FaRegStar />
-						{isNaN(spot.avgStarRating)
-							? spot.avgStarRating
-							: spot.avgStarRating.toFixed(1)}{" "}
-						- {spot.numReviews} reviews
-					</span>
+					<ReserveDetails avgRating={spot.avgStarRating} numReviews={spot.numReviews}/>
 					<button onClick={handleClick} id="reserve-button">
 						Reserve
 					</button>
@@ -72,12 +73,35 @@ export default function SpotDetails() {
 			</div>
 			<div id="review-container">
 				{isNaN(spot.avgStarRating) ? (
-					<h3>
-						<FaRegStar />
-						{spot.avgStarRating}
-					</h3>
+					<>
+						<h3>
+							<FaRegStar />
+							{spot.avgStarRating}
+						</h3>
+						{allowSpotReview && (
+							<>
+								<OpenModalButton
+									buttonText="Post Your Review"
+									modalComponent={<ReviewForm spotId={spot.id} />}
+								/>
+								<h4>Be the first to post a review!</h4>
+							</>
+						)}
+					</>
 				) : (
-					<ReviewList rating={spot.avgStarRating} spotId={spot.id} />
+					<>
+						<h3>
+							<FaRegStar />
+							{spot.avgStarRating.toFixed(1)} - {spot.numReviews} reviews
+						</h3>
+						{allowSpotReview && (
+							<OpenModalButton
+								buttonText="Post Your Review"
+								modalComponent={<ReviewForm spotId={spot.id} />}
+							/>
+						)}
+						<ReviewList spotId={spot.id} />
+					</>
 				)}
 			</div>
 		</div>

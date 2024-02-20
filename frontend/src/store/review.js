@@ -15,38 +15,30 @@ const addReview = (newReview) => ({
 });
 
 export const loadReviewsById = (id) => async (dispatch) => {
-	const response = await csrfFetch(`spots/${id}/reviews`);
+	const response = await csrfFetch(`/api/spots/${id}/reviews`);
 
-	if (response.ok) {
-		console.log("WORKING", response, "\nID", id);
-		const reviews = await response.json();
-		console.log("THUNK", reviews);
-		dispatch(loadReviews(reviews));
-		return reviews;
-	}
+	const reviews = await response.json();
+	dispatch(loadReviews(reviews));
+	return reviews;
 };
 
 export const addReviewBySpotId = (id, payload) => async (dispatch) => {
-	const response = await csrfFetch(`spots/${id}/reviews`, {
+	const response = await csrfFetch(`/api/spots/${id}/reviews`, {
 		method: "POST",
-		body: payload,
+		body: JSON.stringify(payload),
 	});
 
-	if (response.ok) {
-		const newReview = await response.json();
-		dispatch(addReview(newReview));
-		return newReview;
-	}
+	const newReview = await response.json();
+	dispatch(addReview(newReview));
+	return newReview;
 };
 
 const initialState = {};
-export default function spotsReducer(state = initialState, action) {
+export default function reviewsReducer(state = initialState, action) {
 	switch (action.type) {
 		case LOAD_REVIEWS:
-			console.log("REDUCER", action);
 			return { ...state, ...action.payload };
 		case ADD_REVIEW:
-			console.log("REDUCER", action);
 			return { ...state, ...action.payload };
 		default:
 			return state;

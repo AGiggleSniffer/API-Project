@@ -27,11 +27,9 @@ export const loadAllSpots = () => async (dispatch) => {
 export const findASpotById = (id) => async (dispatch) => {
 	const response = await csrfFetch(`/api/spots/${id}`);
 
-	if (response.ok) {
-		const spot = await response.json();
-		dispatch(addSpotById(spot));
-		return spot;
-	}
+	const spot = await response.json();
+	dispatch(addSpotById(spot));
+	return spot;
 };
 
 export const addANewSpot = (spot, images) => async () => {
@@ -40,18 +38,16 @@ export const addANewSpot = (spot, images) => async () => {
 		body: JSON.stringify(spot),
 	});
 
-	if (response.ok) {
-		const { id } = await response.json();
+	const { id } = await response.json();
 
-		for (let img in images) {
-			await csrfFetch(`/api/spots/${id}/images`, {
-				method: "POST",
-				body: JSON.stringify({ url: images[img], preview: true }),
-			});
-		}
-
-		return id;
+	for (let img in images) {
+		await csrfFetch(`/api/spots/${id}/images`, {
+			method: "POST",
+			body: JSON.stringify({ url: images[img], preview: true }),
+		});
 	}
+
+	return id;
 };
 
 export const selectAllSpots = (state) => {

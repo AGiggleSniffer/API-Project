@@ -14,7 +14,6 @@ export default function LoginForm() {
 	const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 	const { closeModal } = useModal();
 	const ref = useRef();
-	const demoref = useRef();
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -30,8 +29,8 @@ export default function LoginForm() {
 	};
 
 	const loginDemo = () => {
-		setCredential("Demo-lition");
-		setPassword("password");
+		setCredential("FakeUser1");
+		setPassword("password2");
 	};
 
 	useEffect(() => {
@@ -44,12 +43,9 @@ export default function LoginForm() {
 			setMousePosition({ x: e.offsetX, y: e.offsetY });
 		};
 		const buttonRef = ref.current;
-		const demoButton = demoref.current;
 		buttonRef.addEventListener("mousemove", updateMousePos);
-		demoButton.addEventListener("mousemove", updateMousePos);
 		return () => {
 			buttonRef.removeEventListener("mousemove", updateMousePos);
-			demoButton.removeEventListener("mousemove", updateMousePos);
 		};
 	}, []);
 
@@ -85,10 +81,6 @@ export default function LoginForm() {
 					type="submit"
 					onClick={loginDemo}
 					className="demo"
-					ref={demoref}
-					style={{
-						backgroundImage: `radial-gradient( circle at ${mousePosition.x}px ${mousePosition.y}px, var(--Lighter-Grey), var(--Light-Grey) 60% )`,
-					}}
 				>
 					Demo User
 				</button>
