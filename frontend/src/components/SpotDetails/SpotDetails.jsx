@@ -26,12 +26,12 @@ export default function SpotDetails() {
 		dispatch(findASpotById(id));
 	}, [dispatch, id]);
 
-	console.log(spot?.Owner.id, sessionUser?.id);
-
 	return (
 		<div id="details">
 			<div id="detail-header">
-				<h3 id="spot-name">{spot?.name ? spot.name : `Spot doesnt Exist for ID: ${id}`}</h3>
+				<h3 id="spot-name">
+					{spot?.name ? spot.name : `Spot doesnt Exist for ID: ${id}`}
+				</h3>
 				<h4 id="spot-location">{`${spot?.city}, ${spot?.state}, ${spot?.country}`}</h4>
 			</div>
 			<div id="image-board">

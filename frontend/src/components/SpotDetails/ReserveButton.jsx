@@ -1,11 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaRegStar } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { selectSpot } from "../../store/spot";
 
 export default function ReserveButton({ spotId }) {
+	const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 	const [alertActive, setAlertActive] = useState(false);
 	const spot = useSelector(selectSpot(spotId));
+	const ref = useRef();
 
 	const handleClick = () => {
 		setAlertActive(true);
@@ -14,6 +16,17 @@ export default function ReserveButton({ spotId }) {
 			setAlertActive(false);
 		}, delay);
 	};
+
+	useEffect(() => {
+		const updateMousePos = (e) => {
+			setMousePosition({ x: e.offsetX, y: e.offsetY });
+		};
+		const buttonRef = ref.current;
+		buttonRef.addEventListener("mousemove", updateMousePos);
+		return () => {
+			buttonRef.removeEventListener("mousemove", updateMousePos);
+		};
+	}, []);
 
 	return (
 		<>
@@ -27,7 +40,14 @@ export default function ReserveButton({ spotId }) {
 					: spot?.avgStarRating.toFixed(1)}{" "}
 				- {spot?.numReviews} review{spot?.numReviews > 1 ? "s" : null}
 			</span>
-			<button onClick={handleClick} id="reserve-button">
+			<button
+				onClick={handleClick}
+				id="reserve-button"
+				ref={ref}
+				style={{
+					backgroundImage: `radial-gradient( circle at ${mousePosition.x}px ${mousePosition.y}px, var(--Light-Red), var(--Red) 60% )`,
+				}}
+			>
 				Reserve
 				{alertActive && <div id="alert">Feature Coming Soon...</div>}
 			</button>
