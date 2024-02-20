@@ -1,0 +1,23 @@
+#star-input {
+	display: flex;
+    justify-content: center;
+    margin-top: 20px;
+	width: 75%;
+    font-size: larger;
+}
+
+.filled {
+    color: var(--Red)
+}
+
+span:has(~ span.filled) {
+    color: var(--Red);
+}
+
+#star-input span:hover {
+    color: var(--Red);
+}
+
+#star-input span:has(~ span:hover) {
+    color: var(--Red)
+}

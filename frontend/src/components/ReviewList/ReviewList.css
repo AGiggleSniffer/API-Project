@@ -46,3 +46,8 @@
 	color: var(--Dark-Grey);
 	font-size: small;
 }
+
+.review-delete {
+	margin-top: 10px;
+
+}

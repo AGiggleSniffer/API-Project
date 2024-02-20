@@ -1,17 +1,12 @@
 import { csrfFetch } from "./csrf";
 import { createSelector } from "reselect";
+import { findASpotById } from "./spot";
 
 const LOAD_REVIEWS = "review/loadReviews";
-const ADD_REVIEW = "review/addReview";
 
 const loadReviews = (reviews) => ({
 	type: LOAD_REVIEWS,
 	payload: reviews,
-});
-
-const addReview = (newReview) => ({
-	type: ADD_REVIEW,
-	payload: newReview,
 });
 
 export const loadReviewsById = (id) => async (dispatch) => {
@@ -30,8 +25,8 @@ export const addReviewBySpotId = (id, payload) => async (dispatch) => {
 	});
 
 	const newReview = await response.json();
-	dispatch(loadReviewsById(id));
-	// dispatch(addReview(newReview));
+	await dispatch(findASpotById(id));
+	await dispatch(loadReviewsById(id));
 	return newReview;
 };
 
@@ -40,7 +35,9 @@ const selectReviews = (state) => {
 };
 
 export const selectReviewsArray = createSelector(selectReviews, (reviews) => {
-	return Object.values(reviews);
+	return Object.values(reviews).sort((a, b) => {
+		return b.id - a.id;
+	});
 });
 
 const initialState = {};
@@ -48,8 +45,6 @@ export default function reviewsReducer(state = initialState, action) {
 	switch (action.type) {
 		case LOAD_REVIEWS:
 			return { ...action.payload.Reviews };
-		case ADD_REVIEW:
-			return { [action.payload.id]: { ...action.payload }, ...state };
 		default:
 			return state;
 	}

@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useModal } from "../../context/Modal";
 import { addReviewBySpotId } from "../../store/review";
+import ErrorDisplay from "../ErrorDisplay";
+import StarInput from "./StarInput";
 
 export default function ReviewForm({ spotId }) {
 	const ref = useRef();
@@ -11,15 +13,17 @@ export default function ReviewForm({ spotId }) {
 	const [review, setReview] = useState("");
 	const [disabled, setDisabled] = useState(true);
 	const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+	const [errors, setErrors] = useState({})
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 
 		try {
-			const res = await dispatch(addReviewBySpotId(spotId, { review, stars }));
+			await dispatch(addReviewBySpotId(spotId, { review, stars }));
 			closeModal();
 		} catch (err) {
-			console.log(err);
+			const msg = await err.json();
+			setErrors(msg);
 		}
 	};
 
@@ -43,16 +47,18 @@ export default function ReviewForm({ spotId }) {
 		<>
 			<h1 className="form-header">How was your stay?</h1>
 			<form className="modal-form" onSubmit={handleSubmit}>
+				{errors?.message && <ErrorDisplay msg={errors.message} />}
 				<textarea
 					placeholder="Leave your review here..."
 					value={review}
 					onChange={(e) => setReview(e.target.value)}
 				/>
-				<input
+				{/* <input
 					type="number"
 					value={stars}
 					onChange={(e) => setStars(e.target.value)}
-				/>
+				/> */}
+				<StarInput setStarVal={setStars}/>
 				<button
 					type="submit"
 					disabled={disabled}

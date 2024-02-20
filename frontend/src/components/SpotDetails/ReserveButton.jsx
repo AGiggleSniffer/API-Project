@@ -25,7 +25,7 @@ export default function ReserveButton({ spotId }) {
 				{isNaN(spot?.avgStarRating)
 					? spot?.avgStarRating
 					: spot?.avgStarRating.toFixed(1)}{" "}
-				- {spot?.numReviews} reviews
+				- {spot?.numReviews} review{spot?.numReviews > 1 ? "s" : null}
 			</span>
 			<button onClick={handleClick} id="reserve-button">
 				Reserve

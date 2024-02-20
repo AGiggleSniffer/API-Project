@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { FaRegStar } from "react-icons/fa";
 import { findASpotById, selectSpot } from "../../store/spot";
+import { selectReviewsArray } from "../../store/review";
 import ReviewList from "../ReviewList";
 import ReviewForm from "../ReviewForm";
 import OpenModalButton from "../OpenModalButton";
@@ -13,18 +14,24 @@ export default function SpotDetails() {
 	const { id } = useParams();
 	const dispatch = useDispatch();
 	const spot = useSelector(selectSpot(id));
+	const reviews = useSelector(selectReviewsArray);
 	const sessionUser = useSelector((state) => state.session.user);
+	const allowSpotReview = sessionUser && spot?.Owner.id !== sessionUser?.id;
+	const ownReview = useMemo(
+		() => reviews?.find((review) => review.User.id === sessionUser?.id),
+		[reviews, sessionUser],
+	);
 
 	useEffect(() => {
 		dispatch(findASpotById(id));
-		console.log("USE EFFECT");
 	}, [dispatch, id]);
 
-	const allowSpotReview = sessionUser && spot?.Owner.id !== sessionUser?.id;
+	console.log(spot?.Owner.id, sessionUser?.id);
+
 	return (
 		<div id="details">
 			<div id="detail-header">
-				<h3 id="spot-name">{spot?.name}</h3>
+				<h3 id="spot-name">{spot?.name ? spot.name : `Spot doesnt Exist for ID: ${id}`}</h3>
 				<h4 id="spot-location">{`${spot?.city}, ${spot?.state}, ${spot?.country}`}</h4>
 			</div>
 			<div id="image-board">
@@ -76,9 +83,10 @@ export default function SpotDetails() {
 					<>
 						<h3>
 							<FaRegStar className="star" />
-							{spot?.avgStarRating.toFixed(1)} - {spot?.numReviews} reviews
+							{spot?.avgStarRating.toFixed(1)} - {spot?.numReviews} review
+							{spot?.numReviews > 1 ? "s" : null}
 						</h3>
-						{allowSpotReview && (
+						{allowSpotReview && !ownReview && (
 							<OpenModalButton
 								buttonText="Post Your Review"
 								modalComponent={<ReviewForm spotId={spot?.id} />}

@@ -6,6 +6,7 @@ import "./ReviewList.css"
 export default function ReviewList({ spotId }) {
 	const dispatch = useDispatch();
 	const reviews = useSelector(selectReviewsArray);
+	const user = useSelector(state => state.session.user);
 
 	useEffect(() => {
 		dispatch(loadReviewsById(spotId));
@@ -19,7 +20,7 @@ export default function ReviewList({ spotId }) {
 					month: "long",
 					year: "numeric",
 				}).formatToParts(new Date(updatedAt));
-				
+
 				return (
 					<div className="review-card" key={id}>
 						<span >{User.firstName}</span>
@@ -27,6 +28,9 @@ export default function ReviewList({ spotId }) {
 							{month.value} {year.value}
 						</span>
 						<span className="review-message">{msg}</span>
+						{user?.id === User.id && (
+							<button className="review-delete">Delete</button>
+						)}
 					</div>
 				);
 			})}
