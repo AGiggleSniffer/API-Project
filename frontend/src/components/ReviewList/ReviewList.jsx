@@ -1,10 +1,11 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { loadReviewsById } from "../../store/review";
+import { loadReviewsById, selectReviewsArray } from "../../store/review";
+import "./ReviewList.css"
 
 export default function ReviewList({ spotId }) {
 	const dispatch = useDispatch();
-	const reviews = useSelector((state) => state.reviews.Reviews);
+	const reviews = useSelector(selectReviewsArray);
 
 	useEffect(() => {
 		dispatch(loadReviewsById(spotId));
@@ -18,14 +19,15 @@ export default function ReviewList({ spotId }) {
 					month: "long",
 					year: "numeric",
 				}).formatToParts(new Date(updatedAt));
+				
 				return (
-					<span key={id}>
-						<p>{User.firstName}</p>
-						<p>
+					<div className="review-card" key={id}>
+						<span >{User.firstName}</span>
+						<span className="review-date">
 							{month.value} {year.value}
-						</p>
-						<p>{msg}</p>
-					</span>
+						</span>
+						<span className="review-message">{msg}</span>
+					</div>
 				);
 			})}
 		</>

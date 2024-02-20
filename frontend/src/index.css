@@ -24,3 +24,7 @@ button:hover {
 button {
 	transition: box-shadow 200ms ease-in-out;
 }
+
+.star {
+	color: var(--Red);
+}

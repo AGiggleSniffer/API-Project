@@ -58,14 +58,15 @@
 #reserve-button-container {
 	display: grid;
 	grid-template-rows: 1fr 1fr;
-	grid-template-columns: 1fr 1.5fr;
+	grid-template-columns: 1fr 2fr;
 	justify-content: center;
 	gap: 5px;
 	border: solid 2px var(--Black);
 	border-radius: 10px;
-	padding: 10px;
+	padding: 5px 10px 10px;
 	margin-top: 20px;
 	box-shadow: 5px 5px 1px var(--Light-Grey);
+	font-size: small;
 }
 
 #reserve-button {
@@ -81,8 +82,19 @@
 	box-shadow: inset 0px 0px 3px var(--Dark-Red);
 }
 
+#price-container {
+	display: flex;
+	align-items: center;
+}
+
+#reserve-price {
+	font-size: medium;
+}
+
 #reserve-details {
 	display: flex;
+	align-items: center;
+	justify-content: flex-end;
 }
 
 #alert {
@@ -90,12 +102,7 @@
 	background-color: var(--White);
 	box-shadow: 0px 0px 3px var(--Light-Grey);
 	border-radius: 5px;
-	bottom: 100px;
 	padding: 10px;
 	opacity: 80%;
-}
-
-#review-container {
-	border-top: 2px solid var(--Dark-Grey);
-	margin-top: 20px;
+	top: 600px;
 }
