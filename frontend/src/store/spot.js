@@ -23,11 +23,6 @@ const addSpotById = (spot) => ({
 	payload: spot,
 });
 
-const updateSpot = (spot) => ({
-	type: UPDATE_SPOT,
-	payload: spot,
-});
-
 const deleteSpot = (spotId) => ({
 	type: DELETE_SPOT,
 	payload: spotId,
