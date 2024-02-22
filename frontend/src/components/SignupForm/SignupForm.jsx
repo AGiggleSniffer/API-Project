@@ -121,6 +121,7 @@ function SignupFormModal() {
 					type="submit"
 					disabled={disabled}
 					ref={ref}
+					className="red"
 					style={{
 						backgroundImage: `radial-gradient( circle at ${mousePosition.x}px ${mousePosition.y}px, var(--Light-Red), var(--Red) 60% )`,
 					}}

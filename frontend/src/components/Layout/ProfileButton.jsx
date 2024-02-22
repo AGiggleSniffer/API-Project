@@ -39,14 +39,24 @@ export default function ProfileButton({ user }) {
 		e.preventDefault();
 		dispatch(sessionActions.logout());
 		closeMenu();
+		navigate("/");
 	};
+
+	const manageSpots = () => {
+		closeMenu();
+		navigate("spots/current")
+	}
 
 	const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden");
 	const buttonClassName = "profile-button" + (showMenu ? " menu-open" : "");
 
 	return (
 		<>
-			{user && <span onClick={() => navigate("spots/new")} id="create-spot">Create A New Spot</span>}
+			{user && (
+				<span onClick={() => navigate("spots/new")} id="create-spot">
+					Create A New Spot
+				</span>
+			)}
 			<button className={buttonClassName} onClick={toggleMenu}>
 				<FaBars />
 				<FaUserCircle />
@@ -54,11 +64,13 @@ export default function ProfileButton({ user }) {
 			<menu className={ulClassName} ref={ulRef}>
 				{user ? (
 					<>
-						<li>{user.username}</li>
 						<li>
-							{user.firstName} {user.lastName}
+							Hello, {user.firstName} {user.lastName}
 						</li>
 						<li>{user.email}</li>
+						<li id="manage-spots" onClick={manageSpots}>
+							Manage Spots
+						</li>
 						<li>
 							<button onClick={logout}>Log Out</button>
 						</li>

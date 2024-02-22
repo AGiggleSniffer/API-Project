@@ -13,9 +13,9 @@
 #review-container button {
 	width: 150px;
 	border: none;
-	background-color: var(--Red);
 	border-radius: 3px;
 	padding: 5px;
+	margin-top: 10px;
 }
 
 #review-container button:active {
@@ -49,5 +49,4 @@
 
 .review-delete {
 	margin-top: 10px;
-
 }

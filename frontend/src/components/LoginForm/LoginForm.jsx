@@ -6,14 +6,14 @@ import ErrorDisplay from "../ErrorDisplay";
 import "./LoginForm.css";
 
 export default function LoginForm() {
+	const ref = useRef();
 	const dispatch = useDispatch();
+	const { closeModal } = useModal();
+	const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 	const [credential, setCredential] = useState("");
 	const [password, setPassword] = useState("");
-	const [errors, setErrors] = useState({});
 	const [disabled, setDisabled] = useState(true);
-	const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-	const { closeModal } = useModal();
-	const ref = useRef();
+	const [errors, setErrors] = useState({});
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -71,6 +71,7 @@ export default function LoginForm() {
 					type="submit"
 					disabled={disabled}
 					ref={ref}
+					className="red"
 					style={{
 						backgroundImage: `radial-gradient( circle at ${mousePosition.x}px ${mousePosition.y}px, var(--Light-Red), var(--Red) 60% )`,
 					}}

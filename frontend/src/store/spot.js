@@ -2,10 +2,17 @@ import { csrfFetch } from "./csrf";
 import { createSelector } from "reselect";
 
 const LOAD_SPOTS = "spots/loadSpots";
+const LOAD_CURR = "spots/currSpots";
 const ADD_SPOT_ID = "spots/addSpotById";
+const DELETE_REVIEW = "spots/deleteReview";
 
 const loadSpots = (spots) => ({
 	type: LOAD_SPOTS,
+	payload: spots,
+});
+
+const currSpots = (spots) => ({
+	type: LOAD_CURR,
 	payload: spots,
 });
 
@@ -14,14 +21,25 @@ const addSpotById = (spot) => ({
 	payload: spot,
 });
 
+export const deleteReviewFromSpot = (spotId, reviewRating) => ({
+	type: DELETE_REVIEW,
+	payload: { spotId, reviewRating },
+});
+
 export const loadAllSpots = () => async (dispatch) => {
 	const response = await csrfFetch("/api/spots");
 
-	if (response.ok) {
-		const spots = await response.json();
-		dispatch(loadSpots(spots));
-		return spots;
-	}
+	const spots = await response.json();
+	dispatch(loadSpots(spots));
+	return spots;
+};
+
+export const loadCurrSpots = () => async (dispatch) => {
+	const response = await csrfFetch(`/api/spots/current`);
+
+	const spots = await response.json();
+	dispatch(currSpots(spots));
+	return spots;
 };
 
 export const findASpotById = (id) => async (dispatch) => {
@@ -62,7 +80,15 @@ export const selectSpotsArray = createSelector(selectAllSpots, (spots) => {
 	return Object.values(spots);
 });
 
-const initialState = { allSpots: {}, detailedSpots: {} };
+export const selectCurrSpots = (state) => {
+	return state.spots.currentSpots;
+};
+
+export const selectCurrSpotsArr = createSelector(selectCurrSpots, (spots) => {
+	return Object.values(spots);
+});
+
+const initialState = { allSpots: {}, detailedSpots: {}, currentSpots: {} };
 
 export default function spotsReducer(state = initialState, action) {
 	switch (action.type) {
@@ -79,6 +105,28 @@ export default function spotsReducer(state = initialState, action) {
 				...state,
 				allSpots: { ...state.allSpots, ...action.payload.Spots },
 			};
+		case LOAD_CURR:
+			return {
+				...state,
+				currentSpots: { ...state.currentSpots, ...action.payload.Spots },
+			};
+		case DELETE_REVIEW: {
+			const newObj = { ...state };
+			const mySpot = newObj.detailedSpots[action.payload.spotId];
+
+			if (mySpot.numReviews - 1) {
+				mySpot.avgStarRating =
+					(mySpot.avgStarRating * mySpot.numReviews -
+						action.payload.reviewRating) /
+					(mySpot.numReviews - 1);
+				mySpot.numReviews--;
+			} else {
+				mySpot.avgStarRating = "New!";
+				mySpot.numReviews = 0;
+			}
+			
+			return newObj;
+		}
 		default:
 			return state;
 	}

@@ -16,20 +16,23 @@
 	opacity: 100%;
 	box-shadow: inset 0px 0px 5px var(--Light-Grey);
 	overflow: hidden;
-	transition: transform 200ms ease;
+	transition: all 200ms ease-in-out;
 }
 
 .spot-image {
 	z-index: -1;
 	height: 100%;
 	min-width: 200px;
-	transition: transform 300ms ease-out;
+	transition: all 300ms ease-in-out;
 }
 
 .image-container:hover,
 .spot-image:hover {
 	transform: scale(1.2);
-	box-shadow: 0px 0px 5px var(--Light-Grey);
+}
+
+.image-container:hover {
+	box-shadow: 0px 0px 15px var(--Dark-Grey);
 }
 
 .rating {

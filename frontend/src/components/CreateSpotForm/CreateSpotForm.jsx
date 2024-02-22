@@ -252,6 +252,7 @@ export default function CreateSpotForm() {
 				<button
 					type="submit"
 					ref={ref}
+					className="red"
 					style={{
 						backgroundImage: `radial-gradient( circle at ${mousePosition.x}px ${mousePosition.y}px, var(--Light-Red), var(--Red) 60% )`,
 					}}

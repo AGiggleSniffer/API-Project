@@ -14,5 +14,5 @@ export default function OpenModalMenuItem({
 		if (typeof onItemClick === "function") onItemClick();
 	};
 
-	return <li onClick={onClick}>{itemText}</li>;
+	return <li onClick={onClick} className="list-button">{itemText}</li>;
 }

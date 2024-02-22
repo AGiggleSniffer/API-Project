@@ -3,6 +3,7 @@ import Layout from "./components/Layout";
 import SpotsList from "./components/SpotsList";
 import SpotDetails from "./components/SpotDetails";
 import CreateSpotForm from "./components/CreateSpotForm";
+import OwnedSpots from "./components/OwnedSpots";
 
 const router = createBrowserRouter([
 	{
@@ -14,12 +15,16 @@ const router = createBrowserRouter([
 			},
 			{
 				path: "spots/:id",
-				element: <SpotDetails />
+				element: <SpotDetails />,
 			},
 			{
 				path: "spots/new",
-				element: <CreateSpotForm />
-			}
+				element: <CreateSpotForm />,
+			},
+			{
+				path: "spots/current",
+				element: <OwnedSpots />,
+			},
 		],
 	},
 ]);

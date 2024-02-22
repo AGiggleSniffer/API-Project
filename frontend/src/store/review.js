@@ -1,12 +1,18 @@
 import { csrfFetch } from "./csrf";
 import { createSelector } from "reselect";
-import { findASpotById } from "./spot";
+import { deleteReviewFromSpot, findASpotById } from "./spot";
 
 const LOAD_REVIEWS = "review/loadReviews";
+const DELETE_REVIEW = "review/deleteReview";
 
 const loadReviews = (reviews) => ({
 	type: LOAD_REVIEWS,
 	payload: reviews,
+});
+
+const deleteReview = (id) => ({
+	type: DELETE_REVIEW,
+	id,
 });
 
 export const loadReviewsById = (id) => async (dispatch) => {
@@ -25,9 +31,19 @@ export const addReviewBySpotId = (id, payload) => async (dispatch) => {
 	});
 
 	const newReview = await response.json();
+	console.log(newReview)
 	await dispatch(findASpotById(id));
 	await dispatch(loadReviewsById(id));
 	return newReview;
+};
+
+export const deleteReviewById = (id, spotId, reviewRating) => async (dispatch) => {
+	const response = await csrfFetch(`/api/reviews/${id}`, { method: "DELETE" });
+
+	const msg = await response.json();
+	dispatch(deleteReview(id));
+	dispatch(deleteReviewFromSpot(spotId, reviewRating));
+	return msg;
 };
 
 const selectReviews = (state) => {
@@ -43,8 +59,16 @@ export const selectReviewsArray = createSelector(selectReviews, (reviews) => {
 const initialState = {};
 export default function reviewsReducer(state = initialState, action) {
 	switch (action.type) {
-		case LOAD_REVIEWS:
-			return { ...action.payload.Reviews };
+		case LOAD_REVIEWS: {
+			const newObj = {};
+			action.payload.Reviews.forEach((review) => (newObj[review.id] = review));
+			return newObj;
+		}
+		case DELETE_REVIEW: {
+			const newObj = { ...state };
+			delete newObj[action.id];
+			return newObj;
+		}
 		default:
 			return state;
 	}

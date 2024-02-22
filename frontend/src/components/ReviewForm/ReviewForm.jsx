@@ -53,11 +53,6 @@ export default function ReviewForm({ spotId }) {
 					value={review}
 					onChange={(e) => setReview(e.target.value)}
 				/>
-				{/* <input
-					type="number"
-					value={stars}
-					onChange={(e) => setStars(e.target.value)}
-				/> */}
 				<StarInput setStarVal={setStars}/>
 				<button
 					type="submit"

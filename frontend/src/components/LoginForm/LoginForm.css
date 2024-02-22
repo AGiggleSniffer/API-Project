@@ -100,15 +100,9 @@ input:last-of-type {
 
 .modal-form button {
 	width: 100%;
-	border: none;
 	border-radius: 5px;
 	height: 30px;
 	margin-top: 20px;
-	color: var(--White);
-}
-
-.modal-form button:active {
-	box-shadow: inset 0px 0px 3px var(--Dark-Red);
 }
 
 .modal-form button:disabled {
@@ -116,9 +110,10 @@ input:last-of-type {
 }
 
 .modal-form button.demo:active {
-	box-shadow: inset 0px 0px 3px var(--Dark-Grey);
+	box-shadow: inset 0px 0px 5px var(--Dark-Grey);
 }
 
 .modal-form button.demo {
 	color: var(--Black);
+	box-shadow: 0 2px 1px var(--Dark-Grey);
 }
