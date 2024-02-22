@@ -14,7 +14,7 @@
 	justify-content: center;
 	align-items: center;
 	opacity: 100%;
-	box-shadow: inset 0px 0px 5px var(--Light-Grey);
+	box-shadow: 0 0 0 var(--Light-Grey), inset 0px 0px 5px var(--Light-Grey);
 	overflow: hidden;
 	transition: all 200ms ease-in-out;
 }
@@ -32,7 +32,7 @@
 }
 
 .image-container:hover {
-	box-shadow: 0px 0px 15px var(--Dark-Grey);
+	box-shadow: 0px 0px 15px var(--Dark-Grey), inset 0 0 0 var(--Dark-Grey);
 }
 
 .rating {

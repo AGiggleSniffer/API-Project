@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { loadReviewsById, selectReviewsArray } from "../../store/review";
-import DeleteReviewForm from "../DeleteReviewForm";
+import DeleteReviewForm from "./DeleteReviewForm";
 import OpenModalButton from "../OpenModalButton";
 import "./ReviewList.css";
 

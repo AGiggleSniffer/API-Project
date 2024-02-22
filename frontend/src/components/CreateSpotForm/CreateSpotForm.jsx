@@ -1,11 +1,15 @@
 import { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { addANewSpot } from "../../store/spot";
+import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { addANewSpot, findASpotById } from "../../store/spot";
 import ErrorDisplay from "../ErrorDisplay";
 import "./CreateSpotForm.css";
 
 export default function CreateSpotForm() {
+	const { id: paramId } = useParams();
+	const spot = useSelector((state) =>
+		paramId ? state.spots.detailedSpots[paramId] : null,
+	);
 	const [country, setCountry] = useState("");
 	const [address, setAddress] = useState("");
 	const [city, setCity] = useState("");
@@ -21,6 +25,11 @@ export default function CreateSpotForm() {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const ref = useRef();
+
+	useEffect(() => {
+		if (!paramId) return;
+		dispatch(findASpotById(paramId));
+	}, [dispatch, paramId]);
 
 	useEffect(() => {
 		const updateMousePos = (e) => {
@@ -82,7 +91,6 @@ export default function CreateSpotForm() {
 			const msg = await err.json();
 			return setValidationErrors(msg.errors);
 		}
-
 	};
 
 	const handleImageState = (imageId) => (e) =>
@@ -90,7 +98,7 @@ export default function CreateSpotForm() {
 
 	return (
 		<div id="create-spot-form">
-			<h2>Create a new Spot</h2>
+			<h2>{spot ? "Update your Spot" : "Create A New Spot"}</h2>
 			<form className="modal-form" onSubmit={handleSubmit}>
 				<span>
 					<h3>Where&apos;s your place located?</h3>
@@ -101,7 +109,7 @@ export default function CreateSpotForm() {
 					<input
 						type="text"
 						placeholder="Country"
-						value={country}
+						value={spot?.country || country}
 						onChange={(e) => setCountry(e.target.value)}
 					/>
 					{validationErrors.country && (
@@ -110,7 +118,7 @@ export default function CreateSpotForm() {
 					<input
 						type="text"
 						placeholder="Address"
-						value={address}
+						value={spot?.address || address}
 						onChange={(e) => setAddress(e.target.value)}
 					/>
 					{validationErrors.address && (
@@ -119,7 +127,7 @@ export default function CreateSpotForm() {
 					<input
 						type="text"
 						placeholder="City"
-						value={city}
+						value={spot?.city || city}
 						onChange={(e) => setCity(e.target.value)}
 					/>
 					{validationErrors.city && (
@@ -128,7 +136,7 @@ export default function CreateSpotForm() {
 					<input
 						type="text"
 						placeholder="STATE"
-						value={state}
+						value={spot?.state || state}
 						onChange={(e) => setState(e.target.value)}
 					/>
 					{validationErrors.state && (
@@ -137,14 +145,14 @@ export default function CreateSpotForm() {
 					<input
 						type="number"
 						placeholder="Latitude"
-						value={lat}
+						value={spot?.lat || lat}
 						onChange={(e) => setLatitude(e.target.value)}
 					/>
 					{validationErrors.lat && <ErrorDisplay msg={validationErrors.lat} />}
 					<input
 						type="number"
 						placeholder="Longitude"
-						value={lng}
+						value={spot?.lng || lng}
 						onChange={(e) => setLongitude(e.target.value)}
 					/>
 					{validationErrors.lng && <ErrorDisplay msg={validationErrors.lng} />}
@@ -158,7 +166,7 @@ export default function CreateSpotForm() {
 					<textarea
 						rows="8"
 						placeholder="Please write at lease 30 characters"
-						value={description}
+						value={spot?.description || description}
 						onChange={(e) => setDescription(e.target.value)}
 					/>
 					{validationErrors.description && (
@@ -174,7 +182,7 @@ export default function CreateSpotForm() {
 					<input
 						type="text"
 						placeholder="Name of your spot"
-						value={name}
+						value={spot?.name || name}
 						onChange={(e) => setName(e.target.value)}
 					/>
 					{validationErrors.name && (
@@ -190,7 +198,7 @@ export default function CreateSpotForm() {
 					<input
 						type="number"
 						placeholder="$ Price per night (USD)"
-						value={price}
+						value={spot?.price || price}
 						onChange={(e) => setPrice(e.target.value)}
 					/>
 					{validationErrors.price && (
@@ -203,7 +211,7 @@ export default function CreateSpotForm() {
 					<input
 						type="url"
 						placeholder="Preview Image URL"
-						value={images[0]}
+						value={spot?.SpotImages[0]?.url || images[0]}
 						onChange={handleImageState(0)}
 					/>
 					{validationErrors.preview && (
@@ -215,7 +223,7 @@ export default function CreateSpotForm() {
 					<input
 						type="url"
 						placeholder="Image URL"
-						value={images[1]}
+						value={spot?.SpotImages[1]?.url || images[1]}
 						onChange={handleImageState(1)}
 					/>
 					{validationErrors.images && validationErrors.images[1] && (
@@ -224,7 +232,7 @@ export default function CreateSpotForm() {
 					<input
 						type="url"
 						placeholder="Image URL"
-						value={images[2]}
+						value={spot?.SpotImages[2]?.url || images[2]}
 						onChange={handleImageState(2)}
 					/>
 					{validationErrors.images && validationErrors.images[2] && (
@@ -233,7 +241,7 @@ export default function CreateSpotForm() {
 					<input
 						type="url"
 						placeholder="Image URL"
-						value={images[3]}
+						value={spot?.SpotImages[3]?.url || images[3]}
 						onChange={handleImageState(3)}
 					/>
 					{validationErrors.images && validationErrors.images[3] && (
@@ -242,7 +250,7 @@ export default function CreateSpotForm() {
 					<input
 						type="url"
 						placeholder="Image URL"
-						value={images[4]}
+						value={spot?.SpotImages[4]?.url || images[4]}
 						onChange={handleImageState(4)}
 					/>
 					{validationErrors.images && validationErrors.images[4] && (

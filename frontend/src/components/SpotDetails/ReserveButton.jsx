@@ -44,6 +44,7 @@ export default function ReserveButton({ spotId }) {
 				onClick={handleClick}
 				id="reserve-button"
 				ref={ref}
+				className="red"
 				style={{
 					backgroundImage: `radial-gradient( circle at ${mousePosition.x}px ${mousePosition.y}px, var(--Light-Red), var(--Red) 60% )`,
 				}}

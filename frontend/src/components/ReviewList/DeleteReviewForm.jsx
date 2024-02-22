@@ -1,36 +1,24 @@
 import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useModal } from "../../context/Modal";
-import { addReviewBySpotId } from "../../store/review";
-import ErrorDisplay from "../ErrorDisplay";
-import StarInput from "./StarInput";
+import { deleteReviewById } from "../../store/review";
 
-export default function ReviewForm({ spotId }) {
-	const ref = useRef();
+export default function DeleteReviewForm({ reviewId, spotId, reviewRating }) {
 	const dispatch = useDispatch();
 	const { closeModal } = useModal();
-	const [stars, setStars] = useState(0);
-	const [review, setReview] = useState("");
-	const [disabled, setDisabled] = useState(true);
+	const ref = useRef();
 	const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-	const [errors, setErrors] = useState({})
-
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 
 		try {
-			await dispatch(addReviewBySpotId(spotId, { review, stars }));
+			await dispatch(deleteReviewById(reviewId, spotId, reviewRating));
 			closeModal();
 		} catch (err) {
-			const msg = await err.json();
-			setErrors(msg);
+            const msg = await err.json();
+            console.error(msg);
 		}
 	};
-
-	useEffect(() => {
-		if (review.length < 10 || stars < 1) setDisabled(true);
-		else setDisabled(false);
-	}, [review, stars]);
 
 	useEffect(() => {
 		const updateMousePos = (e) => {
@@ -45,25 +33,21 @@ export default function ReviewForm({ spotId }) {
 
 	return (
 		<>
-			<h1 className="form-header">How was your stay?</h1>
+			<h1 className="form-header">Confirm Delete</h1>
 			<form className="modal-form" onSubmit={handleSubmit}>
-				{errors?.message && <ErrorDisplay msg={errors.message} />}
-				<textarea
-					placeholder="Leave your review here..."
-					value={review}
-					onChange={(e) => setReview(e.target.value)}
-				/>
-				<StarInput setStarVal={setStars}/>
+				<h3>Are you sure you want to delete this review?</h3>
 				<button
 					type="submit"
-					disabled={disabled}
-					ref={ref}
 					className="red"
+					ref={ref}
 					style={{
 						backgroundImage: `radial-gradient( circle at ${mousePosition.x}px ${mousePosition.y}px, var(--Light-Red), var(--Red) 60% )`,
 					}}
 				>
-					Submit your Review
+					Yes (Delete Review)
+				</button>
+				<button type="button" onClick={closeModal} className="grey">
+					No (Keep Review)
 				</button>
 			</form>
 		</>

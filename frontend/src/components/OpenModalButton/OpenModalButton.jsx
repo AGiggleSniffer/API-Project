@@ -31,7 +31,8 @@ function OpenModalButton({
 	return (
 		<button
 			onClick={onClick}
-			ref={ ref}
+			ref={ref}
+			className="red"
 			style={{
 				backgroundImage: `radial-gradient( circle at ${mousePosition.x}px ${mousePosition.y}px, var(--Light-Red), var(--Red) 60% )`,
 			}}

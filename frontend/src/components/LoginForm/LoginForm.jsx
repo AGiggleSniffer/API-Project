@@ -81,7 +81,7 @@ export default function LoginForm() {
 				<button
 					type="submit"
 					onClick={loginDemo}
-					className="demo"
+					className="grey"
 				>
 					Demo User
 				</button>

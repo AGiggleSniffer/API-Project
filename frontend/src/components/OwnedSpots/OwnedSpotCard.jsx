@@ -1,7 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaRegStar } from "react-icons/fa";
-import "./OwnedSpotCard.css"
+import "./OwnedSpotCard.css";
+import OpenModalButton from "../OpenModalButton";
+import DeleteSpotForm from "./DeleteSpotForm";
 
 export default function OwnedSpotCard({ spot }) {
 	const {
@@ -55,31 +57,40 @@ export default function OwnedSpotCard({ spot }) {
 	}, []);
 
 	const handleClick = () => {
-		navigate(`spots/${id}`);
+		navigate(`/spots/${id}`);
 	};
+
+	const updateSpot = () => {
+		navigate(`/spots/${id}/edit`);
+	}
 
 	return (
 		<>
-			<div className="spot-card" onClick={handleClick}>
-				<div className="image-container" ref={ref}>
+			<div className="spot-card">
+				<div className="image-container" ref={ref} onClick={handleClick}>
 					<img src={previewImage} alt={description} className="spot-image" />
 				</div>
-				<span className="details">
+				<span className="details" style={{ cursor: "default" }}>
 					<strong>{city}, </strong>
 					{state}
 				</span>
-				<span className="rating">
+				<span className="rating" style={{ cursor: "default" }}>
 					<FaRegStar />
 					{typeof avgStarRating === "number"
 						? avgStarRating.toFixed(1)
 						: avgStarRating}
 				</span>
-				<span className="price">
+				<span className="price" style={{ cursor: "default" }}>
 					<strong>${price}</strong> night
 				</span>
-				<span className="current-buttons">
-					<button>Update</button>
-					<button>Delete</button>
+				<span className="current-buttons" style={{ cursor: "default" }}>
+					<button className="grey" onClick={updateSpot}>
+						Update
+					</button>
+					<OpenModalButton
+						buttonText="Delete"
+						modalComponent={<DeleteSpotForm spotId={spot.id} />}
+					/>
 				</span>
 			</div>
 			{tooltipBool && (

@@ -4,6 +4,7 @@ import { createSelector } from "reselect";
 const LOAD_SPOTS = "spots/loadSpots";
 const LOAD_CURR = "spots/currSpots";
 const ADD_SPOT_ID = "spots/addSpotById";
+const DELETE_SPOT = "spots/deleteSpot";
 const DELETE_REVIEW = "spots/deleteReview";
 
 const loadSpots = (spots) => ({
@@ -19,6 +20,11 @@ const currSpots = (spots) => ({
 const addSpotById = (spot) => ({
 	type: ADD_SPOT_ID,
 	payload: spot,
+});
+
+const deleteSpot = (spotId) => ({
+	type: DELETE_SPOT,
+	payload: spotId,
 });
 
 export const deleteReviewFromSpot = (spotId, reviewRating) => ({
@@ -68,6 +74,16 @@ export const addANewSpot = (spot, images) => async () => {
 	return id;
 };
 
+export const deleteASpotById = (id) => async (dispatch) => {
+	const response = await csrfFetch(`/api/spots/${id}`, { method: "DELETE" });
+
+	const msg = await response.json();
+	console.log("BEFORE DISPATCH", id)
+	dispatch(deleteSpot(id));
+	console.log("WORKING")
+	return msg;
+};
+
 export const selectAllSpots = (state) => {
 	return state.spots.allSpots;
 };
@@ -105,13 +121,20 @@ export default function spotsReducer(state = initialState, action) {
 				...state,
 				allSpots: { ...state.allSpots, ...action.payload.Spots },
 			};
-		case LOAD_CURR:
-			return {
-				...state,
-				currentSpots: { ...state.currentSpots, ...action.payload.Spots },
-			};
+		case LOAD_CURR: {
+			const newObj = { ...state, currentSpots: {} };
+			action.payload.Spots.forEach(
+				(spot) => (newObj.currentSpots[spot.id] = spot),
+			);
+			return newObj;
+		}
+		case DELETE_SPOT: {
+			const newObj = { ...state, currentSpots: { ...state.currentSpots } };
+			delete newObj.currentSpots[action.payload];
+			return newObj;
+		}
 		case DELETE_REVIEW: {
-			const newObj = { ...state };
+			const newObj = { ...state, ...state.detailedSpots };
 			const mySpot = newObj.detailedSpots[action.payload.spotId];
 
 			if (mySpot.numReviews - 1) {
@@ -124,7 +147,7 @@ export default function spotsReducer(state = initialState, action) {
 				mySpot.avgStarRating = "New!";
 				mySpot.numReviews = 0;
 			}
-			
+
 			return newObj;
 		}
 		default:

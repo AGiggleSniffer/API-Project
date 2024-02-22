@@ -48,7 +48,7 @@ export default function ProfileButton({ user }) {
 	}
 
 	const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden");
-	const buttonClassName = "profile-button" + (showMenu ? " menu-open" : "");
+	const buttonClassName = "profile-button white" + (showMenu ? " menu-open" : "");
 
 	return (
 		<>
@@ -72,7 +72,7 @@ export default function ProfileButton({ user }) {
 							Manage Spots
 						</li>
 						<li>
-							<button onClick={logout}>Log Out</button>
+							<button onClick={logout} className="red">Log Out</button>
 						</li>
 					</>
 				) : (
