@@ -23,7 +23,7 @@ button:hover {
 button {
 	color: var(--White);
 	border: none;
-	transition: all 100ms ease;
+	transition: all 100ms ease-in-out;
 }
 
 button.red {
@@ -62,6 +62,26 @@ button.white:active {
 	box-shadow: 0 0 0 var(--Light-Grey), inset 0px 0px 3px var(--Light-Grey);
 }
 
+.circle {
+	width: 5px;
+	height: 5px;
+	padding: 5px;
+}
+
 .star {
+	color: var(--Red);
+}
+
+a {
+	color: var(--Teal);
+	transition: color 500ms ease;
+	text-decoration: none;
+}
+
+a:hover {
+	color: var(--Red);
+}
+
+a.active {
 	color: var(--Red);
 }

@@ -14,9 +14,9 @@
 	justify-content: center;
 	align-items: center;
 	opacity: 100%;
-	box-shadow: 0 0 0 var(--Light-Grey), inset 0px 0px 5px var(--Light-Grey);
+	box-shadow: 0 0 5px var(--Dark-Grey);
 	overflow: hidden;
-	transition: all 200ms ease-in-out;
+	transition: all 200ms ease-in;
 }
 
 .spot-image {
@@ -32,7 +32,7 @@
 }
 
 .image-container:hover {
-	box-shadow: 0px 0px 15px var(--Dark-Grey), inset 0 0 0 var(--Dark-Grey);
+	box-shadow: 0 5px 3px var(--Dark-Grey);
 }
 
 .rating {

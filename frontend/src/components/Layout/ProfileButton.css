@@ -24,16 +24,9 @@ menu.profile-dropdown button {
 }
 
 #manage-spots {
-	color: var(--Teal);
-	cursor: pointer;
 	justify-content: center;
 	border-top: 1px solid var(--Dark-Grey);
 	border-bottom: 1px solid var(--Dark-Grey);
-	transition: color 500ms ease;
-}
-
-#manage-spots:hover {
-	color: var(--Red);
 }
 
 .list-button {

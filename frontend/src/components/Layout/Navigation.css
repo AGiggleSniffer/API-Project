@@ -3,12 +3,17 @@
 }
 
 nav {
+	position: sticky;
+	top: 0;
+	z-index: 50;
+	background-color: var(--White);
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 	flex-basis: 100vw;
 	height: 70px;
 	border-bottom: var(--Light-Grey) solid 2px;
+	box-shadow: 0 0 10px var(--Light-Grey);
 }
 
 nav > span {
@@ -27,7 +32,7 @@ nav > span {
 	color: var(--Red);
 	font-size: 35px;
 	cursor: pointer;
-	/* -webkit-box-reflect: below 0 linear-gradient(transparent, 85%, var(--Red)); */
+	/* -webkit-box-reflect: below 0 linear-gradient(transparent, 90%, var(--Red)); */
 	transition: text-shadow 500ms ease;
 }
 

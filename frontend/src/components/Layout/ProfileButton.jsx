@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { FaUserCircle, FaBars } from "react-icons/fa";
 import * as sessionActions from "../../store/session";
 import OpenModalMenuItem from "../OpenModalMenuItem";
@@ -42,19 +42,17 @@ export default function ProfileButton({ user }) {
 		navigate("/");
 	};
 
-	const manageSpots = () => {
-		closeMenu();
-		navigate("spots/current")
-	}
-
 	const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden");
-	const buttonClassName = "profile-button white" + (showMenu ? " menu-open" : "");
+	const buttonClassName =
+		"profile-button white" + (showMenu ? " menu-open" : "");
 
 	return (
 		<>
 			{user && (
-				<span onClick={() => navigate("spots/new")} id="create-spot">
-					Create A New Spot
+				<span id="create-spot">
+					<NavLink to="spots/new">
+						Create A New Spot
+					</NavLink>
 				</span>
 			)}
 			<button className={buttonClassName} onClick={toggleMenu}>
@@ -68,11 +66,15 @@ export default function ProfileButton({ user }) {
 							Hello, {user.firstName} {user.lastName}
 						</li>
 						<li>{user.email}</li>
-						<li id="manage-spots" onClick={manageSpots}>
-							Manage Spots
+						<li id="manage-spots">
+							<NavLink to="spots/current" onClick={closeMenu}>
+								Manage Spots
+							</NavLink>
 						</li>
 						<li>
-							<button onClick={logout} className="red">Log Out</button>
+							<button onClick={logout} className="red">
+								Log Out
+							</button>
 						</li>
 					</>
 				) : (

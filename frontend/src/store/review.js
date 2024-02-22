@@ -70,6 +70,6 @@ export default function reviewsReducer(state = initialState, action) {
 			return newObj;
 		}
 		default:
-			return state;
+			return state; 
 	}
 }

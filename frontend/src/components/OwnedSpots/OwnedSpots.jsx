@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { loadCurrSpots, selectCurrSpotsArr } from "../../store/spot";
 import OwnedSpotCard from "./OwnedSpotCard";
 
 export default function OwnedSpots() {
 	const dispatch = useDispatch();
+	const navigate = useNavigate();
 	const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 	const ref = useRef();
 	const spots = useSelector(selectCurrSpotsArr);
@@ -31,6 +33,7 @@ export default function OwnedSpots() {
 				<button
 					ref={ref}
 					className="red"
+					onClick={()=> navigate("/spots/new")}
 					style={{
 						backgroundImage: `radial-gradient( circle at ${mousePosition.x}px ${mousePosition.y}px, var(--Light-Red), var(--Red) 60% )`,
 					}}

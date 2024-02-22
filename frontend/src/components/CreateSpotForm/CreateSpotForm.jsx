@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { addANewSpot, findASpotById } from "../../store/spot";
+import { addANewSpot, findASpotById, updateSpotById } from "../../store/spot";
 import ErrorDisplay from "../ErrorDisplay";
 import "./CreateSpotForm.css";
 
@@ -10,6 +10,9 @@ export default function CreateSpotForm() {
 	const spot = useSelector((state) =>
 		paramId ? state.spots.detailedSpots[paramId] : null,
 	);
+	const navigate = useNavigate();
+	const dispatch = useDispatch();
+	const ref = useRef();
 	const [country, setCountry] = useState("");
 	const [address, setAddress] = useState("");
 	const [city, setCity] = useState("");
@@ -19,17 +22,34 @@ export default function CreateSpotForm() {
 	const [description, setDescription] = useState("");
 	const [name, setName] = useState("");
 	const [price, setPrice] = useState("");
-	const [images, setImages] = useState({ 0: "", 1: "", 2: "", 3: "", 4: "" });
+	const [images, setImages] = useState(["", "", "", "", ""]);
 	const [validationErrors, setValidationErrors] = useState({});
 	const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-	const navigate = useNavigate();
-	const dispatch = useDispatch();
-	const ref = useRef();
 
 	useEffect(() => {
 		if (!paramId) return;
 		dispatch(findASpotById(paramId));
 	}, [dispatch, paramId]);
+
+	useEffect(() => {
+		if (!spot) return;
+		setCountry(spot?.country);
+		setAddress(spot?.address);
+		setCity(spot?.city);
+		setState(spot?.state);
+		setLatitude(spot?.lat.toString());
+		setLongitude(spot?.lng.toString());
+		setDescription(spot?.description);
+		setName(spot?.name);
+		setPrice(spot?.price);
+		setImages([
+			spot?.SpotImages[0]?.url || "",
+			spot?.SpotImages[1]?.url || "",
+			spot?.SpotImages[2]?.url || "",
+			spot?.SpotImages[3]?.url || "",
+			spot?.SpotImages[4]?.url || "",
+		]);
+	}, [spot]);
 
 	useEffect(() => {
 		const updateMousePos = (e) => {
@@ -55,20 +75,18 @@ export default function CreateSpotForm() {
 		if (!price) errors.price = "Price is required";
 		if (!images[0]) errors.preview = "Preview image is required";
 
-		for (let url in images) {
-			const curr = images[url];
-
+		images.forEach((img, i) => {
 			if (
-				curr.endsWith(".jpeg") ||
-				curr.endsWith(".jpg") ||
-				curr.endsWith(".png")
+				img.endsWith(".jpeg") ||
+				img.endsWith(".jpg") ||
+				img.endsWith(".png")
 			) {
-				break;
-			} else if (curr) {
+				return;
+			} else if (img) {
 				if (!errors.images) errors.images = {};
-				errors.images[url] = "Image URL must end in .png, .jpg, or .jpeg";
+				errors.images[i] = "Image URL must end in .png, .jpg, or .jpeg";
 			}
-		}
+		})
 
 		if (Object.keys(errors).length) return setValidationErrors(errors);
 
@@ -85,16 +103,27 @@ export default function CreateSpotForm() {
 		};
 
 		try {
-			const id = await dispatch(addANewSpot(payload, images));
+			let id;
+			console.log(images)
+			const reverseImages = images.reverse();
+			console.log(images, reverseImages);
+			if (spot?.id)
+				id = await dispatch(updateSpotById(spot, payload, reverseImages));
+			else id = await dispatch(addANewSpot(payload, reverseImages));
 			return navigate(`/spots/${id}`);
 		} catch (err) {
+			console.error(err);
 			const msg = await err.json();
 			return setValidationErrors(msg.errors);
 		}
 	};
 
 	const handleImageState = (imageId) => (e) =>
-		setImages((state) => ({ ...state, [imageId]: e.target.value }));
+		setImages((state) => {
+			const newArr = [...state];
+			newArr[imageId] = e.target.value;
+			return newArr;
+		});
 
 	return (
 		<div id="create-spot-form">
@@ -109,53 +138,57 @@ export default function CreateSpotForm() {
 					<input
 						type="text"
 						placeholder="Country"
-						value={spot?.country || country}
+						value={country}
 						onChange={(e) => setCountry(e.target.value)}
 					/>
-					{validationErrors.country && (
+					{validationErrors?.country && (
 						<ErrorDisplay msg={validationErrors.country} />
 					)}
 					<input
 						type="text"
 						placeholder="Address"
-						value={spot?.address || address}
+						value={address}
 						onChange={(e) => setAddress(e.target.value)}
 					/>
-					{validationErrors.address && (
+					{validationErrors?.address && (
 						<ErrorDisplay msg={validationErrors.address} />
 					)}
 					<input
 						type="text"
 						placeholder="City"
-						value={spot?.city || city}
+						value={city}
 						onChange={(e) => setCity(e.target.value)}
 					/>
-					{validationErrors.city && (
+					{validationErrors?.city && (
 						<ErrorDisplay msg={validationErrors.city} />
 					)}
 					<input
 						type="text"
 						placeholder="STATE"
-						value={spot?.state || state}
+						value={state}
 						onChange={(e) => setState(e.target.value)}
 					/>
-					{validationErrors.state && (
+					{validationErrors?.state && (
 						<ErrorDisplay msg={validationErrors.state} />
 					)}
 					<input
 						type="number"
 						placeholder="Latitude"
-						value={spot?.lat || lat}
+						value={lat}
 						onChange={(e) => setLatitude(e.target.value)}
 					/>
-					{validationErrors.lat && <ErrorDisplay msg={validationErrors.lat} />}
+					{validationErrors?.lat && (
+						<ErrorDisplay msg={validationErrors?.lat} />
+					)}
 					<input
 						type="number"
 						placeholder="Longitude"
-						value={spot?.lng || lng}
+						value={lng}
 						onChange={(e) => setLongitude(e.target.value)}
 					/>
-					{validationErrors.lng && <ErrorDisplay msg={validationErrors.lng} />}
+					{validationErrors?.lng && (
+						<ErrorDisplay msg={validationErrors?.lng} />
+					)}
 				</span>
 				<span>
 					<h3>Describe your place to guests</h3>
@@ -166,10 +199,10 @@ export default function CreateSpotForm() {
 					<textarea
 						rows="8"
 						placeholder="Please write at lease 30 characters"
-						value={spot?.description || description}
+						value={description}
 						onChange={(e) => setDescription(e.target.value)}
 					/>
-					{validationErrors.description && (
+					{validationErrors?.description && (
 						<ErrorDisplay msg={validationErrors.description} />
 					)}
 				</span>
@@ -182,10 +215,10 @@ export default function CreateSpotForm() {
 					<input
 						type="text"
 						placeholder="Name of your spot"
-						value={spot?.name || name}
+						value={name}
 						onChange={(e) => setName(e.target.value)}
 					/>
-					{validationErrors.name && (
+					{validationErrors?.name && (
 						<ErrorDisplay msg={validationErrors.name} />
 					)}
 				</span>
@@ -198,10 +231,10 @@ export default function CreateSpotForm() {
 					<input
 						type="number"
 						placeholder="$ Price per night (USD)"
-						value={spot?.price || price}
+						value={price}
 						onChange={(e) => setPrice(e.target.value)}
 					/>
-					{validationErrors.price && (
+					{validationErrors?.price && (
 						<ErrorDisplay msg={validationErrors.price} />
 					)}
 				</span>
@@ -211,49 +244,49 @@ export default function CreateSpotForm() {
 					<input
 						type="url"
 						placeholder="Preview Image URL"
-						value={spot?.SpotImages[0]?.url || images[0]}
+						value={images[0]}
 						onChange={handleImageState(0)}
 					/>
-					{validationErrors.preview && (
+					{validationErrors?.preview && (
 						<ErrorDisplay msg={validationErrors.preview} />
 					)}
-					{validationErrors.images && validationErrors.images[0] && (
+					{validationErrors?.images && validationErrors.images[0] && (
 						<ErrorDisplay msg={validationErrors.images[0]} />
 					)}
 					<input
 						type="url"
 						placeholder="Image URL"
-						value={spot?.SpotImages[1]?.url || images[1]}
+						value={images[1]}
 						onChange={handleImageState(1)}
 					/>
-					{validationErrors.images && validationErrors.images[1] && (
+					{validationErrors?.images && validationErrors.images[1] && (
 						<ErrorDisplay msg={validationErrors.images[1]} />
 					)}
 					<input
 						type="url"
 						placeholder="Image URL"
-						value={spot?.SpotImages[2]?.url || images[2]}
+						value={images[2]}
 						onChange={handleImageState(2)}
 					/>
-					{validationErrors.images && validationErrors.images[2] && (
+					{validationErrors?.images && validationErrors.images[2] && (
 						<ErrorDisplay msg={validationErrors.images[2]} />
 					)}
 					<input
 						type="url"
 						placeholder="Image URL"
-						value={spot?.SpotImages[3]?.url || images[3]}
+						value={images[3]}
 						onChange={handleImageState(3)}
 					/>
-					{validationErrors.images && validationErrors.images[3] && (
+					{validationErrors?.images && validationErrors.images[3] && (
 						<ErrorDisplay msg={validationErrors.images[3]} />
 					)}
 					<input
 						type="url"
 						placeholder="Image URL"
-						value={spot?.SpotImages[4]?.url || images[4]}
+						value={images[4]}
 						onChange={handleImageState(4)}
 					/>
-					{validationErrors.images && validationErrors.images[4] && (
+					{validationErrors?.images && validationErrors.images[4] && (
 						<ErrorDisplay msg={validationErrors.images[4]} />
 					)}
 				</span>

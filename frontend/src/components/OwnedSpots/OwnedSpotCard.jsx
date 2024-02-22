@@ -62,7 +62,7 @@ export default function OwnedSpotCard({ spot }) {
 
 	const updateSpot = () => {
 		navigate(`/spots/${id}/edit`);
-	}
+	};
 
 	return (
 		<>
@@ -70,17 +70,17 @@ export default function OwnedSpotCard({ spot }) {
 				<div className="image-container" ref={ref} onClick={handleClick}>
 					<img src={previewImage} alt={description} className="spot-image" />
 				</div>
-				<span className="details" style={{ cursor: "default" }}>
+				<span className="details" onClick={handleClick}>
 					<strong>{city}, </strong>
 					{state}
 				</span>
-				<span className="rating" style={{ cursor: "default" }}>
+				<span className="rating" onClick={handleClick}>
 					<FaRegStar />
 					{typeof avgStarRating === "number"
 						? avgStarRating.toFixed(1)
 						: avgStarRating}
 				</span>
-				<span className="price" style={{ cursor: "default" }}>
+				<span className="price" onClick={handleClick}>
 					<strong>${price}</strong> night
 				</span>
 				<span className="current-buttons" style={{ cursor: "default" }}>

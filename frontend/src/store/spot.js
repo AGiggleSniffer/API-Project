@@ -4,6 +4,7 @@ import { createSelector } from "reselect";
 const LOAD_SPOTS = "spots/loadSpots";
 const LOAD_CURR = "spots/currSpots";
 const ADD_SPOT_ID = "spots/addSpotById";
+const UPDATE_SPOT = "spots/updateSpot";
 const DELETE_SPOT = "spots/deleteSpot";
 const DELETE_REVIEW = "spots/deleteReview";
 
@@ -22,6 +23,11 @@ const addSpotById = (spot) => ({
 	payload: spot,
 });
 
+const updateSpot = (spot) => ({
+	type: UPDATE_SPOT,
+	payload: spot,
+});
+
 const deleteSpot = (spotId) => ({
 	type: DELETE_SPOT,
 	payload: spotId,
@@ -31,6 +37,10 @@ export const deleteReviewFromSpot = (spotId, reviewRating) => ({
 	type: DELETE_REVIEW,
 	payload: { spotId, reviewRating },
 });
+
+//
+// THUNK
+//
 
 export const loadAllSpots = () => async (dispatch) => {
 	const response = await csrfFetch("/api/spots");
@@ -64,12 +74,39 @@ export const addANewSpot = (spot, images) => async () => {
 
 	const { id } = await response.json();
 
-	for (let img in images) {
-		await csrfFetch(`/api/spots/${id}/images`, {
-			method: "POST",
-			body: JSON.stringify({ url: images[img], preview: true }),
+	images.forEach(async (img) => {
+		if (img) {
+			await csrfFetch(`/api/spots/${id}/images`, {
+				method: "POST",
+				body: JSON.stringify({ url: img, preview: true }),
+			});
+		}
+	});
+
+	return id;
+};
+
+export const updateSpotById = (spot, payload, images) => async () => {
+	const { id, SpotImages } = spot;
+	await csrfFetch(`/api/spots/${id}`, {
+		method: "PUT",
+		body: JSON.stringify(payload),
+	});
+
+	await SpotImages.forEach(async (img) => {
+		await csrfFetch(`/api/spot-images/${img.id}`, {
+			method: "DELETE",
 		});
-	}
+	});
+
+	await images.forEach(async (img) => {
+		if (img) {
+			await csrfFetch(`/api/spots/${id}/images`, {
+				method: "POST",
+				body: JSON.stringify({ url: img, preview: true }),
+			});
+		}
+	});
 
 	return id;
 };
@@ -78,11 +115,15 @@ export const deleteASpotById = (id) => async (dispatch) => {
 	const response = await csrfFetch(`/api/spots/${id}`, { method: "DELETE" });
 
 	const msg = await response.json();
-	console.log("BEFORE DISPATCH", id)
+	console.log("BEFORE DISPATCH", id);
 	dispatch(deleteSpot(id));
-	console.log("WORKING")
+	console.log("WORKING");
 	return msg;
 };
+
+//
+// SELECTORS
+//
 
 export const selectAllSpots = (state) => {
 	return state.spots.allSpots;
@@ -108,14 +149,6 @@ const initialState = { allSpots: {}, detailedSpots: {}, currentSpots: {} };
 
 export default function spotsReducer(state = initialState, action) {
 	switch (action.type) {
-		case ADD_SPOT_ID:
-			return {
-				...state,
-				detailedSpots: {
-					...state.detailedSpots,
-					[action.payload.id]: action.payload,
-				},
-			};
 		case LOAD_SPOTS:
 			return {
 				...state,
@@ -126,6 +159,19 @@ export default function spotsReducer(state = initialState, action) {
 			action.payload.Spots.forEach(
 				(spot) => (newObj.currentSpots[spot.id] = spot),
 			);
+			return newObj;
+		}
+		case ADD_SPOT_ID:
+			return {
+				...state,
+				detailedSpots: {
+					...state.detailedSpots,
+					[action.payload.id]: action.payload,
+				},
+			};
+		case UPDATE_SPOT: {
+			const newObj = { ...state, detailedSpots: { ...state.detailedSpots } };
+			console.log(newObj);
 			return newObj;
 		}
 		case DELETE_SPOT: {

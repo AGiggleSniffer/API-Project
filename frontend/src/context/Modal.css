@@ -8,6 +8,7 @@
 	justify-content: center;
 	align-items: center;
 	animation: popout 300ms ease;
+	z-index: 100;
 }
 
 @keyframes popout {
@@ -29,6 +30,7 @@
 	background-color: black;
 	opacity: 60%;
 	animation: fade 300ms;
+	z-index: 100;
 }
 
 @keyframes fade {
@@ -49,4 +51,5 @@
 	border-radius: 5px;
 	background-color: #ffffff;
 	min-width: 50%;
+	z-index: 101;
 }

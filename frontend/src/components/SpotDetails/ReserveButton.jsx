@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { FaRegStar } from "react-icons/fa";
+import { FaRegStar, FaCircle } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { selectSpot } from "../../store/spot";
 
@@ -38,7 +38,7 @@ export default function ReserveButton({ spotId }) {
 				{isNaN(spot?.avgStarRating)
 					? spot?.avgStarRating
 					: spot?.avgStarRating.toFixed(1)}{" "}
-				- {spot?.numReviews} review{spot?.numReviews > 1 ? "s" : null}
+				<FaCircle className="circle" /> {spot?.numReviews} review{spot?.numReviews > 1 ? "s" : null}
 			</span>
 			<button
 				onClick={handleClick}
