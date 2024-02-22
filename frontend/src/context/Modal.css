@@ -50,6 +50,5 @@
 	position: absolute;
 	border-radius: 5px;
 	background-color: #ffffff;
-	min-width: 50%;
 	z-index: 101;
 }

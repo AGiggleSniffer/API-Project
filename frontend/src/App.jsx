@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
 import Layout from "./components/Layout";
 import SpotsList from "./components/SpotsList";
 import SpotDetails from "./components/SpotDetails";
@@ -30,6 +30,10 @@ const router = createBrowserRouter([
 				element: <CreateSpotForm />,
 			},
 		],
+	},
+	{
+		path: "*",
+		element: <Navigate to="/" replace={true} />,
 	},
 ]);
 
