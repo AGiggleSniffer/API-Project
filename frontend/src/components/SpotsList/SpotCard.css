@@ -4,6 +4,7 @@
 	grid-template-columns: 2fr 1fr;
 	margin: 10px;
 	cursor: pointer;
+	transition: all 500ms ease;
 }
 
 .image-container {

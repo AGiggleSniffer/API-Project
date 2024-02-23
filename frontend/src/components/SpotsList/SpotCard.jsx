@@ -19,6 +19,7 @@ export default function SpotCard({ spot }) {
 	const [tooltipBool, setTooltip] = useState(false);
 	const navigate = useNavigate();
 	const ref = useRef();
+	const card = useRef();
 
 	useEffect(() => {
 		const updateMousePos = (e) => {
@@ -54,13 +55,23 @@ export default function SpotCard({ spot }) {
 		};
 	}, []);
 
+	const [opacity, setOpacity] = useState(0);
+	useEffect(() => {
+		setOpacity(100);
+	}, [])
+
 	const handleClick = () => {
 		navigate(`spots/${id}`);
 	};
 
 	return (
 		<>
-			<div className="spot-card" onClick={handleClick}>
+			<div
+				className="spot-card"
+				ref={card}
+				onClick={handleClick}
+				style={{ opacity: opacity }}
+			>
 				<div className="image-container" ref={ref}>
 					<img src={previewImage} alt={description} className="spot-image" />
 				</div>

@@ -56,6 +56,13 @@ export default function OwnedSpotCard({ spot }) {
 		};
 	}, []);
 
+	const [opacity, setOpacity] = useState(0);
+	const [translate, setTranslate] = useState(200)
+	useEffect(() => {
+		setOpacity(100);
+		setTranslate(0);
+	}, []);
+
 	const handleClick = () => {
 		navigate(`/spots/${id}`);
 	};
@@ -64,9 +71,11 @@ export default function OwnedSpotCard({ spot }) {
 		navigate(`/spots/${id}/edit`);
 	};
 
+	const styles = { opacity: opacity, transform: `translateY(${translate}px)` }
+
 	return (
 		<>
-			<div className="spot-card">
+			<div className="spot-card" style={styles}>
 				<div className="image-container" ref={ref} onClick={handleClick}>
 					<img src={previewImage} alt={description} className="spot-image" />
 				</div>

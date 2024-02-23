@@ -36,6 +36,15 @@ nav > span {
 	transition: text-shadow 500ms ease;
 }
 
+.logo svg {
+	transform: rotate(180deg);
+	transition: transform 500ms ease;
+}
+
+.logo:hover svg {
+	transform: rotate(180deg) scale(1.05);
+}
+
 .logo:hover {
 	text-shadow: 0px 0px 5px var(--Red);
 }
