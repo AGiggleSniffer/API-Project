@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { FaRegStar, FaCircle } from "react-icons/fa";
@@ -16,11 +16,15 @@ export default function SpotDetails() {
 	const spot = useSelector(selectSpot(id));
 	const reviews = useSelector(selectReviewsArray);
 	const sessionUser = useSelector((state) => state.session.user);
-	const allowSpotReview = sessionUser && spot?.Owner.id !== sessionUser?.id;
-	const ownReview = useMemo(
-		() => reviews?.find((review) => review.User.id === sessionUser?.id),
-		[reviews, sessionUser],
+	const [ownReview, setOwnReview] = useState([]);
+	const [allowSpotReview, setSpotReview] = useState(
+		sessionUser && spot?.Owner.id !== sessionUser?.id,
 	);
+
+	useEffect(() => {
+		setSpotReview(sessionUser && spot?.Owner.id !== sessionUser?.id);
+		setOwnReview(reviews?.find((review) => review.User.id === sessionUser?.id));
+	}, [sessionUser, spot, reviews]);
 
 	useEffect(() => {
 		dispatch(findASpotById(id));
@@ -83,8 +87,9 @@ export default function SpotDetails() {
 					<>
 						<h3>
 							<FaRegStar className="star" />
-							{spot?.avgStarRating.toFixed(1)} <FaCircle className="circle"/> {spot?.numReviews}{" "}
-							review
+							{spot?.avgStarRating.toFixed(
+								1,
+							)} <FaCircle className="circle" /> {spot?.numReviews} review
 							{spot?.numReviews > 1 ? "s" : null}
 						</h3>
 						{allowSpotReview && !ownReview && (
