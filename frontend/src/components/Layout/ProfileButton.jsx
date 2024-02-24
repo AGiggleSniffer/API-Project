@@ -7,12 +7,15 @@ import OpenModalMenuItem from "../OpenModalMenuItem";
 import LoginForm from "../LoginForm";
 import SignupForm from "../SignupForm";
 import "./ProfileButton.css";
+import useMouse from "../../hooks/useMouse";
 
 export default function ProfileButton({ user }) {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const [showMenu, setShowMenu] = useState(false);
 	const ulRef = useRef();
+	const ref = useRef();
+	const mousePosition = useMouse(ref);
 
 	const toggleMenu = (e) => {
 		e.stopPropagation(); // Keep from bubbling up to document and triggering closeMenu
@@ -50,9 +53,7 @@ export default function ProfileButton({ user }) {
 		<>
 			{user && (
 				<span id="create-spot">
-					<NavLink to="spots/new">
-						Create A New Spot
-					</NavLink>
+					<NavLink to="spots/new">Create A New Spot</NavLink>
 				</span>
 			)}
 			<button className={buttonClassName} onClick={toggleMenu}>
@@ -72,7 +73,14 @@ export default function ProfileButton({ user }) {
 							</NavLink>
 						</li>
 						<li>
-							<button onClick={logout} className="red">
+							<button
+								onClick={logout}
+								className="red"
+								ref={ref}
+								style={{
+									backgroundImage: `radial-gradient( circle at ${mousePosition.xOffset}px ${mousePosition.yOffset}px, var(--Light-Red), var(--Red) 60% )`,
+								}}
+							>
 								Log Out
 							</button>
 						</li>

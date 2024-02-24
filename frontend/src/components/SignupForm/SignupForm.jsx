@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { useModal } from "../../context/Modal";
 import * as sessionActions from "../../store/session";
 import ErrorDisplay from "../ErrorDisplay";
+import useMouse from "../../hooks/useMouse";
 
 function SignupFormModal() {
 	const dispatch = useDispatch();
@@ -14,9 +15,9 @@ function SignupFormModal() {
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [disabled, setDisabled] = useState(true);
 	const [errors, setErrors] = useState({});
-	const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 	const { closeModal } = useModal();
 	const ref = useRef();
+	const mousePosition = useMouse(ref);
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -58,15 +59,6 @@ function SignupFormModal() {
 			setDisabled(false);
 		}
 	}, [username, password, firstName, lastName, confirmPassword]);
-
-	useEffect(() => {
-		const updateMousePos = (e) =>
-			setMousePosition({ x: e.offsetX, y: e.offsetY });
-
-		const buttonRef = ref.current;
-		buttonRef.addEventListener("mousemove", updateMousePos);
-		return () => buttonRef.removeEventListener("mousemove", updateMousePos);
-	}, []);
 
 	return (
 		<>
@@ -123,7 +115,7 @@ function SignupFormModal() {
 					ref={ref}
 					className="red"
 					style={{
-						backgroundImage: `radial-gradient( circle at ${mousePosition.x}px ${mousePosition.y}px, var(--Light-Red), var(--Red) 60% )`,
+						backgroundImage: `radial-gradient( circle at ${mousePosition.xOffset}px ${mousePosition.yOffset}px, var(--Light-Red), var(--Red) 60% )`,
 					}}
 				>
 					Sign Up

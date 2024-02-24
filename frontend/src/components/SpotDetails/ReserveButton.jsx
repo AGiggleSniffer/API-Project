@@ -1,13 +1,14 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { FaRegStar, FaCircle } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { selectSpot } from "../../store/spot";
+import useMouse from "../../hooks/useMouse";
 
 export default function ReserveButton({ spotId }) {
-	const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 	const [alertActive, setAlertActive] = useState(false);
 	const spot = useSelector(selectSpot(spotId));
 	const ref = useRef();
+	const mousePosition = useMouse(ref);
 
 	const handleClick = () => {
 		setAlertActive(true);
@@ -16,17 +17,6 @@ export default function ReserveButton({ spotId }) {
 			setAlertActive(false);
 		}, delay);
 	};
-
-	useEffect(() => {
-		const updateMousePos = (e) => {
-			setMousePosition({ x: e.offsetX, y: e.offsetY });
-		};
-		const buttonRef = ref.current;
-		buttonRef.addEventListener("mousemove", updateMousePos);
-		return () => {
-			buttonRef.removeEventListener("mousemove", updateMousePos);
-		};
-	}, []);
 
 	return (
 		<>
@@ -46,7 +36,7 @@ export default function ReserveButton({ spotId }) {
 				ref={ref}
 				className="red"
 				style={{
-					backgroundImage: `radial-gradient( circle at ${mousePosition.x}px ${mousePosition.y}px, var(--Light-Red), var(--Red) 60% )`,
+					backgroundImage: `radial-gradient( circle at ${mousePosition.xOffset}px ${mousePosition.yOffset}px, var(--Light-Red), var(--Red) 60% )`,
 				}}
 			>
 				Reserve

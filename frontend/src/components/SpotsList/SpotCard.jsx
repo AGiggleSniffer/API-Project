@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaRegStar } from "react-icons/fa";
 import "./SpotCard.css";
+import useMouse from "../../hooks/useMouse";
 
 export default function SpotCard({ spot, delay }) {
 	const {
@@ -15,22 +16,10 @@ export default function SpotCard({ spot, delay }) {
 		name,
 	} = spot;
 
-	const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 	const [tooltipBool, setTooltip] = useState(false);
 	const navigate = useNavigate();
 	const ref = useRef();
-	const card = useRef();
-
-	useEffect(() => {
-		const updateMousePos = (e) => {
-			setMousePosition({ x: e.clientX, y: e.clientY });
-		};
-
-		const imageContainer = ref.current;
-		imageContainer.addEventListener("mousemove", updateMousePos);
-		return () =>
-			imageContainer.removeEventListener("mousemove", updateMousePos);
-	}, [mousePosition]);
+	const mousePosition = useMouse(ref);
 
 	useEffect(() => {
 		const delay = 1000;
@@ -74,7 +63,6 @@ export default function SpotCard({ spot, delay }) {
 		<>
 			<div
 				className="spot-card"
-				ref={card}
 				onClick={handleClick}
 				style={styles}
 			>

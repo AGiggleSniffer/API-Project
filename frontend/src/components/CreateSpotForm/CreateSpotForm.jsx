@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addANewSpot, findASpotById, updateSpotById } from "../../store/spot";
 import ErrorDisplay from "../ErrorDisplay";
 import "./CreateSpotForm.css";
+import useMouse from "../../hooks/useMouse";
 
 export default function CreateSpotForm() {
 	const { id: paramId } = useParams();
@@ -13,6 +14,7 @@ export default function CreateSpotForm() {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const ref = useRef();
+	const mousePosition = useMouse(ref);
 	const [country, setCountry] = useState("");
 	const [address, setAddress] = useState("");
 	const [city, setCity] = useState("");
@@ -24,7 +26,6 @@ export default function CreateSpotForm() {
 	const [price, setPrice] = useState("");
 	const [images, setImages] = useState(["", "", "", "", ""]);
 	const [validationErrors, setValidationErrors] = useState({});
-	const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
 	useEffect(() => {
 		if (!paramId) return;
@@ -50,15 +51,6 @@ export default function CreateSpotForm() {
 			spot?.SpotImages[4]?.url || "",
 		]);
 	}, [spot]);
-
-	useEffect(() => {
-		const updateMousePos = (e) => {
-			setMousePosition({ x: e.offsetX, y: e.offsetY });
-		};
-		const buttonRef = ref.current;
-		buttonRef.addEventListener("mousemove", updateMousePos);
-		return () => buttonRef.removeEventListener("mousemove", updateMousePos);
-	}, []);
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
@@ -86,7 +78,7 @@ export default function CreateSpotForm() {
 				if (!errors.images) errors.images = {};
 				errors.images[i] = "Image URL must end in .png, .jpg, or .jpeg";
 			}
-		})
+		});
 
 		if (Object.keys(errors).length) return setValidationErrors(errors);
 
@@ -104,15 +96,14 @@ export default function CreateSpotForm() {
 
 		try {
 			let id;
-			console.log(images)
 			const reverseImages = images.reverse();
-			console.log(images, reverseImages);
-			if (spot?.id)
+			if (spot?.id) {
 				id = await dispatch(updateSpotById(spot, payload, reverseImages));
-			else id = await dispatch(addANewSpot(payload, reverseImages));
+			} else {
+				id = await dispatch(addANewSpot(payload, reverseImages));
+			}
 			return navigate(`/spots/${id}`);
 		} catch (err) {
-			console.error(err);
 			const msg = await err.json();
 			return setValidationErrors(msg.errors);
 		}
@@ -295,7 +286,7 @@ export default function CreateSpotForm() {
 					ref={ref}
 					className="red"
 					style={{
-						backgroundImage: `radial-gradient( circle at ${mousePosition.x}px ${mousePosition.y}px, var(--Light-Red), var(--Red) 60% )`,
+						backgroundImage: `radial-gradient( circle at ${mousePosition.xOffset}px ${mousePosition.yOffset}px, var(--Light-Red), var(--Red) 60% )`,
 					}}
 				>
 					Create Spot

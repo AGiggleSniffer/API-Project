@@ -1,30 +1,20 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { loadCurrSpots, selectCurrSpotsArr } from "../../store/spot";
 import OwnedSpotCard from "./OwnedSpotCard";
+import useMouse from "../../hooks/useMouse";
 
 export default function OwnedSpots() {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
-	const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 	const ref = useRef();
+	const mousePosition = useMouse(ref)
 	const spots = useSelector(selectCurrSpotsArr);
 
 	useEffect(() => {
 		dispatch(loadCurrSpots());
 	}, [dispatch]);
-
-	useEffect(() => {
-		const updateMousePos = (e) => {
-			setMousePosition({ x: e.offsetX, y: e.offsetY });
-		};
-		const buttonRef = ref.current;
-		buttonRef.addEventListener("mousemove", updateMousePos);
-		return () => {
-			buttonRef.removeEventListener("mousemove", updateMousePos);
-		};
-	}, []);
 
 	return (
 		<>
@@ -35,7 +25,7 @@ export default function OwnedSpots() {
 					className="red"
 					onClick={()=> navigate("/spots/new")}
 					style={{
-						backgroundImage: `radial-gradient( circle at ${mousePosition.x}px ${mousePosition.y}px, var(--Light-Red), var(--Red) 60% )`,
+						backgroundImage: `radial-gradient( circle at ${mousePosition.xOffset}px ${mousePosition.yOffset}px, var(--Light-Red), var(--Red) 60% )`,
 					}}
 				>
 					Create A New Spot

@@ -4,15 +4,16 @@ import { useModal } from "../../context/Modal";
 import { addReviewBySpotId } from "../../store/review";
 import ErrorDisplay from "../ErrorDisplay";
 import StarInput from "./StarInput";
+import useMouse from "../../hooks/useMouse";
 
 export default function ReviewForm({ spotId }) {
 	const ref = useRef();
+	const mousePosition = useMouse(ref);
 	const dispatch = useDispatch();
 	const { closeModal } = useModal();
 	const [stars, setStars] = useState(0);
 	const [review, setReview] = useState("");
 	const [disabled, setDisabled] = useState(true);
-	const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 	const [errors, setErrors] = useState({})
 
 	const handleSubmit = async (e) => {
@@ -32,17 +33,6 @@ export default function ReviewForm({ spotId }) {
 		else setDisabled(false);
 	}, [review, stars]);
 
-	useEffect(() => {
-		const updateMousePos = (e) => {
-			setMousePosition({ x: e.offsetX, y: e.offsetY });
-		};
-		const buttonRef = ref.current;
-		buttonRef.addEventListener("mousemove", updateMousePos);
-		return () => {
-			buttonRef.removeEventListener("mousemove", updateMousePos);
-		};
-	}, []);
-
 	return (
 		<>
 			<h1 className="form-header">How was your stay?</h1>
@@ -60,7 +50,7 @@ export default function ReviewForm({ spotId }) {
 					ref={ref}
 					className="red"
 					style={{
-						backgroundImage: `radial-gradient( circle at ${mousePosition.x}px ${mousePosition.y}px, var(--Light-Red), var(--Red) 60% )`,
+						backgroundImage: `radial-gradient( circle at ${mousePosition.xOffset}px ${mousePosition.yOffset}px, var(--Light-Red), var(--Red) 60% )`,
 					}}
 				>
 					Submit your Review

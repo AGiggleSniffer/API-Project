@@ -1,13 +1,14 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { useDispatch } from "react-redux";
 import { useModal } from "../../context/Modal";
 import { deleteReviewById } from "../../store/review";
+import useMouse from "../../hooks/useMouse";
 
 export default function DeleteReviewForm({ reviewId, spotId, reviewRating }) {
 	const dispatch = useDispatch();
 	const { closeModal } = useModal();
 	const ref = useRef();
-	const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+	const mousePosition = useMouse(ref);
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 
@@ -15,21 +16,10 @@ export default function DeleteReviewForm({ reviewId, spotId, reviewRating }) {
 			await dispatch(deleteReviewById(reviewId, spotId, reviewRating));
 			closeModal();
 		} catch (err) {
-            const msg = await err.json();
-            console.error(msg);
+			const msg = await err.json();
+			console.error(msg);
 		}
 	};
-
-	useEffect(() => {
-		const updateMousePos = (e) => {
-			setMousePosition({ x: e.offsetX, y: e.offsetY });
-		};
-		const buttonRef = ref.current;
-		buttonRef.addEventListener("mousemove", updateMousePos);
-		return () => {
-			buttonRef.removeEventListener("mousemove", updateMousePos);
-		};
-	}, []);
 
 	return (
 		<>
@@ -41,7 +31,7 @@ export default function DeleteReviewForm({ reviewId, spotId, reviewRating }) {
 					className="red"
 					ref={ref}
 					style={{
-						backgroundImage: `radial-gradient( circle at ${mousePosition.x}px ${mousePosition.y}px, var(--Light-Red), var(--Red) 60% )`,
+						backgroundImage: `radial-gradient( circle at ${mousePosition.xOffset}px ${mousePosition.yOffset}px, var(--Light-Red), var(--Red) 60% )`,
 					}}
 				>
 					Yes (Delete Review)

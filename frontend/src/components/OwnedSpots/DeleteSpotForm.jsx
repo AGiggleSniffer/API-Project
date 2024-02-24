@@ -1,13 +1,15 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { useDispatch } from "react-redux";
 import { useModal } from "../../context/Modal";
 import { deleteASpotById } from "../../store/spot";
+import useMouse from "../../hooks/useMouse";
 
 export default function DeleteSpotForm({ spotId }) {
 	const dispatch = useDispatch();
 	const { closeModal } = useModal();
 	const ref = useRef();
-	const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+	const mousePosition = useMouse(ref);
+
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 
@@ -20,17 +22,6 @@ export default function DeleteSpotForm({ spotId }) {
 		}
 	};
 
-	useEffect(() => {
-		const updateMousePos = (e) => {
-			setMousePosition({ x: e.offsetX, y: e.offsetY });
-		};
-		const buttonRef = ref.current;
-		buttonRef.addEventListener("mousemove", updateMousePos);
-		return () => {
-			buttonRef.removeEventListener("mousemove", updateMousePos);
-		};
-	}, []);
-
 	return (
 		<>
 			<h1 className="form-header">Confirm Delete</h1>
@@ -41,7 +32,7 @@ export default function DeleteSpotForm({ spotId }) {
 					className="red"
 					ref={ref}
 					style={{
-						backgroundImage: `radial-gradient( circle at ${mousePosition.x}px ${mousePosition.y}px, var(--Light-Red), var(--Red) 60% )`,
+						backgroundImage: `radial-gradient( circle at ${mousePosition.xOffset}px ${mousePosition.yOffset}px, var(--Light-Red), var(--Red) 60% )`,
 					}}
 				>
 					Yes (Delete Spot)

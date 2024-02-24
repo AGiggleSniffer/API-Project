@@ -4,6 +4,7 @@ import { FaRegStar } from "react-icons/fa";
 import "./OwnedSpotCard.css";
 import OpenModalButton from "../OpenModalButton";
 import DeleteSpotForm from "./DeleteSpotForm";
+import useMouse from "../../hooks/useMouse";
 
 export default function OwnedSpotCard({ spot, delay }) {
 	const {
@@ -17,21 +18,25 @@ export default function OwnedSpotCard({ spot, delay }) {
 		name,
 	} = spot;
 
-	const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-	const [tooltipBool, setTooltip] = useState(false);
 	const navigate = useNavigate();
 	const ref = useRef();
+	const mousePosition = useMouse(ref);
+	const [tooltipBool, setTooltip] = useState(false);
+	const [opacity, setOpacity] = useState(0);
+	const [translate, setTranslate] = useState(200);
 
-	useEffect(() => {
-		const updateMousePos = (e) => {
-			setMousePosition({ x: e.clientX, y: e.clientY });
-		};
+	const handleClick = () => {
+		navigate(`/spots/${id}`);
+	};
 
-		const imageContainer = ref.current;
-		imageContainer.addEventListener("mousemove", updateMousePos);
-		return () =>
-			imageContainer.removeEventListener("mousemove", updateMousePos);
-	}, [mousePosition]);
+	const updateSpot = () => {
+		navigate(`/spots/${id}/edit`);
+	};
+
+	const styles = {
+		opacity: opacity,
+		transform: `translateY(${translate}px)`,
+	};
 
 	useEffect(() => {
 		const delay = 1000;
@@ -56,24 +61,12 @@ export default function OwnedSpotCard({ spot, delay }) {
 		};
 	}, []);
 
-	const [opacity, setOpacity] = useState(0);
-	const [translate, setTranslate] = useState(200);
 	useEffect(() => {
 		setTimeout(() => {
 			setOpacity(100);
 			setTranslate(0);
 		}, delay);
 	}, [delay]);
-
-	const handleClick = () => {
-		navigate(`/spots/${id}`);
-	};
-
-	const updateSpot = () => {
-		navigate(`/spots/${id}/edit`);
-	};
-
-	const styles = { opacity: opacity, transform: `translateY(${translate}px)` };
 
 	return (
 		<>
