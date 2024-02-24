@@ -34,7 +34,7 @@ module.exports = {
 					country: "USA",
 					lat: randomNum(90),
 					lng: randomNum(180),
-					name: "Demo User",
+					name: "Demo Spot",
 					description: "A Nice Place",
 					price: randomNum(10000),
 				}));
@@ -51,6 +51,6 @@ module.exports = {
 		 * Example:
 		 * await queryInterface.bulkDelete('People', null, {});
 		 */
-		await queryInterface.bulkDelete("Spots", { name: "Demo User" });
+		return queryInterface.bulkDelete("Spots", { name: "Demo Spot" });
 	},
 };

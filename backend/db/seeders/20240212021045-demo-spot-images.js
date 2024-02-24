@@ -27,9 +27,11 @@ module.exports = {
 					return { spotId: i + 1, url: url, preview: true };
 				});
 
-		const imageArr = generateImages();
-
-		await SpotImage.bulkCreate(imageArr);
+		const imagesPerSpot = 5;
+		for (let i = 0; i < imagesPerSpot; i++) {
+			const imageArr = generateImages();
+			await SpotImage.bulkCreate(imageArr);
+		}
 	},
 
 	async down(queryInterface, Sequelize) {

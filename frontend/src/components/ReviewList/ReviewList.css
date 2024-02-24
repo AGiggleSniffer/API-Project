@@ -3,6 +3,7 @@
 	flex-direction: column;
 	border-top: 2px solid var(--Dark-Grey);
 	margin-top: 20px;
+	max-width: 100%;
 }
 
 #review-container h3 {
