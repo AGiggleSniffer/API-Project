@@ -32,17 +32,16 @@ nav > span {
 	color: var(--Red);
 	font-size: 35px;
 	cursor: pointer;
-	/* -webkit-box-reflect: below 0 linear-gradient(transparent, 90%, var(--Red)); */
 	transition: text-shadow 500ms ease;
 }
 
 .logo svg {
 	transform: rotate(180deg);
-	transition: transform 500ms ease;
+	transition: all 500ms ease;
 }
 
 .logo:hover svg {
-	transform: rotate(180deg) scale(1.05);
+	filter: drop-shadow(0 0 2px var(--Red));
 }
 
 .logo:hover {

@@ -26,6 +26,7 @@
 	border: 1px solid var(--Black);
 	border-radius: 5px;
 	padding: 10px;
+	transition: all 500ms cubic-bezier(0.25, 2, 0.8, 1);
 }
 
 .review-card strong {

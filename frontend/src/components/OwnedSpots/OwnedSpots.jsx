@@ -34,7 +34,7 @@ export default function OwnedSpots() {
 			<div className="spot-list">
 				{spots?.map((spot, i) => {
 					if (!spot) return;
-					return <OwnedSpotCard key={spot.id} spot={spot} delay={150 * i}/>;
+					return <OwnedSpotCard key={spot.id} spot={spot} delay={120 * i}/>;
 				})}
 			</div>
 		</>

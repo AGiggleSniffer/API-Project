@@ -24,6 +24,7 @@ export default function OwnedSpotCard({ spot, delay }) {
 	const [tooltipBool, setTooltip] = useState(false);
 	const [opacity, setOpacity] = useState(0);
 	const [translate, setTranslate] = useState(200);
+	const [scale, setScale] = useState(0.8);
 
 	const handleClick = () => {
 		navigate(`/spots/${id}`);
@@ -35,7 +36,7 @@ export default function OwnedSpotCard({ spot, delay }) {
 
 	const styles = {
 		opacity: opacity,
-		transform: `translateY(${translate}px)`,
+		transform: `translateY(${translate}px) scale(${scale})`,
 	};
 
 	useEffect(() => {
@@ -62,11 +63,14 @@ export default function OwnedSpotCard({ spot, delay }) {
 	}, []);
 
 	useEffect(() => {
-		setTimeout(() => {
+		const timeoutId = setTimeout(() => {
 			setOpacity(100);
 			setTranslate(0);
+			setScale(1);
 		}, delay);
-	}, [delay]);
+
+		return () => clearTimeout(timeoutId)
+	});
 
 	return (
 		<>

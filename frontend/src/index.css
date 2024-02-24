@@ -6,6 +6,8 @@ body {
 :root {
 	--White: #ffffff;
 	--Black: #000000;
+	--Faded-Black: rgba(0,0,0,0.1);
+	--Faded-Grey: rgba(125, 125, 125, 0.2);
 	--Dark-Grey: #999999;
 	--Light-Grey: #cccccc;
 	--Lighter-Grey: #dfdfdf;

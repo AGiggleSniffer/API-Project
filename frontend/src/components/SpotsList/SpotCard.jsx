@@ -46,18 +46,22 @@ export default function SpotCard({ spot, delay }) {
 
 	const [opacity, setOpacity] = useState(0);
 	const [translate, setTranslate] = useState(200);
+	const [scale, setScale] = useState(0.8);
 	useEffect(() => {
-		setTimeout(() => {
+		const timeoutId = setTimeout(() => {
 			setOpacity(100);
 			setTranslate(0);
+			setScale(1);
 		}, delay);
-	}, [delay]);
+
+		return () => clearTimeout(timeoutId);
+	});
 
 	const handleClick = () => {
 		navigate(`spots/${id}`);
 	};
 
-	const styles = { opacity: opacity, transform: `translateY(${translate}px)` };
+	const styles = { opacity: opacity, transform: `translateY(${translate}px) scale(${scale})` };
 
 	return (
 		<>

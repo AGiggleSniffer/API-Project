@@ -16,7 +16,7 @@ export default function SpotsList() {
 		<div className="spot-list">
 			{spots?.map((spot, i) => {
 				if (!spot) return;
-				return <SpotCard key={spot.id} spot={spot} delay={150 * i} />;
+				return <SpotCard key={spot.id} spot={spot} delay={120 * i} />;
 			})}
 		</div>
 	);
