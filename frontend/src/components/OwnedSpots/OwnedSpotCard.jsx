@@ -5,7 +5,7 @@ import "./OwnedSpotCard.css";
 import OpenModalButton from "../OpenModalButton";
 import DeleteSpotForm from "./DeleteSpotForm";
 
-export default function OwnedSpotCard({ spot }) {
+export default function OwnedSpotCard({ spot, delay }) {
 	const {
 		id,
 		city,
@@ -57,11 +57,13 @@ export default function OwnedSpotCard({ spot }) {
 	}, []);
 
 	const [opacity, setOpacity] = useState(0);
-	const [translate, setTranslate] = useState(200)
+	const [translate, setTranslate] = useState(200);
 	useEffect(() => {
-		setOpacity(100);
-		setTranslate(0);
-	}, []);
+		setTimeout(() => {
+			setOpacity(100);
+			setTranslate(0);
+		}, delay);
+	}, [delay]);
 
 	const handleClick = () => {
 		navigate(`/spots/${id}`);
@@ -71,7 +73,7 @@ export default function OwnedSpotCard({ spot }) {
 		navigate(`/spots/${id}/edit`);
 	};
 
-	const styles = { opacity: opacity, transform: `translateY(${translate}px)` }
+	const styles = { opacity: opacity, transform: `translateY(${translate}px)` };
 
 	return (
 		<>

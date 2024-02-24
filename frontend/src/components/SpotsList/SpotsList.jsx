@@ -14,9 +14,9 @@ export default function SpotsList() {
 
 	return (
 		<div className="spot-list">
-			{spots?.map((spot) => {
+			{spots?.map((spot, i) => {
 				if (!spot) return;
-				return <SpotCard key={spot.id} spot={spot} />;
+				return <SpotCard key={spot.id} spot={spot} delay={150 * i} />;
 			})}
 		</div>
 	);

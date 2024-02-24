@@ -4,7 +4,7 @@
 	grid-template-columns: 2fr 1fr;
 	margin: 10px;
 	cursor: pointer;
-	transition: all 500ms ease;
+	transition: all 500ms cubic-bezier(0.25, 2.0, 0.8, 1.0);
 }
 
 .image-container {
@@ -66,6 +66,7 @@
 .tooltip {
 	position: fixed;
 	display: block;
+	z-index: 10;
 	background-color: var(--White);
 	box-shadow: 0 0px 5px var(--Light-Grey);
 	border-radius: 5px;

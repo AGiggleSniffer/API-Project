@@ -42,9 +42,9 @@ export default function OwnedSpots() {
 				</button>
 			</div>
 			<div className="spot-list">
-				{spots?.map((spot) => {
+				{spots?.map((spot, i) => {
 					if (!spot) return;
-					return <OwnedSpotCard key={spot.id} spot={spot} />;
+					return <OwnedSpotCard key={spot.id} spot={spot} delay={150 * i}/>;
 				})}
 			</div>
 		</>

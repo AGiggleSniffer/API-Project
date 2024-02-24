@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { FaRegStar } from "react-icons/fa";
 import "./SpotCard.css";
 
-export default function SpotCard({ spot }) {
+export default function SpotCard({ spot, delay }) {
 	const {
 		id,
 		city,
@@ -56,13 +56,19 @@ export default function SpotCard({ spot }) {
 	}, []);
 
 	const [opacity, setOpacity] = useState(0);
+	const [translate, setTranslate] = useState(200);
 	useEffect(() => {
-		setOpacity(100);
-	}, [])
+		setTimeout(() => {
+			setOpacity(100);
+			setTranslate(0);
+		}, delay);
+	}, [delay]);
 
 	const handleClick = () => {
 		navigate(`spots/${id}`);
 	};
+
+	const styles = { opacity: opacity, transform: `translateY(${translate}px)` };
 
 	return (
 		<>
@@ -70,7 +76,7 @@ export default function SpotCard({ spot }) {
 				className="spot-card"
 				ref={card}
 				onClick={handleClick}
-				style={{ opacity: opacity }}
+				style={styles}
 			>
 				<div className="image-container" ref={ref}>
 					<img src={previewImage} alt={description} className="spot-image" />
