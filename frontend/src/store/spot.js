@@ -1,17 +1,13 @@
 import { csrfFetch } from "./csrf";
 import { createSelector } from "reselect";
+import { spotsLoading, spotsSuccess } from "./uiState";
 
-const LOADING_SPOTS = "spots/loading";
-const LOADING_SUCCESS = "spots/success";
 const LOAD_SPOTS = "spots/loadSpots";
 const LOAD_CURR = "spots/currSpots";
 const ADD_SPOT_ID = "spots/addSpotById";
 const UPDATE_SPOT = "spots/updateSpot";
 const DELETE_SPOT = "spots/deleteSpot";
 const DELETE_REVIEW = "spots/deleteReview";
-
-const loading = () => ({ type: LOADING_SPOTS });
-const loadingSuccess = () => ({ type: LOADING_SUCCESS });
 
 const loadSpots = (spots) => ({
 	type: LOAD_SPOTS,
@@ -43,22 +39,22 @@ export const deleteReviewFromSpot = (spotId, reviewRating) => ({
 //
 
 export const loadAllSpots = () => async (dispatch) => {
-	dispatch(loading());
+	dispatch(spotsLoading());
 	const response = await csrfFetch("/api/spots");
 
 	const spots = await response.json();
 	dispatch(loadSpots(spots));
-	dispatch(loadingSuccess());
+	dispatch(spotsSuccess());
 	return spots;
 };
 
 export const loadCurrSpots = () => async (dispatch) => {
-	dispatch(loading());
+	dispatch(spotsLoading());
 	const response = await csrfFetch(`/api/spots/current`);
 
 	const spots = await response.json();
 	dispatch(currSpots(spots));
-	dispatch(loadingSuccess());
+	dispatch(spotsSuccess());
 	return spots;
 };
 
@@ -153,15 +149,10 @@ const initialState = {
 	allSpots: {},
 	detailedSpots: {},
 	currentSpots: {},
-	loading: false,
 };
 
 export default function spotsReducer(state = initialState, action) {
 	switch (action.type) {
-		case LOADING_SPOTS:
-			return { ...state, loading: true };
-		case LOADING_SUCCESS:
-			return { ...state, loading: false };
 		case LOAD_SPOTS:
 			return {
 				...state,

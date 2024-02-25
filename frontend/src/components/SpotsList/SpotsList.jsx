@@ -4,11 +4,12 @@ import { loadAllSpots, selectSpotsArray } from "../../store/spot";
 import SpotCard from "./SpotCard";
 import Loader from "../Skeletons/Loader";
 import "./SpotsList.css";
+import { selectSpotsLoading } from "../../store/uiState";
 
 export default function SpotsList() {
 	const dispatch = useDispatch();
 	const spots = useSelector(selectSpotsArray);
-	const loading = useSelector((state) => state.spots.loading);
+	const loading = useSelector(selectSpotsLoading);
 
 	useEffect(() => {
 		dispatch(loadAllSpots());
