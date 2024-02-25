@@ -30,8 +30,8 @@ export default function LoginForm() {
 	};
 
 	const loginDemo = () => {
-		setCredential("FakeUser1");
-		setPassword("password2");
+		setCredential("FakeUser2");
+		setPassword("password3");
 	};
 
 	useEffect(() => {

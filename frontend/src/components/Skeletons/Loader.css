@@ -1,0 +1,36 @@
+.loading-circle {
+	position: absolute;
+	transform: translateZ(1px);
+	grid-row-start: 1;
+	grid-row-end: 10;
+	margin: auto;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.loading-circle > div {
+	width: 64px;
+	height: 64px;
+	margin: 8px;
+	border-radius: 50%;
+	background: var(--Dark-Grey);
+	animation: spin 2.4s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+
+@keyframes spin {
+	0%,
+	100% {
+		animation-timing-function: cubic-bezier(0.5, 0, 1, 0.5);
+	}
+	0% {
+		transform: rotateY(0deg);
+	}
+	50% {
+		transform: rotateY(1800deg);
+		animation-timing-function: cubic-bezier(0, 0.5, 0.5, 1);
+	}
+	100% {
+		transform: rotateY(3600deg);
+	}
+}
