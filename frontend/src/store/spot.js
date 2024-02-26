@@ -7,6 +7,7 @@ const LOAD_CURR = "spots/currSpots";
 const ADD_SPOT_ID = "spots/addSpotById";
 const UPDATE_SPOT = "spots/updateSpot";
 const DELETE_SPOT = "spots/deleteSpot";
+const UPDATE_REVIEWS = "spots/updateReviews";
 const DELETE_REVIEW = "spots/deleteReview";
 
 const loadSpots = (spots) => ({
@@ -27,6 +28,11 @@ const addSpotById = (spot) => ({
 const deleteSpot = (spotId) => ({
 	type: DELETE_SPOT,
 	payload: spotId,
+});
+
+export const updateReviews = (spotId, stars) => ({
+	type: UPDATE_REVIEWS,
+	payload: { spotId, stars },
 });
 
 export const deleteReviewFromSpot = (spotId, reviewRating) => ({
@@ -115,9 +121,7 @@ export const deleteASpotById = (id) => async (dispatch) => {
 	const response = await csrfFetch(`/api/spots/${id}`, { method: "DELETE" });
 
 	const msg = await response.json();
-	console.log("BEFORE DISPATCH", id);
 	dispatch(deleteSpot(id));
-	console.log("WORKING");
 	return msg;
 };
 
@@ -175,7 +179,6 @@ export default function spotsReducer(state = initialState, action) {
 			};
 		case UPDATE_SPOT: {
 			const newObj = { ...state, detailedSpots: { ...state.detailedSpots } };
-			console.log(newObj);
 			return newObj;
 		}
 		case DELETE_SPOT: {
@@ -183,21 +186,36 @@ export default function spotsReducer(state = initialState, action) {
 			delete newObj.currentSpots[action.payload];
 			return newObj;
 		}
+		case UPDATE_REVIEWS: {
+			const { stars, spotId } = action.payload;
+			const newObj = { ...state, detailedSpots: { ...state.detailedSpots } };
+			const mySpot = newObj.detailedSpots[spotId];
+
+			if (mySpot.numReviews > 0) {
+				mySpot.avgStarRating =
+					(mySpot.avgStarRating * mySpot.numReviews + stars) /
+					(mySpot.numReviews + 1);
+			} else {
+				mySpot.avgStarRating = stars;
+			}
+
+			mySpot.numReviews++;
+			return newObj;
+		}
 		case DELETE_REVIEW: {
-			const newObj = { ...state, ...state.detailedSpots };
-			const mySpot = newObj.detailedSpots[action.payload.spotId];
+			const { reviewRating, spotId } = action.payload;
+			const newObj = { ...state, detailedSpots: {...state.detailedSpots} };
+			const mySpot = newObj.detailedSpots[spotId];
 
 			if (mySpot.numReviews - 1) {
 				mySpot.avgStarRating =
-					(mySpot.avgStarRating * mySpot.numReviews -
-						action.payload.reviewRating) /
+					(mySpot.avgStarRating * mySpot.numReviews - reviewRating) /
 					(mySpot.numReviews - 1);
-				mySpot.numReviews--;
 			} else {
 				mySpot.avgStarRating = "New!";
-				mySpot.numReviews = 0;
 			}
 
+			mySpot.numReviews--;
 			return newObj;
 		}
 		default:

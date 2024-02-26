@@ -17,7 +17,7 @@ module.exports = {
 		const randomNum = (max, min) =>
 			Math.floor(min + (max - min) * Math.random());
 
-		const generateImages = (numOfSpots = 1000) =>
+		const generateImages = (numOfSpots = 100) =>
 			Array(numOfSpots)
 				.fill(null)
 				.map((_, i) => {

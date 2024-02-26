@@ -5,6 +5,7 @@ import { loadCurrSpots, selectCurrSpotsArr } from "../../store/spot";
 import OwnedSpotCard from "./OwnedSpotCard";
 import useMouse from "../../hooks/useMouse";
 import Loader from "../Skeletons/Loader";
+import { selectSpotsLoading } from "../../store/uiState";
 
 export default function OwnedSpots() {
 	const dispatch = useDispatch();
@@ -12,7 +13,7 @@ export default function OwnedSpots() {
 	const ref = useRef();
 	const mousePosition = useMouse(ref);
 	const spots = useSelector(selectCurrSpotsArr);
-	const loading = useSelector((state) => state.spots.loading);
+	const loading = useSelector(selectSpotsLoading);
 
 	useEffect(() => {
 		dispatch(loadCurrSpots());

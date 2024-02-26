@@ -1,6 +1,6 @@
 import { csrfFetch } from "./csrf";
 import { createSelector } from "reselect";
-import { deleteReviewFromSpot, findASpotById } from "./spot";
+import { deleteReviewFromSpot, updateReviews } from "./spot";
 import { reviewsLoading, reviewsSuccess } from "./uiState";
 
 const LOAD_REVIEWS = "review/loadReviews";
@@ -34,8 +34,7 @@ export const addReviewBySpotId = (id, payload) => async (dispatch) => {
 	});
 
 	const newReview = await response.json();
-	console.log(newReview);
-	await dispatch(findASpotById(id));
+	dispatch(updateReviews(id, payload.stars));
 	await dispatch(loadReviewsById(id));
 	return newReview;
 };
@@ -62,11 +61,11 @@ export const selectReviewsArray = createSelector(selectReviews, (reviews) => {
 	});
 });
 
-const initialState = { loading: false };
+const initialState = {};
 export default function reviewsReducer(state = initialState, action) {
 	switch (action.type) {
 		case LOAD_REVIEWS: {
-			const newObj = { ...state };
+			const newObj = {};
 			action.payload.Reviews.forEach((review) => (newObj[review.id] = review));
 			return newObj;
 		}

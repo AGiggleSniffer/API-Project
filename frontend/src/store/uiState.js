@@ -1,5 +1,5 @@
-const SPOTS_LOADING = "uiState/loading";
-const SPOTS_SUCCESS = "uiState/success";
+const SPOTS_LOADING = "spots/loading";
+const SPOTS_SUCCESS = "spots/success";
 
 const REVIEWS_LOADING = "reviews/loading";
 const REVIEWS_SUCCESS = "reviews/success";
@@ -25,6 +25,7 @@ export default function uiStateReducer(state = initialState, action) {
 			return { ...state, reviewsLoading: true };
 		case REVIEWS_SUCCESS:
 			return { ...state, reviewsLoading: false };
-		case reviewsLoading:
+		default:
+			return state;
 	}
 }

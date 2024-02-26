@@ -61,15 +61,14 @@ export default function SpotCard({ spot, delay }) {
 		navigate(`spots/${id}`);
 	};
 
-	const styles = { opacity: opacity, transform: `translateY(${translate}px) scale(${scale})` };
+	const styles = {
+		opacity: opacity,
+		transform: `translateY(${translate}px) scale(${scale})`,
+	};
 
 	return (
 		<>
-			<div
-				className="spot-card"
-				onClick={handleClick}
-				style={styles}
-			>
+			<div className="spot-card" onClick={handleClick} style={styles}>
 				<div className="image-container" ref={ref}>
 					<img src={previewImage} alt={description} className="spot-image" />
 				</div>
@@ -79,9 +78,7 @@ export default function SpotCard({ spot, delay }) {
 				</span>
 				<span className="rating">
 					<FaRegStar />
-					{typeof avgStarRating === "number"
-						? avgStarRating.toFixed(1)
-						: avgStarRating}
+					{avgStarRating > 0 ? avgStarRating.toFixed(1) : "New!"}
 				</span>
 				<span className="price">
 					<strong>${price}</strong> night

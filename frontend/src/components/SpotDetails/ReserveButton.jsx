@@ -25,10 +25,9 @@ export default function ReserveButton({ spotId }) {
 			</span>
 			<span id="reserve-details">
 				<FaRegStar className="star" />
-				{isNaN(spot?.avgStarRating)
-					? spot?.avgStarRating
-					: spot?.avgStarRating.toFixed(1)}{" "}
-				<FaCircle className="circle" /> {spot?.numReviews} review{spot?.numReviews > 1 ? "s" : null}
+				{spot?.avgStarRating > 0 ? spot?.avgStarRating.toFixed(1) : "New!"}
+				<FaCircle className="circle" /> {spot?.numReviews} review
+				{spot?.numReviews > 1 ? "s" : null}
 			</span>
 			<button
 				onClick={handleClick}

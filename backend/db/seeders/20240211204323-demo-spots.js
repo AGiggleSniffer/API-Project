@@ -23,7 +23,7 @@ module.exports = {
 
 		const randomNum = (max) => Math.ceil((max - 1) * Math.random());
 
-		const buildSpots = (numOfSpots = 1000) =>
+		const buildSpots = (numOfSpots = 100) =>
 			Array(numOfSpots)
 				.fill(null)
 				.map(() => ({

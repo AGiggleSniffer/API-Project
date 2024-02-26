@@ -3,12 +3,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { FaRegStar, FaCircle } from "react-icons/fa";
 import { findASpotById, selectSpot } from "../../store/spot";
-import { selectReviewsArray } from "../../store/review";
+import { loadReviewsById, selectReviewsArray } from "../../store/review";
 import ReviewList from "../ReviewList";
 import ReviewForm from "../ReviewForm";
 import OpenModalButton from "../OpenModalButton";
 import ReserveButton from "./ReserveButton";
 import "./SpotDetails.css";
+import { selectReviewsLoading } from "../../store/uiState";
+import Loader from "../Skeletons/Loader";
 
 export default function SpotDetails() {
 	const { id } = useParams();
@@ -16,6 +18,7 @@ export default function SpotDetails() {
 	const spot = useSelector(selectSpot(id));
 	const reviews = useSelector(selectReviewsArray);
 	const sessionUser = useSelector((state) => state.session.user);
+	const reviewsLoading = useSelector(selectReviewsLoading);
 	const [ownReview, setOwnReview] = useState([]);
 	const [allowSpotReview, setSpotReview] = useState(
 		sessionUser && spot?.Owner.id !== sessionUser?.id,
@@ -23,12 +26,19 @@ export default function SpotDetails() {
 
 	useEffect(() => {
 		setSpotReview(sessionUser && spot?.Owner.id !== sessionUser?.id);
-		setOwnReview(reviews?.find((review) => review.User.id === sessionUser?.id));
+		setOwnReview(
+			reviews?.find((review) => review.User?.id === sessionUser?.id),
+		);
 	}, [sessionUser, spot, reviews]);
 
 	useEffect(() => {
 		dispatch(findASpotById(id));
 	}, [dispatch, id]);
+
+	useEffect(() => {
+		dispatch(loadReviewsById(id));
+		console.log("REVIEWS", spot?.numReviews)
+	}, [dispatch, id, spot?.numReviews]);
 
 	return (
 		<div id="details">
@@ -67,11 +77,11 @@ export default function SpotDetails() {
 				</span>
 			</div>
 			<div id="review-container">
-				{isNaN(spot?.avgStarRating) ? (
+				{spot?.numReviews < 1 ? (
 					<>
 						<h3>
 							<FaRegStar className="star" />
-							{spot?.avgStarRating}
+							New!
 						</h3>
 						{allowSpotReview && (
 							<>
@@ -98,9 +108,10 @@ export default function SpotDetails() {
 								modalComponent={<ReviewForm spotId={spot?.id} />}
 							/>
 						)}
-						<ReviewList spotId={spot?.id} />
 					</>
 				)}
+				{reviewsLoading && <Loader />}
+				<ReviewList reviews={reviews} spot={spot} user={sessionUser} />
 			</div>
 		</div>
 	);

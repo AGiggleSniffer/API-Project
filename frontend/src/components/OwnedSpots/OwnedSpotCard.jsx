@@ -84,9 +84,7 @@ export default function OwnedSpotCard({ spot, delay }) {
 				</span>
 				<span className="rating" onClick={handleClick}>
 					<FaRegStar />
-					{typeof avgStarRating === "number"
-						? avgStarRating.toFixed(1)
-						: avgStarRating}
+					{avgStarRating > 0 ?  avgStarRating.toFixed(1) : "New!"}
 				</span>
 				<span className="price" onClick={handleClick}>
 					<strong>${price}</strong> night

@@ -1,18 +1,7 @@
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { loadReviewsById, selectReviewsArray } from "../../store/review";
 import "./ReviewList.css";
 import ReviewCard from "./ReviewCard";
 
-export default function ReviewList({ spotId }) {
-	const dispatch = useDispatch();
-	const reviews = useSelector(selectReviewsArray);
-	const user = useSelector((state) => state.session.user);
-
-	useEffect(() => {
-		dispatch(loadReviewsById(spotId));
-	}, [dispatch, spotId]);
-
+export default function ReviewList({ reviews, spot, user }) {
 	return (
 		<>
 			{reviews?.map((review, i) => {
@@ -20,7 +9,7 @@ export default function ReviewList({ spotId }) {
 					<ReviewCard
 						key={review.id}
 						review={review}
-						spotId={spotId}
+						spotId={spot?.id}
 						userId={user?.id}
 						delay={120 * i}
 					/>
