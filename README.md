@@ -1,5 +1,8 @@
 # AirBNB
 
+![]https://github.com/AGiggleSniffer/AGiggleSniffer.github.io/blob/main/src/assets/images/gifs/Animation17.gif
+First full stack project which was modeled after Air BnB.
+
 ## Database Schema Design
 
 ![AirBNB Database Schema](images/dbDesign.png)
