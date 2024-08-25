@@ -1,5 +1,15 @@
 # AirBNB
 
+## Intro
+
+Technologies used: 
+  - Sequelize
+  - React
+
+Run app for developer:
+  - Backend: npm start
+  - Frontend: npm run dev
+
 ## Database Schema Design
 
 ![AirBNB Database Schema](images/dbDesign.png)

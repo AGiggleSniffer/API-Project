@@ -8,6 +8,7 @@ import SpotsList from "./components/SpotsList";
 import SpotDetails from "./components/SpotDetails";
 import CreateSpotForm from "./components/CreateSpotForm";
 import OwnedSpots from "./components/OwnedSpots";
+import BookingCal from "./components/SpotDetails/BookingCal";
 
 const router = createBrowserRouter([
 	{
@@ -33,6 +34,10 @@ const router = createBrowserRouter([
 				path: "spots/:id/edit",
 				element: <CreateSpotForm />,
 			},
+			{
+				path: "cal",
+				element: <BookingCal />
+			}
 		],
 	},
 	{
